@@ -6,8 +6,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication
 public class BlueboxApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(BlueboxApplication.class, args);
-	}
+  public static void main(String[] args) {
+    SpringApplication.run(BlueboxApplication.class, args);
+  }
 
 }
