@@ -1,6 +1,6 @@
 package com.tothenew.bluebox.bluebox.enitity;
 
-import java.util.Set;
+import java.util.List;
 import java.util.UUID;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
@@ -31,7 +31,7 @@ public class User {
       joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
       inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName =
           "id"))
-  private Set<Role> roles;
+  private List<Role> roles;
 
   private boolean isDeleted;
   private boolean isActive;
@@ -106,11 +106,11 @@ public class User {
     isActive = active;
   }
 
-  public Set<Role> getRoles() {
+  public List<Role> getRoles() {
     return roles;
   }
 
-  public void setRoles(Set<Role> roles) {
+  public void setRoles(List<Role> roles) {
     this.roles = roles;
   }
 

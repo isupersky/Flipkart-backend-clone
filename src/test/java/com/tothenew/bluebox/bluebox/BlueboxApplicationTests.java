@@ -4,6 +4,7 @@ import com.tothenew.bluebox.bluebox.enitity.Customer;
 import com.tothenew.bluebox.bluebox.enitity.Role;
 import com.tothenew.bluebox.bluebox.repository.RoleRepository;
 import com.tothenew.bluebox.bluebox.repository.UserRepository;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 import org.junit.jupiter.api.Test;
@@ -36,14 +37,14 @@ class BlueboxApplicationTests {
 		customer.setPassword("Pa");
 		customer.setDeleted(true);
 
-		HashSet<Role> tempRole = new HashSet<>();
-		Role role4 = new Role();
-		role4.setAuthority("abc");
+		ArrayList<Role> tempRole = new ArrayList<>();
+		Role role = new Role();
+		role.setAuthority("ADMIN");
 		Role role2 = new Role();
-		role4.setAuthority("Admin");
+		role2.setAuthority("CUSTOMER");
 		Role role3 = new Role();
-		role3.setAuthority("User");
-		tempRole.add(role4);
+		role3.setAuthority("SELLER");
+		tempRole.add(role);
 		tempRole.add(role2);
 		tempRole.add(role3);
 //		roleRepository.save(role);

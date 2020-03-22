@@ -1,6 +1,6 @@
 package com.tothenew.bluebox.bluebox.enitity;
 
-import java.util.Set;
+import java.util.List;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -14,8 +14,9 @@ public class Role {
   Integer id;
   String authority;
 
+
   @ManyToMany(mappedBy = "roles")
-  private Set<User> user;
+  private List<User> user;
 
   //	Default Constructor
   public Role() {
@@ -36,6 +37,14 @@ public class Role {
 
   public void setAuthority(String authority) {
     this.authority = authority;
+  }
+
+  public List<User> getUser() {
+    return user;
+  }
+
+  public void setUser(List<User> user) {
+    this.user = user;
   }
 
   @Override
