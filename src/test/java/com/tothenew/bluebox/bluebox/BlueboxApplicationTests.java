@@ -38,19 +38,39 @@ class BlueboxApplicationTests {
 		customer.setDeleted(true);
 
 		ArrayList<Role> tempRole = new ArrayList<>();
-		Role role = new Role();
-		role.setAuthority("ADMIN");
-		Role role2 = new Role();
-		role2.setAuthority("CUSTOMER");
-		Role role3 = new Role();
-		role3.setAuthority("SELLER");
+		Role role = roleRepository.findById(1).get();
+//		role.setAuthority("ADMIN");
+		Role role2 = roleRepository.findById(2).get();
+//		role2.setAuthority("CUSTOMER");
+		Role role3 = roleRepository.findById(3).get();
+//		role3.setAuthority("SELLER");
 		tempRole.add(role);
 		tempRole.add(role2);
 		tempRole.add(role3);
-//		roleRepository.save(role);
 		customer.setRoles(tempRole);
 		userRepository.save(customer);
-//		roleRepository.saveAll(tempRole);
+
+
+		Customer customer2 = new Customer();
+		customer2.setContact(92l);
+		customer2.setActive(true);
+		customer2.setEmail("mto");
+		customer2.setFirstName("Ab");
+		customer2.setLastName("S");
+		customer2.setMiddleName("");
+		customer2.setPassword("Pa");
+		customer2.setDeleted(true);
+
+
+		ArrayList<Role> tempRole2 = new ArrayList<>();
+
+		Role role4 = roleRepository.findById(1).get();
+//		role.setAuthority("ADMIN");
+		Role role5 = roleRepository.findById(2).get();
+		tempRole2.add(role4);
+		tempRole2.add(role5);
+		customer2.setRoles(tempRole2);
+		userRepository.save(customer2);
 	}
 
 }
