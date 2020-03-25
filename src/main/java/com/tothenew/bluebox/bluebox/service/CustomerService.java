@@ -3,6 +3,7 @@ package com.tothenew.bluebox.bluebox.service;
 import com.tothenew.bluebox.bluebox.enitity.Customer;
 import com.tothenew.bluebox.bluebox.enitity.Role;
 import com.tothenew.bluebox.bluebox.enitity.User;
+import com.tothenew.bluebox.bluebox.repository.CustomerRepository;
 import com.tothenew.bluebox.bluebox.repository.RoleRepository;
 import com.tothenew.bluebox.bluebox.repository.UserRepository;
 import java.util.ArrayList;
@@ -19,6 +20,9 @@ public class CustomerService {
   @Autowired
   RoleRepository roleRepository;
 
+  @Autowired
+  CustomerRepository customerRepository;
+
   public void createCustomer(Customer customer) {
     List<Role> defaultRole = new ArrayList<>();
     Role role = roleRepository.findById(2).get();
@@ -28,9 +32,8 @@ public class CustomerService {
   }
 
 
-  public Iterable<User> getTestUser() {
-//    List<User> tempList = new ArrayList<>();
-    return userRepository.findAll();
+  public Iterable<Customer> getTestUser() {
+    return customerRepository.findAll();
 
 //    return tempList;
   }

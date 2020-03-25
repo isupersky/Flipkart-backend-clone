@@ -28,6 +28,7 @@ public class User {
   private String lastName;
   private String password;
 
+  @JsonIgnore
   @ManyToMany
   @JoinTable(name = "user_role",
       joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
@@ -128,7 +129,7 @@ public class User {
   }
 
   public void setAddress(List<Address> address) {
-    address.stream().forEach(e -> e.setUser(this));
+    address.forEach(e -> e.setUser(this));
     this.address = address;
   }
 

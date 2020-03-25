@@ -22,7 +22,7 @@ public class CustomerController {
   }
 
   @GetMapping(path = "/customer")
-  public Iterable<User> getTestUser() {
+  public Iterable<Customer> getTestUser() {
     return customerService.getTestUser();
   }
 
