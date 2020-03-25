@@ -39,9 +39,7 @@ public class User {
   @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
   private List<Address> address = new ArrayList<>();
 
-  @JsonIgnore
   private boolean isDeleted = false;
-  @JsonIgnore
   private boolean isActive = false;
 
   //	Default Constructor
