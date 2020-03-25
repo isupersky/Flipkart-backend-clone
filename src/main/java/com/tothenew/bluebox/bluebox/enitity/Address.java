@@ -1,28 +1,38 @@
 package com.tothenew.bluebox.bluebox.enitity;
 
-import java.util.UUID;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 
+@Entity
 public class Address {
 
-  private UUID id;
+  @Id
+  @GeneratedValue
+  private Long id;
   private String city;
   private String state;
   private String country;
   private String address;
   private Integer zipCode;
   private String label;
-  private UUID customerUserId;
+  @ManyToOne
+//  @JoinColumn(name = "id")
+  private User user;
 
   //	Default constructor
   public Address() {
   }
 
   //	Getters and Setters
-  public UUID getId() {
+
+
+  public Long getId() {
     return id;
   }
 
-  public void setId(UUID id) {
+  public void setId(Long id) {
     this.id = id;
   }
 
@@ -74,12 +84,12 @@ public class Address {
     this.label = label;
   }
 
-  public UUID getCustomerUserId() {
-    return customerUserId;
+  public User getUser() {
+    return user;
   }
 
-  public void setCustomerUserId(UUID customerUserId) {
-    this.customerUserId = customerUserId;
+  public void setUser(User user) {
+    this.user = user;
   }
 
   @Override
@@ -92,7 +102,7 @@ public class Address {
         ", address='" + address + '\'' +
         ", zipCode=" + zipCode +
         ", label='" + label + '\'' +
-        ", customerUserId=" + customerUserId +
+        ", user=" + user +
         '}';
   }
 }

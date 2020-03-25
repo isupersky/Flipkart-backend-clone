@@ -1,7 +1,7 @@
 package com.tothenew.bluebox.bluebox.enitity;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -12,6 +12,7 @@ import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
@@ -19,7 +20,7 @@ public class User {
 
   @Id
   @GeneratedValue(strategy = GenerationType.AUTO)
-  private UUID id;
+  private Long id;
   private String email;
   private String firstName;
   private String middleName;
@@ -33,8 +34,11 @@ public class User {
           "id"))
   private List<Role> roles;
 
-  private boolean isDeleted;
-  private boolean isActive;
+  @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+  private List<Address> address = new ArrayList<>();
+
+  private boolean isDeleted = false;
+  private boolean isActive = false;
 
   //	Default Constructor
   public User() {
@@ -42,11 +46,12 @@ public class User {
 
 //	Getters And setters
 
-  public UUID getId() {
+
+  public Long getId() {
     return id;
   }
 
-  public void setId(UUID id) {
+  public void setId(Long id) {
     this.id = id;
   }
 
@@ -115,6 +120,15 @@ public class User {
   }
 
 
+  public List<Address> getAddress() {
+    return address;
+  }
+
+  public void setAddress(List<Address> address) {
+    address.stream().forEach(e -> e.setUser(this));
+    this.address = address;
+  }
+
   @Override
   public String toString() {
     return "User{" +
@@ -124,6 +138,7 @@ public class User {
         ", middleName='" + middleName + '\'' +
         ", lastName='" + lastName + '\'' +
         ", password='" + password + '\'' +
+        ", roles=" + roles +
         ", isDeleted=" + isDeleted +
         ", isActive=" + isActive +
         '}';

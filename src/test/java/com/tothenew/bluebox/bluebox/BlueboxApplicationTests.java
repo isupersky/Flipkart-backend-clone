@@ -1,12 +1,17 @@
 package com.tothenew.bluebox.bluebox;
 
+import com.tothenew.bluebox.bluebox.enitity.Address;
 import com.tothenew.bluebox.bluebox.enitity.Customer;
 import com.tothenew.bluebox.bluebox.enitity.Role;
+import com.tothenew.bluebox.bluebox.enitity.User;
+import com.tothenew.bluebox.bluebox.repository.AddressRepository;
 import com.tothenew.bluebox.bluebox.repository.RoleRepository;
 import com.tothenew.bluebox.bluebox.repository.UserRepository;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
+import org.graalvm.compiler.core.common.type.ArithmeticOpTable.BinaryOp.Add;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -19,6 +24,9 @@ class BlueboxApplicationTests {
 
 	@Autowired
 	RoleRepository roleRepository;
+
+	@Autowired
+	AddressRepository addressRepository;
 
 
 	@Test
@@ -71,6 +79,46 @@ class BlueboxApplicationTests {
 		tempRole2.add(role5);
 		customer2.setRoles(tempRole2);
 		userRepository.save(customer2);
+	}
+
+	@Test
+	void createNewUSer(){
+		User user = new User();
+		Role role = roleRepository.findById(1).get();
+		List<Role> tempRoleList = new ArrayList<>();
+		tempRoleList.add(role);
+		user.setRoles(tempRoleList);
+
+		Address address = new Address();
+		address.setAddress("ye hai mera pata");
+		List<Address> tempAddressList = new ArrayList<>();
+		tempAddressList.add(address);
+		user.setAddress(tempAddressList);
+
+		user.setActive(true);
+		userRepository.save(user);
+
+		Customer customer = new Customer();
+
+		Address address1 = new Address();
+		address1.setAddress("new Address 1");
+		Address address2 = new Address();
+		address2.setAddress("new Address 2");
+
+		List<Address> addressList = new ArrayList<>();
+		addressList.add(address1);
+		addressList.add(address2);
+		customer.setAddress(addressList);
+
+		Role role1 = roleRepository.findById(2).get();
+		List<Role> roleList = new ArrayList<>();
+		roleList.add(role);
+		roleList.add(role1);
+		customer.setRoles(roleList);
+
+		userRepository.save(customer);
+
+
 	}
 
 }
