@@ -1,5 +1,6 @@
 package com.tothenew.bluebox.bluebox.enitity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.CascadeType;
@@ -37,7 +38,9 @@ public class User {
   @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
   private List<Address> address = new ArrayList<>();
 
+  @JsonIgnore
   private boolean isDeleted = false;
+  @JsonIgnore
   private boolean isActive = false;
 
   //	Default Constructor

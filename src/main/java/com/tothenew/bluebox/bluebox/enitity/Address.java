@@ -1,8 +1,11 @@
 package com.tothenew.bluebox.bluebox.enitity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
 @Entity
@@ -17,8 +20,10 @@ public class Address {
   private String address;
   private Integer zipCode;
   private String label;
-  @ManyToOne
-//  @JoinColumn(name = "id")
+
+  @JsonIgnore
+  @ManyToOne(cascade = CascadeType.ALL)
+  @JoinColumn(name = "user_id")
   private User user;
 
   //	Default constructor

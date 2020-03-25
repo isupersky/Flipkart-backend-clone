@@ -1,5 +1,6 @@
 package com.tothenew.bluebox.bluebox.enitity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.util.List;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -14,7 +15,7 @@ public class Role {
   Integer id;
   String authority;
 
-
+  @JsonIgnore
   @ManyToMany(mappedBy = "roles")
   private List<User> user;
 

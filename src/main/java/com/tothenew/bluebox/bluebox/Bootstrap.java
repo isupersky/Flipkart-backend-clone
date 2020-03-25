@@ -5,8 +5,6 @@ import com.tothenew.bluebox.bluebox.repository.RoleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -29,7 +27,7 @@ public class Bootstrap implements ApplicationRunner {
     roleRepository.save(role2);
     roleRepository.save(role3);
 
-    PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+//    PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
 //      user1.setPassword(passwordEncoder.encode("pass"));
 
