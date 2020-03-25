@@ -14,6 +14,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
+import javax.validation.constraints.Email;
 
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
@@ -22,6 +23,8 @@ public class User {
   @Id
   @GeneratedValue(strategy = GenerationType.AUTO)
   private Long id;
+
+  @Email(message = "This is not a valid Email")
   private String email;
   private String firstName;
   private String middleName;

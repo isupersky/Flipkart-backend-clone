@@ -2,7 +2,6 @@ package com.tothenew.bluebox.bluebox.service;
 
 import com.tothenew.bluebox.bluebox.enitity.Customer;
 import com.tothenew.bluebox.bluebox.enitity.Role;
-import com.tothenew.bluebox.bluebox.enitity.User;
 import com.tothenew.bluebox.bluebox.repository.CustomerRepository;
 import com.tothenew.bluebox.bluebox.repository.RoleRepository;
 import com.tothenew.bluebox.bluebox.repository.UserRepository;
