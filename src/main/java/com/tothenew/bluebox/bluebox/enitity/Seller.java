@@ -1,6 +1,5 @@
 package com.tothenew.bluebox.bluebox.enitity;
 
-import java.util.UUID;
 import javax.persistence.Entity;
 import javax.persistence.PrimaryKeyJoinColumn;
 
@@ -8,25 +7,13 @@ import javax.persistence.PrimaryKeyJoinColumn;
 @PrimaryKeyJoinColumn(name = "userId", referencedColumnName = "id")
 public class Seller extends User {
 
-  //	@Column(name = "id")
-//	private UUID userId;
   private Long gst;
   private String companyName;
   private Long companyContact;
-  private UUID companyAddressId;
 
   //	Default constructor
   public Seller() {
   }
-
-//	Getters and Setters
-//	public UUID getUserId() {
-//		return userId;
-//	}
-
-//	public void setUserId(UUID userId) {
-//		this.userId = userId;
-//	}
 
   public Long getGst() {
     return gst;
@@ -52,13 +39,6 @@ public class Seller extends User {
     this.companyContact = companyContact;
   }
 
-  public UUID getCompanyAddressId() {
-    return companyAddressId;
-  }
-
-  public void setCompanyAddressId(UUID companyAddressId) {
-    this.companyAddressId = companyAddressId;
-  }
 
   @Override
   public String toString() {
@@ -66,7 +46,6 @@ public class Seller extends User {
         "gst=" + gst +
         ", companyName='" + companyName + '\'' +
         ", companyContact=" + companyContact +
-        ", companyAddressId=" + companyAddressId +
         '}';
   }
 }

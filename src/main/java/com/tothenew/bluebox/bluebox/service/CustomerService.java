@@ -37,24 +37,29 @@ public class CustomerService {
   @Autowired
   private TaskExecutor taskExecutor;
 
+  //  This is a test method and to be deleted
   public Iterable<Customer> getTestUser() {
     return customerRepository.findAll();
   }
 
-  public void createCustomer(Customer customer) {
-    List<Role> defaultRole = new ArrayList<>();
-    Role role = roleRepository.findById(2).get();
-    defaultRole.add(role);
-    customer.setRoles(defaultRole);
-    userRepository.save(customer);
-  }
+//  public void createCustomer(Customer customer) {
+//    List<Role> defaultRole = new ArrayList<>();
+//    Role role = roleRepository.findById(2).get();
+//    defaultRole.add(role);
+//    customer.setRoles(defaultRole);
+//    userRepository.save(customer);
+//  }
 
 
   public String registerCustomer(Customer customer) {
+    List<Role> defaultRole = new ArrayList<>();
+    Role role = roleRepository.findById(2).get();
+    defaultRole.add(role);
     User existingUser = customerRepository.findByEmailIgnoreCase(customer.getEmail());
     if (existingUser != null) {
       return "message : This email already exists!";
     } else {
+      customer.setRoles(defaultRole);
       customerRepository.save(customer);
       generateToken(customer);
       return "successfulRegisteration";
@@ -66,23 +71,21 @@ public class CustomerService {
 
     confirmationTokenRepository.save(confirmationToken);
 
-    taskExecutor.execute(new Runnable() {
-      public void run() {
-        try {
-          SimpleMailMessage mailMessage = new SimpleMailMessage();
-          mailMessage.setTo(customer.getEmail());
-          mailMessage.setSubject("Complete Registration!");
-          mailMessage.setFrom("ecommerce476@gmail.com ");
-          mailMessage.setText("To confirm your account, please click here : "
-              + "http://localhost:8080/confirm-account?token=" + confirmationToken
-              .getConfirmationToken());
+    taskExecutor.execute(() -> {
+      try {
+        SimpleMailMessage mailMessage = new SimpleMailMessage();
+        mailMessage.setTo(customer.getEmail());
+        mailMessage.setSubject("Complete Registration!");
+        mailMessage.setFrom("ecommerce476@gmail.com ");
+        mailMessage.setText("To confirm your account, please click here : "
+            + "http://localhost:8080/confirm-account?token=" + confirmationToken
+            .getConfirmationToken());
 
-          emailSenderService.sendEmail(mailMessage);
-        } catch (Exception e) {
-          e.printStackTrace();
-          System.err.println(
-              "Failed to send email to: " + customer.getEmail() + " reason: " + e.getMessage());
-        }
+        emailSenderService.sendEmail(mailMessage);
+      } catch (Exception e) {
+        e.printStackTrace();
+        System.err.println(
+            "Failed to send email to: " + customer.getEmail() + " reason: " + e.getMessage());
       }
     });
   }
@@ -95,7 +98,7 @@ public class CustomerService {
 
     Date date = new Date();
 
-    if (token != null && token.getCreatedDate().getHours() - date.getHours() <= 3) {
+    if (token != null && (date.getHours() - token.getCreatedDate().getHours()) < 3) {
 
       Customer customer = (Customer) customerRepository
           .findByEmailIgnoreCase(token.getUser().getEmail());
@@ -103,7 +106,7 @@ public class CustomerService {
       customerRepository.save(customer);
       confirmationTokenRepository.delete(token);
       return "accountVerified";
-    } else if (token != null && token.getCreatedDate().getHours() - date.getHours() > 3) {
+    } else if (token != null && (date.getHours() - token.getCreatedDate().getHours()) > 3) {
       Customer customer = customerRepository
           .findById(
               token
@@ -113,7 +116,7 @@ public class CustomerService {
 
       confirmationTokenRepository.delete(token);
       generateToken(customer);
-      return "New Token sent to registered email Id";
+      return "Token time Expired!!  New Token sent to registered email Id";
     } else {
       return "message: The link is invalid or broken!";
     }

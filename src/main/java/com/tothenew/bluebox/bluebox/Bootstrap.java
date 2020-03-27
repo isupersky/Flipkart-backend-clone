@@ -18,11 +18,11 @@ public class Bootstrap implements ApplicationRunner {
   public void run(ApplicationArguments args) throws Exception {
 
     Role role = new Role();
-    role.setAuthority("ADMIN");
+    role.setAuthority("ROLE_ADMIN");
     Role role2 = new Role();
-    role2.setAuthority("CUSTOMER");
+    role2.setAuthority("ROLE_CUSTOMER");
     Role role3 = new Role();
-    role3.setAuthority("SELLER");
+    role3.setAuthority("ROLE_SELLER");
     roleRepository.save(role);
     roleRepository.save(role2);
     roleRepository.save(role3);
