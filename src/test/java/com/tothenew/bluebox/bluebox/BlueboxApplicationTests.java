@@ -3,9 +3,13 @@ package com.tothenew.bluebox.bluebox;
 import com.tothenew.bluebox.bluebox.enitity.Address;
 import com.tothenew.bluebox.bluebox.enitity.Customer;
 import com.tothenew.bluebox.bluebox.enitity.Role;
+import com.tothenew.bluebox.bluebox.enitity.Seller;
 import com.tothenew.bluebox.bluebox.enitity.User;
+import com.tothenew.bluebox.bluebox.enitity.product.Product;
 import com.tothenew.bluebox.bluebox.repository.AddressRepository;
+import com.tothenew.bluebox.bluebox.repository.ProductRepository;
 import com.tothenew.bluebox.bluebox.repository.RoleRepository;
+import com.tothenew.bluebox.bluebox.repository.SellerRepository;
 import com.tothenew.bluebox.bluebox.repository.UserRepository;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -28,6 +32,11 @@ class BlueboxApplicationTests {
 	@Autowired
 	AddressRepository addressRepository;
 
+	@Autowired
+	SellerRepository sellerRepository;
+
+	@Autowired
+	ProductRepository productRepository;
 
 	@Test
 	void contextLoads() {
@@ -82,7 +91,7 @@ class BlueboxApplicationTests {
 	}
 
 	@Test
-	void createNewUSer(){
+	void createTestUser(){
 		User user = new User();
 		Role role = roleRepository.findById(1).get();
 		List<Role> tempRoleList = new ArrayList<>();
@@ -120,5 +129,23 @@ class BlueboxApplicationTests {
 
 
 	}
+
+	@Test
+	void createTestSeller(){
+		Seller testSeller = new Seller();
+		testSeller.setCompanyName("Blubox");
+		testSeller.setFirstName("Aakash");
+		testSeller.setEmail("mailtomeaakash@gmail.com");
+		sellerRepository.save(testSeller);
+	}
+
+	@Test
+	void createTestProduct(){
+		createTestSeller();
+		Product testProduct = new Product();
+		testProduct.setSellerUserId((Seller) sellerRepository.findByEmailIgnoreCase("mailtomeaakash@gmail.com"));
+		productRepository.save(testProduct);
+	}
+
 
 }
