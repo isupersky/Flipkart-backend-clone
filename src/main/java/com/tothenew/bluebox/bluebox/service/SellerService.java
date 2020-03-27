@@ -26,7 +26,7 @@ public class SellerService {
 
   public String registerSeller(Seller seller) {
     List<Role> defaultRole = new ArrayList<>();
-    Role role = roleRepository.findById(2).get();
+    Role role = roleRepository.findByAuthority("ROLE_SELLER");
 
     User existingUser = sellerRepository.findByEmailIgnoreCase(seller.getEmail());
     if (existingUser != null) {

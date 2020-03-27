@@ -53,7 +53,7 @@ public class CustomerService {
 
   public String registerCustomer(Customer customer) {
     List<Role> defaultRole = new ArrayList<>();
-    Role role = roleRepository.findById(2).get();
+    Role role = roleRepository.findByAuthority("ROLE_CUSTOMER");
     defaultRole.add(role);
     User existingUser = customerRepository.findByEmailIgnoreCase(customer.getEmail());
     if (existingUser != null) {
