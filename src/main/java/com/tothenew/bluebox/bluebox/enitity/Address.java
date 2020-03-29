@@ -17,7 +17,7 @@ public class Address {
   private String city;
   private String state;
   private String country;
-  private String address;
+  private String addressLine;
   private Integer zipCode;
   private String label;
 
@@ -65,12 +65,12 @@ public class Address {
     this.country = country;
   }
 
-  public String getAddress() {
-    return address;
+  public String getAddressLine() {
+    return addressLine;
   }
 
-  public void setAddress(String address) {
-    this.address = address;
+  public void setAddressLine(String addressLine) {
+    this.addressLine = addressLine;
   }
 
   public Integer getZipCode() {
@@ -104,7 +104,7 @@ public class Address {
         ", city='" + city + '\'' +
         ", state='" + state + '\'' +
         ", country='" + country + '\'' +
-        ", address='" + address + '\'' +
+        ", addressLine='" + addressLine + '\'' +
         ", zipCode=" + zipCode +
         ", label='" + label + '\'' +
         ", user=" + user +

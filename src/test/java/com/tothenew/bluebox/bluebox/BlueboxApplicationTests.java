@@ -1,21 +1,24 @@
 package com.tothenew.bluebox.bluebox;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.tothenew.bluebox.bluebox.enitity.Address;
 import com.tothenew.bluebox.bluebox.enitity.Customer;
 import com.tothenew.bluebox.bluebox.enitity.Role;
 import com.tothenew.bluebox.bluebox.enitity.Seller;
 import com.tothenew.bluebox.bluebox.enitity.User;
 import com.tothenew.bluebox.bluebox.enitity.product.Product;
+import com.tothenew.bluebox.bluebox.enitity.product.ProductVariation;
 import com.tothenew.bluebox.bluebox.repository.AddressRepository;
 import com.tothenew.bluebox.bluebox.repository.ProductRepository;
+import com.tothenew.bluebox.bluebox.repository.ProductVariationRepository;
 import com.tothenew.bluebox.bluebox.repository.RoleRepository;
 import com.tothenew.bluebox.bluebox.repository.SellerRepository;
 import com.tothenew.bluebox.bluebox.repository.UserRepository;
+import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Set;
-import org.graalvm.compiler.core.common.type.ArithmeticOpTable.BinaryOp.Add;
+import java.util.Map;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -37,6 +40,9 @@ class BlueboxApplicationTests {
 
 	@Autowired
 	ProductRepository productRepository;
+
+	@Autowired
+	ProductVariationRepository productVariationRepository;
 
 	@Test
 	void contextLoads() {
@@ -99,7 +105,7 @@ class BlueboxApplicationTests {
 		user.setRoles(tempRoleList);
 
 		Address address = new Address();
-		address.setAddress("ye hai mera pata");
+		address.setAddressLine("ye hai mera pata");
 		List<Address> tempAddressList = new ArrayList<>();
 		tempAddressList.add(address);
 		user.setAddress(tempAddressList);
@@ -110,9 +116,9 @@ class BlueboxApplicationTests {
 		Customer customer = new Customer();
 
 		Address address1 = new Address();
-		address1.setAddress("new Address 1");
+		address1.setAddressLine("new Address 1");
 		Address address2 = new Address();
-		address2.setAddress("new Address 2");
+		address2.setAddressLine("new Address 2");
 
 		List<Address> addressList = new ArrayList<>();
 		addressList.add(address1);
@@ -147,5 +153,18 @@ class BlueboxApplicationTests {
 		productRepository.save(testProduct);
 	}
 
+	@Test
+	void createProductVariation() throws IOException {
+		ProductVariation productVariation = new ProductVariation();
+		HashMap<String, String> variationTest = new HashMap<>();
+		variationTest.put("size", "123 ");
+		variationTest.put("color", "red");
+		productVariation.setMetadataHashmap(variationTest);
+		productVariation.jsonMetadataStringSerialize();
+		String serialisedTest = productVariation.getMetadata();
+		productVariation.setMetadata(serialisedTest);
+		productVariation.jsonMetadataStringDeserialize();
+		productVariationRepository.save(productVariation);
+	}
 
 }
