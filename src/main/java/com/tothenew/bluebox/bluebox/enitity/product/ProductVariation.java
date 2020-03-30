@@ -14,7 +14,6 @@ import javax.persistence.Transient;
 @Entity
 public class ProductVariation {
 
-
 //----------------------------------------COMPLETE-------------------------------------
 
   @Id
@@ -32,8 +31,8 @@ public class ProductVariation {
   private String primaryImageName;
 
 
-
-  public ProductVariation() {  }
+  public ProductVariation() {
+  }
 
   public Long getId() {
     return id;
@@ -92,13 +91,13 @@ public class ProductVariation {
   }
 
   public void jsonMetadataStringSerialize() throws JsonProcessingException {
-    ObjectMapper objectMapper= new ObjectMapper();
+    ObjectMapper objectMapper = new ObjectMapper();
     this.metadata = objectMapper.writeValueAsString(metadataHashmap);
   }
 
   public void jsonMetadataStringDeserialize() throws IOException {
     ObjectMapper objectMapper = new ObjectMapper();
-    metadataHashmap= objectMapper.readValue(this.metadata, HashMap.class);
+    metadataHashmap = objectMapper.readValue(this.metadata, HashMap.class);
   }
 
   @Override

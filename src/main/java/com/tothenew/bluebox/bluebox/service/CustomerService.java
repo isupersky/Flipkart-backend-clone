@@ -62,7 +62,7 @@ public class CustomerService {
       customer.setRoles(defaultRole);
       customerRepository.save(customer);
       generateToken(customer);
-      return "successfulRegisteration";
+      return "successfull Registeration";
     }
   }
 
