@@ -3,15 +3,17 @@ package com.tothenew.bluebox.bluebox.enitity.order;
 import java.io.Serializable;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.IdClass;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 
 //----------------------------------------COMPLETE-------------------------------------
 
 @Entity
-public class OrderStatus implements Serializable {
+public class OrderStatus {
 
   @Id
+  private Long id;
   @OneToOne
   @JoinColumn(name = "orderProductId")
   private OrderProduct orderProductId;
@@ -20,6 +22,14 @@ public class OrderStatus implements Serializable {
   private String transitionNotesComments;
 
   public OrderStatus() {
+  }
+
+  public Long getId() {
+    return id;
+  }
+
+  public void setId(Long id) {
+    this.id = id;
   }
 
   public OrderProduct getOrderProductId() {
@@ -57,7 +67,8 @@ public class OrderStatus implements Serializable {
   @Override
   public String toString() {
     return "OrderStatus{" +
-        "orderProductId=" + orderProductId +
+        "id=" + id +
+        ", orderProductId=" + orderProductId +
         ", fromStatus='" + fromStatus + '\'' +
         ", toStatus='" + toStatus + '\'' +
         ", transitionNotesComments='" + transitionNotesComments + '\'' +
