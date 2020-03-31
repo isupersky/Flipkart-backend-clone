@@ -4,6 +4,7 @@ import com.tothenew.bluebox.bluebox.enitity.ConfirmationToken;
 import com.tothenew.bluebox.bluebox.enitity.Customer;
 import com.tothenew.bluebox.bluebox.enitity.Role;
 import com.tothenew.bluebox.bluebox.enitity.User;
+import com.tothenew.bluebox.bluebox.exception.UserAlreadyExistsException;
 import com.tothenew.bluebox.bluebox.repository.ConfirmationTokenRepository;
 import com.tothenew.bluebox.bluebox.repository.CustomerRepository;
 import com.tothenew.bluebox.bluebox.repository.RoleRepository;
@@ -51,13 +52,13 @@ public class CustomerService {
 //  }
 
 
-  public String registerCustomer(Customer customer) {
+  public Object registerCustomer(Customer customer) {
     List<Role> defaultRole = new ArrayList<>();
     Role role = roleRepository.findByAuthority("ROLE_CUSTOMER");
     defaultRole.add(role);
     User existingUser = customerRepository.findByEmailIgnoreCase(customer.getEmail());
     if (existingUser != null) {
-      return "message : This email already exists!";
+      throw new UserAlreadyExistsException("User Already Registered !!!");
     } else {
       customer.setRoles(defaultRole);
       customerRepository.save(customer);

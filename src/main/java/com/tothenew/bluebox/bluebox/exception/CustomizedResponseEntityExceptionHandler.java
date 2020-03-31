@@ -1,9 +1,12 @@
 package com.tothenew.bluebox.bluebox.exception;
 
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.FieldError;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -53,8 +56,14 @@ public class CustomizedResponseEntityExceptionHandler
   protected ResponseEntity<Object> handleMethodArgumentNotValid(
       MethodArgumentNotValidException ex, HttpHeaders headers, HttpStatus status,
       WebRequest request) {
+    Map<String, String> errors = new HashMap<>();
+    ex.getBindingResult().getAllErrors().forEach((error) -> {
+      String fieldName = ((FieldError) error).getField();
+      String errorMessage = error.getDefaultMessage();
+      errors.put(fieldName, errorMessage);
+    });
     ExceptionResponse exceptionResponse = new ExceptionResponse(new Date(),
-        "Validation Failed", ex.getBindingResult().toString());
+        "Validation Failed", errors.toString());
     return new ResponseEntity(exceptionResponse, HttpStatus.BAD_REQUEST);
   }
 
@@ -71,9 +80,9 @@ public class CustomizedResponseEntityExceptionHandler
   }
 
   //HTTP STATUS 302 FOUND - When the user's emailID already Exists
-  @ExceptionHandler(UserAlreadyExists.class)
+  @ExceptionHandler(UserAlreadyExistsException.class)
   public final ResponseEntity<Object> handleUserAlreadyExistsExceptions
-  (UserAlreadyExists ex, WebRequest request) {
+  (UserAlreadyExistsException ex, WebRequest request) {
     ExceptionResponse exceptionResponse =
         new ExceptionResponse(new Date(), ex.getMessage(),
             request.getDescription(false));

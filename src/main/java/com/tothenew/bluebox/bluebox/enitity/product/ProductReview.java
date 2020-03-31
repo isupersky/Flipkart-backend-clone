@@ -22,8 +22,9 @@ public class ProductReview {
   @JoinColumn(name = "productId")
   private Product productId;
   private String review;
-  @Min(value = 0l)
-  @Max(value = 5l)
+
+  @Min(value = 0, message = "The minimum rating is 0")
+  @Max(value = 5, message = "The maximum rating is 5")
   private Integer rating;
 
   public ProductReview() {
