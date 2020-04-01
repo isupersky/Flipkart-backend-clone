@@ -1,7 +1,7 @@
 package com.tothenew.bluebox.bluebox.bootloader;
 
-import com.tothenew.bluebox.bluebox.enitity.user.Role;
 import com.tothenew.bluebox.bluebox.enitity.product.Category;
+import com.tothenew.bluebox.bluebox.enitity.user.Role;
 import com.tothenew.bluebox.bluebox.repository.CategoryRepository;
 import com.tothenew.bluebox.bluebox.repository.RoleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
