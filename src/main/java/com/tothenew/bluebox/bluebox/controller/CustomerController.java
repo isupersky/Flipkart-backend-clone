@@ -1,6 +1,6 @@
 package com.tothenew.bluebox.bluebox.controller;
 
-import com.tothenew.bluebox.bluebox.enitity.Customer;
+import com.tothenew.bluebox.bluebox.enitity.user.Customer;
 import com.tothenew.bluebox.bluebox.service.CustomerService;
 import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;

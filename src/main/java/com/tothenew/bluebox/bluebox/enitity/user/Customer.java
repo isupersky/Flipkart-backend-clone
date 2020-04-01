@@ -1,4 +1,4 @@
-package com.tothenew.bluebox.bluebox.enitity;
+package com.tothenew.bluebox.bluebox.enitity.user;
 
 import javax.persistence.Entity;
 import javax.persistence.PrimaryKeyJoinColumn;

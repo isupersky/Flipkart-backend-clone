@@ -1,9 +1,9 @@
 package com.tothenew.bluebox.bluebox.service;
 
-import com.tothenew.bluebox.bluebox.enitity.ConfirmationToken;
-import com.tothenew.bluebox.bluebox.enitity.Customer;
-import com.tothenew.bluebox.bluebox.enitity.Role;
-import com.tothenew.bluebox.bluebox.enitity.User;
+import com.tothenew.bluebox.bluebox.enitity.user.ConfirmationToken;
+import com.tothenew.bluebox.bluebox.enitity.user.Customer;
+import com.tothenew.bluebox.bluebox.enitity.user.Role;
+import com.tothenew.bluebox.bluebox.enitity.user.User;
 import com.tothenew.bluebox.bluebox.exception.UserAlreadyExistsException;
 import com.tothenew.bluebox.bluebox.repository.ConfirmationTokenRepository;
 import com.tothenew.bluebox.bluebox.repository.CustomerRepository;

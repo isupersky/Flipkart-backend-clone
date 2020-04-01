@@ -1,6 +1,6 @@
 package com.tothenew.bluebox.bluebox.enitity.order;
 
-import com.tothenew.bluebox.bluebox.enitity.Customer;
+import com.tothenew.bluebox.bluebox.enitity.user.Customer;
 import java.util.Date;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;

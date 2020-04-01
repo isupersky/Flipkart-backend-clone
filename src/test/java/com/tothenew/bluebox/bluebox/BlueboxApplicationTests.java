@@ -1,11 +1,10 @@
 package com.tothenew.bluebox.bluebox;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.tothenew.bluebox.bluebox.enitity.Address;
-import com.tothenew.bluebox.bluebox.enitity.Customer;
-import com.tothenew.bluebox.bluebox.enitity.Role;
-import com.tothenew.bluebox.bluebox.enitity.Seller;
-import com.tothenew.bluebox.bluebox.enitity.User;
+import com.tothenew.bluebox.bluebox.enitity.user.Address;
+import com.tothenew.bluebox.bluebox.enitity.user.Customer;
+import com.tothenew.bluebox.bluebox.enitity.user.Role;
+import com.tothenew.bluebox.bluebox.enitity.user.Seller;
+import com.tothenew.bluebox.bluebox.enitity.user.User;
 import com.tothenew.bluebox.bluebox.enitity.product.Product;
 import com.tothenew.bluebox.bluebox.enitity.product.ProductVariation;
 import com.tothenew.bluebox.bluebox.repository.AddressRepository;
@@ -18,7 +17,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;

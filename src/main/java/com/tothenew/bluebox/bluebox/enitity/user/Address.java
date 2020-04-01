@@ -1,4 +1,4 @@
-package com.tothenew.bluebox.bluebox.enitity;
+package com.tothenew.bluebox.bluebox.enitity.user;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import javax.persistence.CascadeType;

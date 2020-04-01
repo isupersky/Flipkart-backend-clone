@@ -1,6 +1,6 @@
 package com.tothenew.bluebox.bluebox.repository;
 
-import com.tothenew.bluebox.bluebox.enitity.Role;
+import com.tothenew.bluebox.bluebox.enitity.user.Role;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 

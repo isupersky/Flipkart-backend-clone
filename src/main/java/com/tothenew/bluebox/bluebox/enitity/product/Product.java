@@ -1,6 +1,6 @@
 package com.tothenew.bluebox.bluebox.enitity.product;
 
-import com.tothenew.bluebox.bluebox.enitity.Seller;
+import com.tothenew.bluebox.bluebox.enitity.user.Seller;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;

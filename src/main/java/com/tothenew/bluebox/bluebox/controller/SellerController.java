@@ -1,6 +1,6 @@
 package com.tothenew.bluebox.bluebox.controller;
 
-import com.tothenew.bluebox.bluebox.enitity.Seller;
+import com.tothenew.bluebox.bluebox.enitity.user.Seller;
 import com.tothenew.bluebox.bluebox.service.SellerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;

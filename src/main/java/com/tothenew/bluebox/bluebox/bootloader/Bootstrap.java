@@ -1,4 +1,4 @@
-package com.tothenew.bluebox.bluebox;
+package com.tothenew.bluebox.bluebox.bootloader;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;

@@ -1,8 +1,8 @@
 package com.tothenew.bluebox.bluebox.service;
 
-import com.tothenew.bluebox.bluebox.enitity.Role;
-import com.tothenew.bluebox.bluebox.enitity.Seller;
-import com.tothenew.bluebox.bluebox.enitity.User;
+import com.tothenew.bluebox.bluebox.enitity.user.Role;
+import com.tothenew.bluebox.bluebox.enitity.user.Seller;
+import com.tothenew.bluebox.bluebox.enitity.user.User;
 import com.tothenew.bluebox.bluebox.repository.RoleRepository;
 import com.tothenew.bluebox.bluebox.repository.SellerRepository;
 import java.util.ArrayList;
