@@ -1,10 +1,16 @@
 package com.tothenew.bluebox.bluebox.bootloader;
 
 import com.tothenew.bluebox.bluebox.enitity.product.Category;
+import com.tothenew.bluebox.bluebox.enitity.user.Address;
 import com.tothenew.bluebox.bluebox.enitity.user.Role;
+import com.tothenew.bluebox.bluebox.enitity.user.User;
 import com.tothenew.bluebox.bluebox.repository.CategoryRepository;
 import com.tothenew.bluebox.bluebox.repository.RoleRepository;
+import com.tothenew.bluebox.bluebox.repository.UserRepository;
+import java.util.ArrayList;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -15,6 +21,12 @@ public class BootstrapAddOn {
 
   @Autowired
   RoleRepository roleRepository;
+
+  @Autowired
+  PasswordEncoder passwordEncoder;
+
+  @Autowired
+  UserRepository userRepository;
 
 
   public void createRoles() {
@@ -183,4 +195,55 @@ public class BootstrapAddOn {
     categoryRepository.save(adventureBook);
   }
 
+  public void createAdmin() {
+//    User user = new User();
+//
+//    Role role = roleRepository.findByAuthority("ROLE_ADMIN");
+//    List<Role>roleList = new ArrayList<>();
+//    roleList.add(role);
+//
+//    Address address = new Address();
+//    address.setAddressLine("ye hai mera pata");
+//    List<Address> tempAddressList = new ArrayList<>();
+//    tempAddressList.add(address);
+//
+//    user.setFirstName("Aakash");
+//    user.setLastName("Sinha");
+//    user.setActive(true);
+//    user.setEmail("abc.xyz.com");
+//    user.setAddress(tempAddressList);
+//    user.setPassword(passwordEncoder.encode("rawPassword"));
+
+    User user = new User();
+    user.setEmail("aayushithani@yahoo.in");
+    user.setFirstName("Aayushi");
+    user.setLastName("Thani");
+    String pass = passwordEncoder.encode("Aayushi12#");
+    user.setPassword(pass);
+    user.setActive(true);
+    user.setDeleted(true);
+
+    List<Address> list = new ArrayList<>();
+    Address address = new Address();
+    address.setCity("Delhi");
+    address.setState("Delhi");
+    address.setCountry("India");
+    address.setAddressLine("B7- Pitmapura");
+    address.setZipCode(110085);
+    address.setLabel("Home");
+    list.add(address);
+    user.setAddress(list);
+
+    ArrayList<Role> tempRole = new ArrayList<>();
+    Role role1;
+    if (roleRepository.findById(1).isPresent()) {
+      role1 = roleRepository.findById(1).get();
+      tempRole.add(role1);
+    }
+    user.setRoles(tempRole);
+
+    userRepository.save(user);
+
+//    userRepository.save(user);
+  }
 }

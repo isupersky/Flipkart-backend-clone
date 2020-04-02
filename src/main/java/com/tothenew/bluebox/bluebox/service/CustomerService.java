@@ -15,6 +15,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.task.TaskExecutor;
 import org.springframework.mail.SimpleMailMessage;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -38,6 +39,9 @@ public class CustomerService {
   @Autowired
   private TaskExecutor taskExecutor;
 
+  @Autowired
+  PasswordEncoder passwordEncoder;
+
   //  This is a test method and to be deleted
   public Iterable<Customer> getTestUser() {
     return customerRepository.findAll();
@@ -60,10 +64,12 @@ public class CustomerService {
     if (existingUser != null) {
       throw new UserAlreadyExistsException("User Already Registered !!!");
     } else {
+      String pass = passwordEncoder.encode(customer.getPassword());
+      customer.setPassword(pass);
       customer.setRoles(defaultRole);
       customerRepository.save(customer);
       generateToken(customer);
-      return "successfull Registeration";
+      return "successful Registration";
     }
   }
 

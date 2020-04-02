@@ -15,6 +15,7 @@ public class Bootstrap implements ApplicationRunner {
   public void run(ApplicationArguments args) throws Exception {
     bootstrapAddOn.createRoles();
     bootstrapAddOn.createCategory();
+    bootstrapAddOn.createAdmin();
 
   }
 

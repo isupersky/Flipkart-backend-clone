@@ -1,12 +1,12 @@
-package com.tothenew.bluebox.bluebox.enitity.user;
+package com.tothenew.bluebox.bluebox.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.tothenew.bluebox.bluebox.enitity.user.Address;
+import com.tothenew.bluebox.bluebox.enitity.user.Role;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -18,12 +18,12 @@ import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
+import javax.validation.constraints.Pattern;
+import org.hibernate.validator.constraints.Length;
 
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
-public class User implements UserDetails {
+public class UserDto {
 
   @Id
   @GeneratedValue(strategy = GenerationType.AUTO)
@@ -41,14 +41,14 @@ public class User implements UserDetails {
   @NotEmpty(message = "Last Name Field can not be Empty")
   private String lastName;
 
-  //  @NotEmpty(message = "Password is a mandatory field")
-//  @Length(min = 8, max = 15, message = "The Length of the password should be between 8 to 15 characters.")
-//  @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d.*)(?=.*\\W.*)[a-zA-Z0-9\\S]{8,15}$",
-//      message = "The Password should be 8-15 Characters with atleast 1 Lower case, 1 Upper case, 1 Special Character, 1 Number")
+  @NotEmpty(message = "Password is a mandatory field")
+  @Length(min = 8, max = 15, message = "The Length of the password should be between 8 to 15 characters.")
+  @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d.*)(?=.*\\W.*)[a-zA-Z0-9\\S]{8,15}$",
+      message = "The Password should be 8-15 Characters with atleast 1 Lower case, 1 Upper case, 1 Special Character, 1 Number")
   private String password;
 
   @JsonIgnore
-  @ManyToMany(fetch = FetchType.EAGER)
+  @ManyToMany
   @JoinTable(name = "user_role",
       joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
       inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName =
@@ -58,12 +58,11 @@ public class User implements UserDetails {
   @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
   private List<Address> address = new ArrayList<>();
 
-  private boolean isDeleted = true;
+  private boolean isDeleted = false;
   private boolean isActive = false;
-  private boolean isLocked = true;
 
   //	Default Constructor
-  public User() {
+  public UserDto() {
   }
 
 //	Getters And setters
@@ -109,7 +108,6 @@ public class User implements UserDetails {
     this.lastName = lastName;
   }
 
-  @Override
   public String getPassword() {
     return password;
   }
@@ -147,18 +145,10 @@ public class User implements UserDetails {
     return address;
   }
 
-  public void setAddress(List<Address> address) {
-    address.forEach(e -> e.setUser(this));
-    this.address = address;
-  }
-
-  public boolean isLocked() {
-    return isLocked;
-  }
-
-  public void setLocked(boolean locked) {
-    isLocked = locked;
-  }
+//  public void setAddress(List<Address> address) {
+//    address.forEach(e -> e.setUser(this));
+//    this.address = address;
+//  }
 
   @Override
   public String toString() {
@@ -173,39 +163,5 @@ public class User implements UserDetails {
         ", isDeleted=" + isDeleted +
         ", isActive=" + isActive +
         '}';
-  }
-
-  @Override
-  public Collection<? extends GrantedAuthority> getAuthorities() {
-    return roles;
-  }
-
-//  public String getPassword() {
-//    return password;
-//  }
-
-  @Override
-  public String getUsername() {
-    return email;
-  }
-
-  @Override
-  public boolean isAccountNonExpired() {
-    return isDeleted;
-  }
-
-  @Override
-  public boolean isAccountNonLocked() {
-    return isLocked;
-  }
-
-  @Override
-  public boolean isCredentialsNonExpired() {
-    return true;
-  }
-
-  @Override
-  public boolean isEnabled() {
-    return isActive;
   }
 }

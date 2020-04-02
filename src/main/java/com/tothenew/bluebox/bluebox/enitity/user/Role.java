@@ -5,9 +5,10 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
+import org.springframework.security.core.GrantedAuthority;
 
 @Entity
-public class Role {
+public class Role implements GrantedAuthority {
 
   @Id
   @GeneratedValue
@@ -52,5 +53,10 @@ public class Role {
         "id=" + id +
         ", authority='" + authority + '\'' +
         '}';
+  }
+
+  @Override
+  public int hashCode() {
+    return super.hashCode();
   }
 }
