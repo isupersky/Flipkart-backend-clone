@@ -8,7 +8,10 @@ import com.tothenew.bluebox.bluebox.repository.CategoryRepository;
 import com.tothenew.bluebox.bluebox.repository.RoleRepository;
 import com.tothenew.bluebox.bluebox.repository.UserRepository;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
@@ -196,23 +199,6 @@ public class BootstrapAddOn {
   }
 
   public void createAdmin() {
-//    User user = new User();
-//
-//    Role role = roleRepository.findByAuthority("ROLE_ADMIN");
-//    List<Role>roleList = new ArrayList<>();
-//    roleList.add(role);
-//
-//    Address address = new Address();
-//    address.setAddressLine("ye hai mera pata");
-//    List<Address> tempAddressList = new ArrayList<>();
-//    tempAddressList.add(address);
-//
-//    user.setFirstName("Aakash");
-//    user.setLastName("Sinha");
-//    user.setActive(true);
-//    user.setEmail("abc.xyz.com");
-//    user.setAddress(tempAddressList);
-//    user.setPassword(passwordEncoder.encode("rawPassword"));
 
     User user = new User();
     user.setEmail("aayushithani@yahoo.in");
@@ -221,9 +207,11 @@ public class BootstrapAddOn {
     String pass = passwordEncoder.encode("Aayushi12#");
     user.setPassword(pass);
     user.setActive(true);
-    user.setDeleted(true);
+    user.setDeleted(false);
+    user.setCreatedDate(new Date());
+    user.setUpdatedDate(new Date());
 
-    List<Address> list = new ArrayList<>();
+    Set<Address> list = new HashSet<>();
     Address address = new Address();
     address.setCity("Delhi");
     address.setState("Delhi");

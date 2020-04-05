@@ -3,7 +3,9 @@ package com.tothenew.bluebox.bluebox.enitity.user;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
+import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -16,8 +18,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotEmpty;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -29,22 +31,14 @@ public class User implements UserDetails {
   @GeneratedValue(strategy = GenerationType.AUTO)
   private Long id;
 
-  @Email(message = "This is not a valid Email")
-  @NotEmpty(message = "Email field can not be Empty")
   private String email;
 
-  @NotEmpty(message = "First Name Field can not be Empty")
   private String firstName;
 
   private String middleName;
 
-  @NotEmpty(message = "Last Name Field can not be Empty")
   private String lastName;
 
-  //  @NotEmpty(message = "Password is a mandatory field")
-//  @Length(min = 8, max = 15, message = "The Length of the password should be between 8 to 15 characters.")
-//  @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d.*)(?=.*\\W.*)[a-zA-Z0-9\\S]{8,15}$",
-//      message = "The Password should be 8-15 Characters with atleast 1 Lower case, 1 Upper case, 1 Special Character, 1 Number")
   private String password;
 
   @JsonIgnore
@@ -55,19 +49,25 @@ public class User implements UserDetails {
           "id"))
   private List<Role> roles;
 
-  @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-  private List<Address> address = new ArrayList<>();
+  @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+  private Set<Address> address;
 
-  private boolean isDeleted = true;
+  //
+  private boolean isDeleted = false;
   private boolean isActive = false;
-  private boolean isLocked = true;
+  private boolean isLocked = false;
+
+  @Temporal(TemporalType.TIMESTAMP)
+  private Date createdDate;
+
+  @Temporal(TemporalType.TIMESTAMP)
+  private Date updatedDate;
 
   //	Default Constructor
   public User() {
   }
 
 //	Getters And setters
-
 
   public Long getId() {
     return id;
@@ -109,10 +109,9 @@ public class User implements UserDetails {
     this.lastName = lastName;
   }
 
-  @Override
-  public String getPassword() {
-    return password;
-  }
+//  public String getPassword() {
+//    return password;
+//  }
 
   public void setPassword(String password) {
     this.password = password;
@@ -142,12 +141,11 @@ public class User implements UserDetails {
     this.roles = roles;
   }
 
-
-  public List<Address> getAddress() {
+  public Set<Address> getAddress() {
     return address;
   }
 
-  public void setAddress(List<Address> address) {
+  public void setAddress(Set<Address> address) {
     address.forEach(e -> e.setUser(this));
     this.address = address;
   }
@@ -160,6 +158,22 @@ public class User implements UserDetails {
     isLocked = locked;
   }
 
+  public Date getCreatedDate() {
+    return createdDate;
+  }
+
+  public void setCreatedDate(Date createdDate) {
+    this.createdDate = createdDate;
+  }
+
+  public Date getUpdatedDate() {
+    return updatedDate;
+  }
+
+  public void setUpdatedDate(Date updatedDate) {
+    this.updatedDate = updatedDate;
+  }
+
   @Override
   public String toString() {
     return "User{" +
@@ -170,19 +184,25 @@ public class User implements UserDetails {
         ", lastName='" + lastName + '\'' +
         ", password='" + password + '\'' +
         ", roles=" + roles +
+        ", address=" + address +
         ", isDeleted=" + isDeleted +
         ", isActive=" + isActive +
+        ", isLocked=" + isLocked +
+        ", createdDate=" + createdDate +
+        ", updatedDate=" + updatedDate +
         '}';
   }
+
 
   @Override
   public Collection<? extends GrantedAuthority> getAuthorities() {
     return roles;
   }
 
-//  public String getPassword() {
-//    return password;
-//  }
+  @Override
+  public String getPassword() {
+    return password;
+  }
 
   @Override
   public String getUsername() {
@@ -191,12 +211,18 @@ public class User implements UserDetails {
 
   @Override
   public boolean isAccountNonExpired() {
-    return isDeleted;
+    if (isDeleted) {
+      return false;
+    }
+    return true;
   }
 
   @Override
   public boolean isAccountNonLocked() {
-    return isLocked;
+    if (isLocked) {
+      return false;
+    }
+    return true;
   }
 
   @Override

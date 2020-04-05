@@ -1,5 +1,6 @@
 package com.tothenew.bluebox.bluebox.service;
 
+import com.tothenew.bluebox.bluebox.dto.CustomerDto;
 import com.tothenew.bluebox.bluebox.enitity.user.ConfirmationToken;
 import com.tothenew.bluebox.bluebox.enitity.user.Customer;
 import com.tothenew.bluebox.bluebox.enitity.user.Role;
@@ -56,24 +57,36 @@ public class CustomerService {
 //  }
 
 
-  public Object registerCustomer(Customer customer) {
+  public Object registerCustomer(CustomerDto customerDto) {
+
     List<Role> defaultRole = new ArrayList<>();
     Role role = roleRepository.findByAuthority("ROLE_CUSTOMER");
     defaultRole.add(role);
-    User existingUser = customerRepository.findByEmailIgnoreCase(customer.getEmail());
+
+    User existingUser = userRepository.findByEmailIgnoreCase(customerDto.getEmail());
     if (existingUser != null) {
       throw new UserAlreadyExistsException("User Already Registered !!!");
     } else {
-      String pass = passwordEncoder.encode(customer.getPassword());
-      customer.setPassword(pass);
+      Customer customer = new Customer();
+
+      customer.setFirstName(customerDto.getFirstName());
+      customer.setMiddleName(customerDto.getMiddleName());
+      customer.setLastName(customerDto.getLastName());
+      customer.setEmail(customerDto.getEmail());
+      customer.setPassword(passwordEncoder.encode(customerDto.getPassword()));
       customer.setRoles(defaultRole);
+      customer.setCreatedDate(new Date());
+      customer.setUpdatedDate(new Date());
+      customer.setContact(customerDto.getContact());
+
       customerRepository.save(customer);
-      generateToken(customer);
+
+      generateToken(customerRepository.findByEmailIgnoreCase(customerDto.getEmail()));
       return "successful Registration";
     }
   }
 
-  public void generateToken(Customer customer) {
+  public void generateToken(User customer) {
     ConfirmationToken confirmationToken = new ConfirmationToken(customer);
 
     confirmationTokenRepository.save(confirmationToken);

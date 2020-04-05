@@ -80,13 +80,6 @@ public class AuthorizationServerConfiguration extends AuthorizationServerConfigu
 
   }
 
-//  @Bean
-//  JwtAccessTokenConverter accessTokenConverter() {
-//    JwtAccessTokenConverter jwtAccessTokenConverter = new JwtAccessTokenConverter();
-//    jwtAccessTokenConverter.setSigningKey("1234");
-//    return jwtAccessTokenConverter;
-//  }
-
   @Bean
   public TokenStore tokenStore() {
     return new InMemoryTokenStore();

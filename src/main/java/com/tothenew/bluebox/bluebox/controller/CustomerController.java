@@ -1,10 +1,9 @@
 package com.tothenew.bluebox.bluebox.controller;
 
-import com.tothenew.bluebox.bluebox.enitity.user.Customer;
+import com.tothenew.bluebox.bluebox.dto.CustomerDto;
 import com.tothenew.bluebox.bluebox.service.CustomerService;
 import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -24,22 +23,18 @@ public class CustomerController {
 //    return "Success".toUpperCase();
 //  }
 
-  @GetMapping(path = "/customer")
-  public Iterable<Customer> getTestUser() {
-    return customerService.getTestUser();
-  }
-
-  @PostMapping(value = "/customer-register")
-  public Object registerCustomer(@Valid @RequestBody Customer customer) {
-
-    return customerService.registerCustomer(customer);
+  @PostMapping(path = "/customer-register")
+  public Object registerCustomer(@Valid @RequestBody CustomerDto customerDto) {
+    return customerService.registerCustomer(customerDto);
 
   }
 
-  @RequestMapping(value = "/confirm-account", method = {RequestMethod.GET, RequestMethod.POST})
+  @RequestMapping(path = "/confirm-account", method = {RequestMethod.GET, RequestMethod.POST})
   public String confirmUserAccount(@RequestParam("token") String confirmationToken) {
 
     return customerService.validateCustomer(confirmationToken);
   }
+
+
 
 }

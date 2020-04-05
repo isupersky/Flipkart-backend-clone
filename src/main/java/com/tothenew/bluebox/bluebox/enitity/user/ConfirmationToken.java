@@ -42,7 +42,6 @@ public class ConfirmationToken {
 
   // getters and setters
 
-
   public long getTokenid() {
     return tokenid;
   }
