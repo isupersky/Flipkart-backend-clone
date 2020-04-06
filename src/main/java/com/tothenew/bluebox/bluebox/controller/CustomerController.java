@@ -4,6 +4,7 @@ import com.tothenew.bluebox.bluebox.dto.CustomerDto;
 import com.tothenew.bluebox.bluebox.service.CustomerService;
 import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -12,29 +13,29 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
+@RequestMapping("/customer")
 public class CustomerController {
 
   @Autowired
   CustomerService customerService;
 
-//  @PostMapping(path = "/customer-register")
-//  public String registerCustomer(@RequestBody Customer customer) {
-//    customerService.createCustomer(customer);
-//    return "Success".toUpperCase();
-//  }
-
-  @PostMapping(path = "/customer-register")
+  /*
+    URI for registration of a customer
+   */
+  @PostMapping(path = "/register")
   public Object registerCustomer(@Valid @RequestBody CustomerDto customerDto) {
     return customerService.registerCustomer(customerDto);
-
   }
 
+  /*
+    URI for confirming Customer email id.
+   */
   @RequestMapping(path = "/confirm-account", method = {RequestMethod.GET, RequestMethod.POST})
-  public String confirmUserAccount(@RequestParam("token") String confirmationToken) {
+  public ResponseEntity<Object> confirmUserAccount(
+      @RequestParam("token") String confirmationToken) {
 
     return customerService.validateCustomer(confirmationToken);
   }
-
 
 
 }

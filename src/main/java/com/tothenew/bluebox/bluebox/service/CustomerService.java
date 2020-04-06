@@ -15,6 +15,8 @@ import java.util.Date;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.task.TaskExecutor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -43,21 +45,8 @@ public class CustomerService {
   @Autowired
   PasswordEncoder passwordEncoder;
 
-  //  This is a test method and to be deleted
-  public Iterable<Customer> getTestUser() {
-    return customerRepository.findAll();
-  }
 
-//  public void createCustomer(Customer customer) {
-//    List<Role> defaultRole = new ArrayList<>();
-//    Role role = roleRepository.findById(2).get();
-//    defaultRole.add(role);
-//    customer.setRoles(defaultRole);
-//    userRepository.save(customer);
-//  }
-
-
-  public Object registerCustomer(CustomerDto customerDto) {
+  public ResponseEntity<Object> registerCustomer(CustomerDto customerDto) {
 
     List<Role> defaultRole = new ArrayList<>();
     Role role = roleRepository.findByAuthority("ROLE_CUSTOMER");
@@ -82,7 +71,7 @@ public class CustomerService {
       customerRepository.save(customer);
 
       generateToken(customerRepository.findByEmailIgnoreCase(customerDto.getEmail()));
-      return "successful Registration";
+      return new ResponseEntity<Object>("successful Registration", HttpStatus.CREATED);
     }
   }
 
@@ -98,7 +87,7 @@ public class CustomerService {
         mailMessage.setSubject("Complete Registration!");
         mailMessage.setFrom("ecommerce476@gmail.com ");
         mailMessage.setText("To confirm your account, please click here : "
-            + "http://localhost:8080/confirm-account?token=" + confirmationToken
+            + "http://localhost:8080/customer/confirm-account?token=" + confirmationToken
             .getConfirmationToken());
 
         emailSenderService.sendEmail(mailMessage);
@@ -111,7 +100,7 @@ public class CustomerService {
   }
 
 
-  public String validateCustomer(String confirmationToken) {
+  public ResponseEntity<Object> validateCustomer(String confirmationToken) {
 
     ConfirmationToken token = confirmationTokenRepository
         .findByConfirmationToken(confirmationToken);
@@ -125,7 +114,7 @@ public class CustomerService {
       customer.setActive(true);
       customerRepository.save(customer);
       confirmationTokenRepository.delete(token);
-      return "accountVerified";
+      return new ResponseEntity<Object>("accountVerified", HttpStatus.ACCEPTED);
     } else if (token != null && (date.getHours() - token.getCreatedDate().getHours()) > 3) {
       Customer customer = customerRepository
           .findById(
@@ -136,9 +125,11 @@ public class CustomerService {
 
       confirmationTokenRepository.delete(token);
       generateToken(customer);
-      return "Token time Expired!!  New Token sent to registered email Id";
+      return new ResponseEntity<Object>(
+          "Token time Expired!!  New Token sent to registered email Id", HttpStatus.BAD_REQUEST);
     } else {
-      return "message: The link is invalid or broken!";
+      return new ResponseEntity<Object>("message: The link is invalid or broken!",
+          HttpStatus.BAD_REQUEST);
     }
   }
 }

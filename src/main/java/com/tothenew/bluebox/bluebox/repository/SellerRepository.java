@@ -2,9 +2,15 @@ package com.tothenew.bluebox.bluebox.repository;
 
 import com.tothenew.bluebox.bluebox.enitity.user.Seller;
 import com.tothenew.bluebox.bluebox.enitity.user.User;
-import org.springframework.data.repository.CrudRepository;
+import java.util.List;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.PagingAndSortingRepository;
 
-public interface SellerRepository extends CrudRepository<Seller, Long> {
+public interface SellerRepository extends PagingAndSortingRepository<Seller, Long> {
 
   User findByEmailIgnoreCase(String email);
+
+  @Query(value = "SELECT id, firstName, middleName,lastName, email, isActive, companyName, companyContact from Seller s  ")
+  List<Object> findAllSellers(Pageable pageable);
 }
