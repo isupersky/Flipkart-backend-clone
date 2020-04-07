@@ -11,6 +11,8 @@ import java.util.ArrayList;
 import java.util.List;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -27,15 +29,17 @@ public class SellerService {
   }
 
 
-  public String registerSeller(Seller seller) {
+  public ResponseEntity<Object> registerSeller(SellerDto sellerDto) {
     List<Role> defaultRole = new ArrayList<>();
     Role role = roleRepository.findByAuthority("ROLE_SELLER");
+    defaultRole.add(role);
 
-    User existingUser = sellerRepository.findByEmailIgnoreCase(seller.getEmail());
+    User existingUser = sellerRepository.findByEmailIgnoreCase(sellerDto.getEmail());
     if (existingUser != null) {
       throw new UserAlreadyExistsException("This email already exists!");
     } else {
-      defaultRole.add(role);
+      Seller seller = new Seller();
+      BeanUtils.copyProperties(sellerDto, seller);
       seller.setRoles(defaultRole);
       sellerRepository.save(seller);
       return new ResponseEntity<>("SUCCESS", HttpStatus.CREATED);
