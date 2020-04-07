@@ -1,10 +1,12 @@
 package com.tothenew.bluebox.bluebox.controller;
 
 import com.tothenew.bluebox.bluebox.dto.CustomerDto;
+import com.tothenew.bluebox.bluebox.dto.EmailDto;
 import com.tothenew.bluebox.bluebox.service.CustomerService;
 import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -33,9 +35,14 @@ public class CustomerController {
   @RequestMapping(path = "/confirm-account", method = {RequestMethod.GET, RequestMethod.POST})
   public ResponseEntity<Object> confirmUserAccount(
       @RequestParam("token") String confirmationToken) {
-
-    return customerService.validateCustomer(confirmationToken);
+    return customerService.activateCustomer(confirmationToken);
   }
 
+
+  @PostMapping(path = "/resendactivation")
+  public ResponseEntity<Object> resendActivationToken(@Valid @RequestBody EmailDto emailDto) {
+    System.out.println(emailDto.getEmail());
+    return customerService.resendActivationToken(emailDto.getEmail());
+  }
 
 }

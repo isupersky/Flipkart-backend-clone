@@ -53,9 +53,17 @@ public class ResourceServerConfiguration extends ResourceServerConfigurerAdapter
     http
         .authorizeRequests()
         .antMatchers("/").anonymous()
-        .antMatchers("/customer/register", "/customer/confirm-account", "/seller/register",
-            "/forgotpassword", "/resetpassword", "/username").permitAll()
+
+        .antMatchers("/customer/register",
+            "/customer/confirm-account",
+            "/seller/register",
+            "/forgotpassword",
+            "/resetpassword/*",
+            "/username",        // for future use
+            "/customer/resendactivation/").permitAll()
+
         .antMatchers("/logout").hasAnyRole("ADMIN", "SELLER", "CUSTOMER")
+
         .antMatchers("/admin/*").hasRole("ADMIN")
         .anyRequest().authenticated()
         .and()

@@ -1,15 +1,23 @@
 package com.tothenew.bluebox.bluebox.controller;
 
+import com.tothenew.bluebox.bluebox.dto.EmailDto;
+import com.tothenew.bluebox.bluebox.dto.PasswordDto;
 import com.tothenew.bluebox.bluebox.enitity.product.Product;
 import com.tothenew.bluebox.bluebox.service.UserService;
 import java.security.Principal;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.oauth2.common.OAuth2AccessToken;
 import org.springframework.security.oauth2.provider.token.TokenStore;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -47,17 +55,36 @@ public class UserController {
     provides Logout functionality for all type of Users.
    */
   @PostMapping(path = "/dologout")
-  public Object userLogout(HttpServletRequest request) {
+  public ResponseEntity<Object> userLogout(HttpServletRequest request) {
     String authHeader = request.getHeader("Authorization");
-    System.out.println(authHeader);
     if (authHeader != null) {
       String tokenValue = authHeader.replace("bearer", "").trim();
       System.out.println(tokenValue);
       OAuth2AccessToken accessToken = tokenStore.readAccessToken(tokenValue);
       tokenStore.removeAccessToken(accessToken);
     }
-    return "Logged out successfully";
+    return new ResponseEntity<>("Logged out successfully", HttpStatus.OK);
   }
 
+
+  /*
+    URI for forget password
+    @response - email with a token
+   */
+  @PostMapping(path = "/forgotpassword")
+  public ResponseEntity<Object> forgotPassword(@Valid @RequestBody EmailDto emailDto) {
+    return userService.forgotPassword(emailDto.getEmail());
+  }
+
+
+  /*
+    URI to reset password
+   */
+  @PatchMapping(path = "/resetpassword/{token}")
+  public ResponseEntity<Object> resetPassword(@Valid @RequestBody PasswordDto passwordDto,
+      @PathVariable String token) {
+    return userService.resetPassword(passwordDto, token);
+
+  }
 
 }

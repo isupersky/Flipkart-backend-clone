@@ -6,6 +6,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -58,7 +59,7 @@ public class AdminController {
     URI to activate an user.
     @Response - User is Activated message if user exists in the system else User is not present message
    */
-  @PutMapping(path = "/activate/{id}")
+  @PatchMapping(path = "/activate/{id}")
   public ResponseEntity<Object> activateUser(@PathVariable Long id) {
     return adminService.activateUser(id);
   }
@@ -67,7 +68,7 @@ public class AdminController {
    URI to deactivate an user.
    @Response - User is DeActivated message if user exists in the system else User is not present message
   */
-  @PutMapping(path = "/deactivate/{id}")
+  @PatchMapping(path = "/deactivate/{id}")
   public ResponseEntity<Object> deactivateUser(@PathVariable Long id) {
     return adminService.deactivateUser(id);
   }

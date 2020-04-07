@@ -8,4 +8,6 @@ import org.springframework.stereotype.Repository;
 public interface UserRepository extends PagingAndSortingRepository<User, Long> {
 
   User findByEmailIgnoreCase(String email);
+
+//  boolean existsByEmail(String email);
 }

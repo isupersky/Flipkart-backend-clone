@@ -6,6 +6,7 @@ import com.tothenew.bluebox.bluebox.enitity.user.Customer;
 import com.tothenew.bluebox.bluebox.enitity.user.Role;
 import com.tothenew.bluebox.bluebox.enitity.user.User;
 import com.tothenew.bluebox.bluebox.exception.UserAlreadyExistsException;
+import com.tothenew.bluebox.bluebox.exception.UserNotFoundException;
 import com.tothenew.bluebox.bluebox.repository.ConfirmationTokenRepository;
 import com.tothenew.bluebox.bluebox.repository.CustomerRepository;
 import com.tothenew.bluebox.bluebox.repository.RoleRepository;
@@ -45,7 +46,9 @@ public class CustomerService {
   @Autowired
   PasswordEncoder passwordEncoder;
 
-
+  /*
+    Method to register the validated customer
+   */
   public ResponseEntity<Object> registerCustomer(CustomerDto customerDto) {
 
     List<Role> defaultRole = new ArrayList<>();
@@ -75,6 +78,9 @@ public class CustomerService {
     }
   }
 
+  /*
+    Method to generate a token to be mailed to customer's email id
+   */
   public void generateToken(User customer) {
     ConfirmationToken confirmationToken = new ConfirmationToken(customer);
 
@@ -99,8 +105,10 @@ public class CustomerService {
     });
   }
 
-
-  public ResponseEntity<Object> validateCustomer(String confirmationToken) {
+  /*
+    Method to validate customer's email and activate it's account
+   */
+  public ResponseEntity<Object> activateCustomer(String confirmationToken) {
 
     ConfirmationToken token = confirmationTokenRepository
         .findByConfirmationToken(confirmationToken);
@@ -111,10 +119,31 @@ public class CustomerService {
 
       Customer customer = (Customer) customerRepository
           .findByEmailIgnoreCase(token.getUser().getEmail());
+      if (customer.isActive()) {
+        return new ResponseEntity<Object>("Account Already Active", HttpStatus.ACCEPTED);
+      }
+
       customer.setActive(true);
       customerRepository.save(customer);
       confirmationTokenRepository.delete(token);
-      return new ResponseEntity<Object>("accountVerified", HttpStatus.ACCEPTED);
+
+      taskExecutor.execute(() -> {
+        try {
+          SimpleMailMessage mailMessage = new SimpleMailMessage();
+          mailMessage.setTo(customer.getEmail());
+          mailMessage.setSubject("Account activated");
+          mailMessage.setFrom("ecommerce476@gmail.com ");
+          mailMessage.setText("Congratulations!!! Your account has been activated");
+
+          emailSenderService.sendEmail(mailMessage);
+        } catch (Exception e) {
+          e.printStackTrace();
+          System.err.println(
+              "Failed to send email to: " + customer.getEmail() + " reason: " + e.getMessage());
+        }
+      });
+
+      return new ResponseEntity<Object>("Account Verified", HttpStatus.ACCEPTED);
     } else if (token != null && (date.getHours() - token.getCreatedDate().getHours()) > 3) {
       Customer customer = customerRepository
           .findById(
@@ -131,5 +160,26 @@ public class CustomerService {
       return new ResponseEntity<Object>("message: The link is invalid or broken!",
           HttpStatus.BAD_REQUEST);
     }
+  }
+
+  /*
+    Method to resend activation Link with new Activation Token and deletes previously created token.
+   */
+  public ResponseEntity<Object> resendActivationToken(String email) {
+    User user = userRepository.findByEmailIgnoreCase(email);
+    if (user == null) {
+      throw new UserNotFoundException("User does not exists");
+    } else if (user != null) {
+      if (confirmationTokenRepository.findAllByUserId(user.getId()) != null) {
+        confirmationTokenRepository
+            .findAllByUserId(user.getId())
+            .forEach(e -> confirmationTokenRepository.deleteById(e.getTokenid()));
+      }
+      generateToken(user);
+      return new ResponseEntity<>("Activation Link Resent", HttpStatus.OK);
+    }
+    return new ResponseEntity<>("Some error occurred, Please contact the Admin",
+        HttpStatus.BAD_REQUEST);
+
   }
 }
