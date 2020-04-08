@@ -46,6 +46,8 @@ public class CustomerService {
   @Autowired
   PasswordEncoder passwordEncoder;
 
+//---------------------------------------------------CREATE------------------------------------------------------------
+
   /*
     Method to register the validated customer
    */
@@ -74,7 +76,7 @@ public class CustomerService {
       customerRepository.save(customer);
 
       generateToken(customerRepository.findByEmailIgnoreCase(customerDto.getEmail()));
-      return new ResponseEntity<Object>("successful Registration", HttpStatus.CREATED);
+      return new ResponseEntity<>("successful Registration", HttpStatus.CREATED);
     }
   }
 
@@ -182,4 +184,10 @@ public class CustomerService {
         HttpStatus.BAD_REQUEST);
 
   }
+
+//---------------------------------------------------READ------------------------------------------------------------
+
+//  public CustomerDto showProfile(String email){
+//    Customer customer =    customerRepository.findByEmailIgnoreCase(email);
+//  }
 }

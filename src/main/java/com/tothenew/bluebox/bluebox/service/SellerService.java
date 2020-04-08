@@ -1,6 +1,7 @@
 package com.tothenew.bluebox.bluebox.service;
 
 import com.tothenew.bluebox.bluebox.dto.SellerDto;
+import com.tothenew.bluebox.bluebox.enitity.user.Address;
 import com.tothenew.bluebox.bluebox.enitity.user.Role;
 import com.tothenew.bluebox.bluebox.enitity.user.Seller;
 import com.tothenew.bluebox.bluebox.enitity.user.User;
@@ -10,6 +11,7 @@ import com.tothenew.bluebox.bluebox.repository.SellerRepository;
 import com.tothenew.bluebox.bluebox.repository.UserRepository;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,12 +49,18 @@ public class SellerService {
     if (existingUser != null) {
       throw new UserAlreadyExistsException("This email already exists!");
     } else {
+      Address address = new Address();
+      BeanUtils.copyProperties(sellerDto.getCompanyAddress(), address);
+      HashSet<Address> addresses = new HashSet<>();
+      addresses.add(address);
+
       Seller seller = new Seller();
       BeanUtils.copyProperties(sellerDto, seller);
       seller.setCreatedDate(date);
       seller.setUpdatedDate(date);
       seller.setPassword(passwordEncoder.encode(sellerDto.getPassword()));
       seller.setRoles(defaultRole);
+      seller.setAddress(addresses);
       sellerRepository.save(seller);
       return new ResponseEntity<>("SUCCESS", HttpStatus.CREATED);
     }

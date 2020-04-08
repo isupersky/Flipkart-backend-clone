@@ -200,10 +200,10 @@ public class BootstrapAddOn {
   public void createAdmin() {
 
     User user = new User();
-    user.setEmail("aayushithani@yahoo.in");
-    user.setFirstName("Aayushi");
-    user.setLastName("Thani");
-    String pass = passwordEncoder.encode("Aayushi12#");
+    user.setEmail("aakash.sinha@tothenew.com");
+    user.setFirstName("Aakash");
+    user.setLastName("Sinha");
+    String pass = passwordEncoder.encode("Aakash12#");
     user.setPassword(pass);
     user.setActive(true);
     user.setDeleted(false);
@@ -215,8 +215,8 @@ public class BootstrapAddOn {
     address.setCity("Delhi");
     address.setState("Delhi");
     address.setCountry("India");
-    address.setAddressLine("B7- Pitmapura");
-    address.setZipCode(110085);
+    address.setAddressLine("A3/45- Rohini");
+    address.setZipCode(110089);
     address.setLabel("Home");
     list.add(address);
     user.setAddress(list);

@@ -1,11 +1,10 @@
 package com.tothenew.bluebox.bluebox.controller;
 
 import com.tothenew.bluebox.bluebox.dto.SellerDto;
-import com.tothenew.bluebox.bluebox.enitity.user.Seller;
 import com.tothenew.bluebox.bluebox.service.SellerService;
+import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,7 +19,7 @@ public class SellerController {
 
 
   @PostMapping(path = "/register")
-  public ResponseEntity<Object> register(@RequestBody SellerDto sellerDto) {
+  public ResponseEntity<Object> register(@Valid @RequestBody SellerDto sellerDto) {
     return sellerService.registerSeller(sellerDto);
   }
 }

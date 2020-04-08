@@ -7,21 +7,18 @@ import javax.persistence.PrimaryKeyJoinColumn;
 @PrimaryKeyJoinColumn(name = "userId", referencedColumnName = "id")
 public class Seller extends User {
 
-  private Long gst;
+  private String gst;
 
   private String companyName;
 
   private Long companyContact;
 
-  //	Default constructor
-  public Seller() {
-  }
 
-  public Long getGst() {
+  public String getGst() {
     return gst;
   }
 
-  public void setGst(Long gst) {
+  public void setGst(String gst) {
     this.gst = gst;
   }
 

@@ -6,7 +6,6 @@ import com.tothenew.bluebox.bluebox.service.CustomerService;
 import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,6 +19,8 @@ public class CustomerController {
 
   @Autowired
   CustomerService customerService;
+
+//---------------------------------------------------CREATE------------------------------------------------------------
 
   /*
     URI for registration of a customer
@@ -41,8 +42,14 @@ public class CustomerController {
 
   @PostMapping(path = "/resendactivation")
   public ResponseEntity<Object> resendActivationToken(@Valid @RequestBody EmailDto emailDto) {
-    System.out.println(emailDto.getEmail());
     return customerService.resendActivationToken(emailDto.getEmail());
   }
 
+//---------------------------------------------------READ------------------------------------------------------------
+
+//  @GetMapping(path = "/profile")
+//  public CustomerDto showProfile(Principal principal){
+//    String email = principal.getName();
+//    return customerService.principal.getName()
+//  }
 }

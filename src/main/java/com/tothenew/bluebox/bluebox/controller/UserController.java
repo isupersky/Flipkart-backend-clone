@@ -18,8 +18,6 @@ import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -41,11 +39,10 @@ public class UserController {
   }
 
 
-  @RequestMapping(path = "/username", method = RequestMethod.GET)
+  @GetMapping(path = "/username")
   @ResponseBody
   public String currentUserName(Principal principal) {
 
-//    System.out.println(principal.toString());
     return principal.getName();
 
   }
@@ -59,7 +56,6 @@ public class UserController {
     String authHeader = request.getHeader("Authorization");
     if (authHeader != null) {
       String tokenValue = authHeader.replace("bearer", "").trim();
-      System.out.println(tokenValue);
       OAuth2AccessToken accessToken = tokenStore.readAccessToken(tokenValue);
       tokenStore.removeAccessToken(accessToken);
     }

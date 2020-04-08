@@ -58,7 +58,7 @@ public class ResourceServerConfiguration extends ResourceServerConfigurerAdapter
             "/customer/confirm-account",
             "/seller/register",
             "/forgotpassword",
-            "/resetpassword/*",
+            "/resetpassword",
             "/username",        // for future use
             "/customer/resendactivation/").permitAll()
 
