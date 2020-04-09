@@ -1,10 +1,10 @@
-package com.tothenew.bluebox.bluebox.dto;
+package com.tothenew.bluebox.bluebox.co;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Pattern;
 import org.hibernate.validator.constraints.Length;
 
-public class PasswordDto {
+public class PasswordCO {
 
   @NotEmpty(message = "Password is a mandatory field")
   @Length(min = 8, max = 15, message = "The Length of the password should be between 8 to 15 characters.")
@@ -18,7 +18,7 @@ public class PasswordDto {
       message = "The Password should be 8-15 Characters with atleast 1 Lower case, 1 Upper case, 1 Special Character, 1 Number")
   private String rePassword;
 
-  public PasswordDto() {
+  public PasswordCO() {
   }
 
   public String getPassword() {
@@ -39,7 +39,7 @@ public class PasswordDto {
 
   @Override
   public String toString() {
-    return "PasswordDto{" +
+    return "PasswordCO{" +
         "password='" + password + '\'' +
         ", rePassword='" + rePassword + '\'' +
         '}';

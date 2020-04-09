@@ -1,6 +1,7 @@
 package com.tothenew.bluebox.bluebox.controller;
 
-import com.tothenew.bluebox.bluebox.dto.SellerDto;
+import com.tothenew.bluebox.bluebox.co.SellerCO;
+import com.tothenew.bluebox.bluebox.configuration.MessageResponseEntity;
 import com.tothenew.bluebox.bluebox.service.SellerService;
 import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +20,7 @@ public class SellerController {
 
 
   @PostMapping(path = "/register")
-  public ResponseEntity<Object> register(@Valid @RequestBody SellerDto sellerDto) {
-    return sellerService.registerSeller(sellerDto);
+  public ResponseEntity<MessageResponseEntity> register(@Valid @RequestBody SellerCO sellerCO) {
+    return sellerService.registerSeller(sellerCO);
   }
 }

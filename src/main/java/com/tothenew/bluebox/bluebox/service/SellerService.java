@@ -1,6 +1,7 @@
 package com.tothenew.bluebox.bluebox.service;
 
-import com.tothenew.bluebox.bluebox.dto.SellerDto;
+import com.tothenew.bluebox.bluebox.co.SellerCO;
+import com.tothenew.bluebox.bluebox.configuration.MessageResponseEntity;
 import com.tothenew.bluebox.bluebox.enitity.user.Address;
 import com.tothenew.bluebox.bluebox.enitity.user.Role;
 import com.tothenew.bluebox.bluebox.enitity.user.Seller;
@@ -39,30 +40,37 @@ public class SellerService {
   /*
     Method for seller's registration
    */
-  public ResponseEntity<Object> registerSeller(SellerDto sellerDto) {
+  public ResponseEntity<MessageResponseEntity> registerSeller(SellerCO sellerCO) {
+
     List<Role> defaultRole = new ArrayList<>();
     Role role = roleRepository.findByAuthority("ROLE_SELLER");
     defaultRole.add(role);
     Date date = new Date();
 
-    User existingUser = userRepository.findByEmailIgnoreCase(sellerDto.getEmail());
+    User existingUser = userRepository.findByEmailIgnoreCase(sellerCO.getEmail());
+
     if (existingUser != null) {
-      throw new UserAlreadyExistsException("This email already exists!");
+
+      throw new UserAlreadyExistsException("This email already exists!".toUpperCase());
     } else {
       Address address = new Address();
-      BeanUtils.copyProperties(sellerDto.getCompanyAddress(), address);
+      BeanUtils.copyProperties(sellerCO.getCompanyAddress(), address);
       HashSet<Address> addresses = new HashSet<>();
       addresses.add(address);
 
       Seller seller = new Seller();
-      BeanUtils.copyProperties(sellerDto, seller);
+      BeanUtils.copyProperties(sellerCO, seller);
       seller.setCreatedDate(date);
       seller.setUpdatedDate(date);
-      seller.setPassword(passwordEncoder.encode(sellerDto.getPassword()));
+      seller.setPassword(passwordEncoder.encode(sellerCO.getPassword()));
       seller.setRoles(defaultRole);
       seller.setAddress(addresses);
       sellerRepository.save(seller);
-      return new ResponseEntity<>("SUCCESS", HttpStatus.CREATED);
+
+      return new ResponseEntity<>(
+          new MessageResponseEntity(HttpStatus.CREATED,
+              "Account Created. Please wait for the Admin to Activate the acoount".toUpperCase())
+          , HttpStatus.CREATED);
     }
   }
 

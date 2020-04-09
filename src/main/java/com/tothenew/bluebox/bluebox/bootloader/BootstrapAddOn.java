@@ -33,15 +33,17 @@ public class BootstrapAddOn {
 
   public void createRoles() {
 
-    Role role = new Role();
-    role.setAuthority("ROLE_ADMIN");
-    Role role2 = new Role();
-    role2.setAuthority("ROLE_CUSTOMER");
-    Role role3 = new Role();
-    role3.setAuthority("ROLE_SELLER");
-    roleRepository.save(role);
-    roleRepository.save(role2);
-    roleRepository.save(role3);
+    if (roleRepository.count() == 0) {
+      Role role = new Role();
+      role.setAuthority("ROLE_ADMIN");
+      Role role2 = new Role();
+      role2.setAuthority("ROLE_CUSTOMER");
+      Role role3 = new Role();
+      role3.setAuthority("ROLE_SELLER");
+      roleRepository.save(role);
+      roleRepository.save(role2);
+      roleRepository.save(role3);
+    }
   }
 
 
@@ -168,7 +170,7 @@ public class BootstrapAddOn {
     mobile.setName("MOBILE ACCESSORY");
     mobile.setParentId(mobileAndAccessory);
     mobile.setLeafNode(true);
-    categoryRepository.save(mobile);
+    categoryRepository.save(mobileAccessory);
 
 //-------------SUBCATEGORY:CAMERA AND ACCESSORY------------------
     Category camera = new Category();
@@ -181,7 +183,7 @@ public class BootstrapAddOn {
     camera.setName("CAMERA ACCESSORY");
     camera.setParentId(mobileAndAccessory);
     camera.setLeafNode(true);
-    categoryRepository.save(camera);
+    categoryRepository.save(cameraAccessory);
 
 //-------------SUBCATEGORY:ACTION AND ADVENTURE------------------
     Category actionBook = new Category();
@@ -231,6 +233,5 @@ public class BootstrapAddOn {
 
     userRepository.save(user);
 
-//    userRepository.save(user);
   }
 }

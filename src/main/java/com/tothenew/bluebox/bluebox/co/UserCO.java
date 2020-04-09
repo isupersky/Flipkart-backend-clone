@@ -1,11 +1,11 @@
-package com.tothenew.bluebox.bluebox.dto;
+package com.tothenew.bluebox.bluebox.co;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Pattern;
 import org.hibernate.validator.constraints.Length;
 
-public class UserDto {
+public class UserCO {
 
   @Email(message = "This is not a valid Email")
   @NotEmpty(message = "Email field can not be Empty")
@@ -27,7 +27,7 @@ public class UserDto {
 
 
   //	Default Constructor
-  public UserDto() {
+  public UserCO() {
   }
 
 //	Getters And setters
@@ -74,7 +74,7 @@ public class UserDto {
 
   @Override
   public String toString() {
-    return "UserDto{" +
+    return "UserCO{" +
         "email='" + email + '\'' +
         ", firstName='" + firstName + '\'' +
         ", middleName='" + middleName + '\'' +

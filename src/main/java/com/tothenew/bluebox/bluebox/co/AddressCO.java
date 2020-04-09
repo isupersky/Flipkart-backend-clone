@@ -1,8 +1,8 @@
-package com.tothenew.bluebox.bluebox.dto;
+package com.tothenew.bluebox.bluebox.co;
 
 import javax.validation.constraints.NotEmpty;
 
-public class AddressDto {
+public class AddressCO {
 
   @NotEmpty(message = "city field is missing")
   private String city;
@@ -68,7 +68,7 @@ public class AddressDto {
 
   @Override
   public String toString() {
-    return "AddressDto{" +
+    return "AddressCO{" +
         "city='" + city + '\'' +
         ", state='" + state + '\'' +
         ", country='" + country + '\'' +

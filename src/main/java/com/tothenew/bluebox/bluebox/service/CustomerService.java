@@ -1,6 +1,7 @@
 package com.tothenew.bluebox.bluebox.service;
 
-import com.tothenew.bluebox.bluebox.dto.CustomerDto;
+import com.tothenew.bluebox.bluebox.co.CustomerCO;
+import com.tothenew.bluebox.bluebox.configuration.MessageResponseEntity;
 import com.tothenew.bluebox.bluebox.enitity.user.ConfirmationToken;
 import com.tothenew.bluebox.bluebox.enitity.user.Customer;
 import com.tothenew.bluebox.bluebox.enitity.user.Role;
@@ -51,32 +52,35 @@ public class CustomerService {
   /*
     Method to register the validated customer
    */
-  public ResponseEntity<Object> registerCustomer(CustomerDto customerDto) {
+  public ResponseEntity<MessageResponseEntity> registerCustomer(CustomerCO customerCO) {
 
     List<Role> defaultRole = new ArrayList<>();
     Role role = roleRepository.findByAuthority("ROLE_CUSTOMER");
     defaultRole.add(role);
 
-    User existingUser = userRepository.findByEmailIgnoreCase(customerDto.getEmail());
+    User existingUser = userRepository.findByEmailIgnoreCase(customerCO.getEmail());
     if (existingUser != null) {
       throw new UserAlreadyExistsException("User Already Registered !!!");
     } else {
       Customer customer = new Customer();
 
-      customer.setFirstName(customerDto.getFirstName());
-      customer.setMiddleName(customerDto.getMiddleName());
-      customer.setLastName(customerDto.getLastName());
-      customer.setEmail(customerDto.getEmail());
-      customer.setPassword(passwordEncoder.encode(customerDto.getPassword()));
+      customer.setFirstName(customerCO.getFirstName());
+      customer.setMiddleName(customerCO.getMiddleName());
+      customer.setLastName(customerCO.getLastName());
+      customer.setEmail(customerCO.getEmail());
+      customer.setPassword(passwordEncoder.encode(customerCO.getPassword()));
       customer.setRoles(defaultRole);
       customer.setCreatedDate(new Date());
       customer.setUpdatedDate(new Date());
-      customer.setContact(customerDto.getContact());
+      customer.setContact(customerCO.getContact());
 
       customerRepository.save(customer);
 
-      generateToken(customerRepository.findByEmailIgnoreCase(customerDto.getEmail()));
-      return new ResponseEntity<>("successful Registration", HttpStatus.CREATED);
+      generateToken(customerRepository.findByEmailIgnoreCase(customerCO.getEmail()));
+      return new ResponseEntity<>(
+          new MessageResponseEntity<>(customerCO, HttpStatus.CREATED,
+              "successful Registration".toUpperCase())
+          , HttpStatus.CREATED);
     }
   }
 
@@ -110,7 +114,7 @@ public class CustomerService {
   /*
     Method to validate customer's email and activate it's account
    */
-  public ResponseEntity<Object> activateCustomer(String confirmationToken) {
+  public ResponseEntity<MessageResponseEntity> activateCustomer(String confirmationToken) {
 
     ConfirmationToken token = confirmationTokenRepository
         .findByConfirmationToken(confirmationToken);
@@ -122,7 +126,9 @@ public class CustomerService {
       Customer customer = (Customer) customerRepository
           .findByEmailIgnoreCase(token.getUser().getEmail());
       if (customer.isActive()) {
-        return new ResponseEntity<Object>("Account Already Active", HttpStatus.ACCEPTED);
+        return new ResponseEntity<>(
+            new MessageResponseEntity(HttpStatus.ACCEPTED, "Account Already Active".toUpperCase())
+            , HttpStatus.ACCEPTED);
       }
 
       customer.setActive(true);
@@ -145,7 +151,9 @@ public class CustomerService {
         }
       });
 
-      return new ResponseEntity<Object>("Account Verified", HttpStatus.ACCEPTED);
+      return new ResponseEntity<>(
+          new MessageResponseEntity(HttpStatus.ACCEPTED, "Account Verified".toUpperCase())
+          , HttpStatus.ACCEPTED);
     } else if (token != null && (date.getHours() - token.getCreatedDate().getHours()) > 3) {
       Customer customer = customerRepository
           .findById(
@@ -156,10 +164,14 @@ public class CustomerService {
 
       confirmationTokenRepository.delete(token);
       generateToken(customer);
-      return new ResponseEntity<Object>(
-          "Token time Expired!!  New Token sent to registered email Id", HttpStatus.BAD_REQUEST);
+      return new ResponseEntity<>(
+          new MessageResponseEntity(HttpStatus.BAD_REQUEST, "Token time Expired!! "
+              + " New Token sent to registered email Id".toUpperCase())
+          , HttpStatus.BAD_REQUEST);
     } else {
-      return new ResponseEntity<Object>("message: The link is invalid or broken!",
+      return new ResponseEntity<>(
+          new MessageResponseEntity(HttpStatus.BAD_REQUEST,
+              "The link is invalid or broken!".toUpperCase()),
           HttpStatus.BAD_REQUEST);
     }
   }
@@ -167,7 +179,8 @@ public class CustomerService {
   /*
     Method to resend activation Link with new Activation Token and deletes previously created token.
    */
-  public ResponseEntity<Object> resendActivationToken(String email) {
+  public ResponseEntity<MessageResponseEntity> resendActivationToken(String email) {
+
     User user = userRepository.findByEmailIgnoreCase(email);
     if (user == null) {
       throw new UserNotFoundException("User does not exists");
@@ -178,16 +191,22 @@ public class CustomerService {
             .forEach(e -> confirmationTokenRepository.deleteById(e.getTokenid()));
       }
       generateToken(user);
-      return new ResponseEntity<>("Activation Link Resent", HttpStatus.OK);
+
+      return new ResponseEntity<>(
+          new MessageResponseEntity(HttpStatus.OK, "Activation Link Resent".toUpperCase())
+          , HttpStatus.OK);
     }
-    return new ResponseEntity<>("Some error occurred, Please contact the Admin",
-        HttpStatus.BAD_REQUEST);
+
+    return new ResponseEntity<>(
+        new MessageResponseEntity(HttpStatus.BAD_REQUEST,
+            "Some error occurred, Please contact the Admin".toUpperCase())
+        , HttpStatus.BAD_REQUEST);
 
   }
 
 //---------------------------------------------------READ------------------------------------------------------------
 
-//  public CustomerDto showProfile(String email){
+//  public CustomerCO showProfile(String email){
 //    Customer customer =    customerRepository.findByEmailIgnoreCase(email);
 //  }
 }

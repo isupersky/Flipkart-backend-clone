@@ -1,10 +1,10 @@
-package com.tothenew.bluebox.bluebox.dto;
+package com.tothenew.bluebox.bluebox.co;
 
 import javax.persistence.Column;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
-public class SellerDto extends UserDto {
+public class SellerCO extends UserCO {
 
   //VALID GST NUMBER - 37adapm1724a2Z6
   @NotEmpty(message = "gst is a mandatory field")
@@ -23,7 +23,7 @@ public class SellerDto extends UserDto {
   @NotNull(message = "Company Contact No. is a mandatory field")
   private Long companyContact;
 
-  private AddressDto companyAddress;
+  private AddressCO companyAddress;
 
 
   public String getGst() {
@@ -50,17 +50,17 @@ public class SellerDto extends UserDto {
     this.companyContact = companyContact;
   }
 
-  public AddressDto getCompanyAddress() {
+  public AddressCO getCompanyAddress() {
     return companyAddress;
   }
 
-  public void setCompanyAddress(AddressDto companyAddress) {
+  public void setCompanyAddress(AddressCO companyAddress) {
     this.companyAddress = companyAddress;
   }
 
   @Override
   public String toString() {
-    return "SellerDto{" +
+    return "SellerCO{" +
         "gst='" + gst + '\'' +
         ", companyName='" + companyName + '\'' +
         ", companyContact=" + companyContact +

@@ -1,5 +1,6 @@
 package com.tothenew.bluebox.bluebox.service;
 
+import com.tothenew.bluebox.bluebox.configuration.MessageResponseEntity;
 import com.tothenew.bluebox.bluebox.enitity.user.User;
 import com.tothenew.bluebox.bluebox.repository.CustomerRepository;
 import com.tothenew.bluebox.bluebox.repository.SellerRepository;
@@ -38,28 +39,40 @@ public class AdminService {
   /*
     Method to get the list of all Customers present in the system.
    */
-  public List<Object> getAllCustomers() {
+  public ResponseEntity<MessageResponseEntity> getAllCustomers() {
     Pageable pageable = PageRequest.of(0, 10, Sort.by("id"));
-    return customerRepository.findAllCustomers(pageable);
+    List<Object> customerList = customerRepository.findAllCustomers(pageable);
+
+    return new ResponseEntity<>(
+        new MessageResponseEntity<>(customerList, HttpStatus.OK),
+        HttpStatus.OK);
   }
 
   /*
     Method to get the list of all Sellers present in the system.
    */
-  public List<Object> getAllSellers() {
+  public ResponseEntity<MessageResponseEntity> getAllSellers() {
+
     Pageable pageable = PageRequest.of(0, 10, Sort.by("id"));
-    return sellerRepository.findAllSellers(pageable);
+    List<Object> sellerList = sellerRepository.findAllSellers(pageable);
+
+    return new ResponseEntity<>(
+        new MessageResponseEntity<>(sellerList, HttpStatus.OK)
+        , HttpStatus.OK);
   }
 
   /*
     Method activates the user account for provide user id and triggers a mail to user about the activation.
    */
-  public ResponseEntity<Object> activateUser(Long id) {
+  public ResponseEntity<MessageResponseEntity> activateUser(Long id) {
     Optional<User> optionalUser = userRepository.findById(id);
     if (optionalUser.isPresent()) {
       User user = optionalUser.get();
       if (user.isActive()) {
-        return new ResponseEntity<>("user activated", HttpStatus.OK);
+
+        return new ResponseEntity<>(
+            new MessageResponseEntity<>(HttpStatus.OK, "user activated")
+            , HttpStatus.OK);
       }
 
       user.setActive(true);
@@ -81,21 +94,29 @@ public class AdminService {
         }
       });
 
-      return new ResponseEntity<>("user activated", HttpStatus.OK);
+      return new ResponseEntity<>(
+          new MessageResponseEntity<>(HttpStatus.OK, "user activated")
+          , HttpStatus.OK);
     }
-    return new ResponseEntity<>("User not present", HttpStatus.NOT_FOUND);
+
+    return new ResponseEntity<>(
+        new MessageResponseEntity<>(HttpStatus.NOT_FOUND, "User not present")
+        , HttpStatus.NOT_FOUND);
   }
 
 
   /*
    Method deactivates the user account for provide user id and triggers a mail to user about the activation.
   */
-  public ResponseEntity<Object> deactivateUser(Long id) {
+  public ResponseEntity<MessageResponseEntity> deactivateUser(Long id) {
     Optional<User> optionalUser = userRepository.findById(id);
     if (optionalUser.isPresent()) {
       User user = optionalUser.get();
       if (user.isActive()) {
-        return new ResponseEntity<>("user deactivated", HttpStatus.OK);
+
+        return new ResponseEntity<>(
+            new MessageResponseEntity<>(HttpStatus.OK, "user deactivated")
+            , HttpStatus.OK);
       }
 
       user.setActive(false);
@@ -117,8 +138,13 @@ public class AdminService {
         }
       });
 
-      return new ResponseEntity<>("user deactivated", HttpStatus.OK);
+      return new ResponseEntity<>(
+          new MessageResponseEntity<>(HttpStatus.OK, "user deactivated")
+          , HttpStatus.OK);
     }
-    return new ResponseEntity<>("User not present", HttpStatus.NOT_FOUND);
+
+    return new ResponseEntity<>(
+        new MessageResponseEntity<>(HttpStatus.NOT_FOUND, "User not present")
+        , HttpStatus.NOT_FOUND);
   }
 }

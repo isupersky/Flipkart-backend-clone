@@ -1,7 +1,8 @@
 package com.tothenew.bluebox.bluebox.controller;
 
-import com.tothenew.bluebox.bluebox.dto.CustomerDto;
-import com.tothenew.bluebox.bluebox.dto.EmailDto;
+import com.tothenew.bluebox.bluebox.co.CustomerCO;
+import com.tothenew.bluebox.bluebox.co.EmailCO;
+import com.tothenew.bluebox.bluebox.configuration.MessageResponseEntity;
 import com.tothenew.bluebox.bluebox.service.CustomerService;
 import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,29 +27,31 @@ public class CustomerController {
     URI for registration of a customer
    */
   @PostMapping(path = "/register")
-  public Object registerCustomer(@Valid @RequestBody CustomerDto customerDto) {
-    return customerService.registerCustomer(customerDto);
+  public ResponseEntity<MessageResponseEntity> registerCustomer(
+      @Valid @RequestBody CustomerCO customerCO) {
+    return customerService.registerCustomer(customerCO);
   }
 
   /*
     URI for confirming Customer email id.
    */
   @RequestMapping(path = "/confirm-account", method = {RequestMethod.GET, RequestMethod.POST})
-  public ResponseEntity<Object> confirmUserAccount(
+  public ResponseEntity<MessageResponseEntity> confirmUserAccount(
       @RequestParam("token") String confirmationToken) {
     return customerService.activateCustomer(confirmationToken);
   }
 
 
   @PostMapping(path = "/resendactivation")
-  public ResponseEntity<Object> resendActivationToken(@Valid @RequestBody EmailDto emailDto) {
-    return customerService.resendActivationToken(emailDto.getEmail());
+  public ResponseEntity<MessageResponseEntity> resendActivationToken(
+      @Valid @RequestBody EmailCO emailCO) {
+    return customerService.resendActivationToken(emailCO.getEmail());
   }
 
 //---------------------------------------------------READ------------------------------------------------------------
 
 //  @GetMapping(path = "/profile")
-//  public CustomerDto showProfile(Principal principal){
+//  public CustomerCO showProfile(Principal principal){
 //    String email = principal.getName();
 //    return customerService.principal.getName()
 //  }

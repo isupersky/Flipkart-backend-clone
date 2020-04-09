@@ -1,6 +1,7 @@
 package com.tothenew.bluebox.bluebox.service;
 
-import com.tothenew.bluebox.bluebox.dto.PasswordDto;
+import com.tothenew.bluebox.bluebox.co.PasswordCO;
+import com.tothenew.bluebox.bluebox.configuration.MessageResponseEntity;
 import com.tothenew.bluebox.bluebox.enitity.product.Product;
 import com.tothenew.bluebox.bluebox.enitity.user.ConfirmationToken;
 import com.tothenew.bluebox.bluebox.enitity.user.User;
@@ -56,7 +57,7 @@ public class UserService {
   /*
     generates a random token for a valid activated user and mail it to the user
    */
-  public ResponseEntity<Object> forgotPassword(String email) {
+  public ResponseEntity<MessageResponseEntity> forgotPassword(String email) {
 
     User user = userRepository.findByEmailIgnoreCase(email);
     System.out.println(user);
@@ -65,7 +66,9 @@ public class UserService {
       throw new UserNotFoundException("User Not Found");
     } else if (user != null && !user.isActive()) {
 //      User not active
-      return new ResponseEntity<>("Please Activate Your Account", HttpStatus.OK);
+      return new ResponseEntity<>(
+          new MessageResponseEntity<>(HttpStatus.OK, "Please Activate Your Account First"),
+          HttpStatus.OK);
     } else if (user != null && user.isActive()) {
 //  generate token and send mail
       ConfirmationToken confirmationToken = new ConfirmationToken(user);
@@ -96,31 +99,35 @@ public class UserService {
         }
       });
 
-      return new ResponseEntity<>("Reset password Email sent", HttpStatus.OK);
+      return new ResponseEntity<>(
+          new MessageResponseEntity<>(HttpStatus.OK, "Reset password Email sent"), HttpStatus.OK);
     }
 
-    return new ResponseEntity<>("Something went wrong", HttpStatus.BAD_REQUEST);
+    return new ResponseEntity<>(new MessageResponseEntity<>(HttpStatus.BAD_REQUEST),
+        HttpStatus.BAD_REQUEST);
   }
 
 
   /*
     updates User's password
    */
-  public ResponseEntity<Object> resetPassword(PasswordDto passwordDto, String token) {
+  public ResponseEntity<MessageResponseEntity> resetPassword(PasswordCO passwordCO, String token) {
     ConfirmationToken confirmationToken = confirmationTokenRepository
         .findByConfirmationToken(token);
 
     if (confirmationToken == null) {
-      return new ResponseEntity<>("Invalid Link", HttpStatus.NOT_FOUND);
-    } else if (passwordDto.getPassword().equals(passwordDto.getRePassword())) {
+      return new ResponseEntity<>(new MessageResponseEntity(HttpStatus.NOT_FOUND, "INVALID LINK"),
+          HttpStatus.NOT_FOUND);
+    } else if (passwordCO.getPassword().equals(passwordCO.getRePassword())) {
       Optional<User> user = userRepository.findById(confirmationToken.getUser().getId());
-      user.get().setPassword(passwordEncoder.encode(passwordDto.getPassword()));
+      user.get().setPassword(passwordEncoder.encode(passwordCO.getPassword()));
       user.get().setUpdatedDate(new Date());
       userRepository.save(user.get());
       confirmationTokenRepository.delete(confirmationToken);
-      return new ResponseEntity<>("Password Change successful", HttpStatus.OK);
+      return new ResponseEntity<>(new MessageResponseEntity(HttpStatus.OK), HttpStatus.OK);
 
     }
-    return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    return new ResponseEntity<>(new MessageResponseEntity(HttpStatus.BAD_REQUEST),
+        HttpStatus.BAD_REQUEST);
   }
 }

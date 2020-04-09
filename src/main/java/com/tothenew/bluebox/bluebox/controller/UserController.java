@@ -1,7 +1,8 @@
 package com.tothenew.bluebox.bluebox.controller;
 
-import com.tothenew.bluebox.bluebox.dto.EmailDto;
-import com.tothenew.bluebox.bluebox.dto.PasswordDto;
+import com.tothenew.bluebox.bluebox.co.EmailCO;
+import com.tothenew.bluebox.bluebox.co.PasswordCO;
+import com.tothenew.bluebox.bluebox.configuration.MessageResponseEntity;
 import com.tothenew.bluebox.bluebox.enitity.product.Product;
 import com.tothenew.bluebox.bluebox.service.UserService;
 import java.security.Principal;
@@ -52,14 +53,15 @@ public class UserController {
     provides Logout functionality for all type of Users.
    */
   @PostMapping(path = "/dologout")
-  public ResponseEntity<Object> userLogout(HttpServletRequest request) {
+  public ResponseEntity<MessageResponseEntity> userLogout(HttpServletRequest request) {
     String authHeader = request.getHeader("Authorization");
     if (authHeader != null) {
       String tokenValue = authHeader.replace("bearer", "").trim();
       OAuth2AccessToken accessToken = tokenStore.readAccessToken(tokenValue);
       tokenStore.removeAccessToken(accessToken);
     }
-    return new ResponseEntity<>("Logged out successfully", HttpStatus.OK);
+    return new ResponseEntity<>(
+        new MessageResponseEntity<>(HttpStatus.OK, "Logged out successfully"), HttpStatus.OK);
   }
 
 
@@ -68,8 +70,8 @@ public class UserController {
     @response - email with a token
    */
   @PostMapping(path = "/forgotpassword")
-  public ResponseEntity<Object> forgotPassword(@Valid @RequestBody EmailDto emailDto) {
-    return userService.forgotPassword(emailDto.getEmail());
+  public ResponseEntity<MessageResponseEntity> forgotPassword(@Valid @RequestBody EmailCO emailCO) {
+    return userService.forgotPassword(emailCO.getEmail());
   }
 
 
@@ -77,9 +79,10 @@ public class UserController {
     URI to reset password
    */
   @PatchMapping(path = "/resetpassword/{token}")
-  public ResponseEntity<Object> resetPassword(@Valid @RequestBody PasswordDto passwordDto,
+  public ResponseEntity<MessageResponseEntity> resetPassword(
+      @Valid @RequestBody PasswordCO passwordCO,
       @PathVariable String token) {
-    return userService.resetPassword(passwordDto, token);
+    return userService.resetPassword(passwordCO, token);
 
   }
 

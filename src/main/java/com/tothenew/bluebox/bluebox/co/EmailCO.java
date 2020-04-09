@@ -1,18 +1,18 @@
-package com.tothenew.bluebox.bluebox.dto;
+package com.tothenew.bluebox.bluebox.co;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
 
-public class EmailDto {
+public class EmailCO {
 
   @Email(message = "This is not a valid Email")
   @NotEmpty(message = "Email field can not be Empty")
   private String email;
 
-  public EmailDto() {
+  public EmailCO() {
   }
 
-  public EmailDto(String email) {
+  public EmailCO(String email) {
     this.email = email;
   }
 
@@ -26,7 +26,7 @@ public class EmailDto {
 
   @Override
   public String toString() {
-    return "EmailDto{" +
+    return "EmailCO{" +
         "email='" + email + '\'' +
         '}';
   }

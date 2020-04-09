@@ -1,8 +1,8 @@
 package com.tothenew.bluebox.bluebox.controller;
 
+import com.tothenew.bluebox.bluebox.configuration.MessageResponseEntity;
 import com.tothenew.bluebox.bluebox.service.AdminService;
 import com.tothenew.bluebox.bluebox.service.CustomerService;
-import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -37,7 +37,7 @@ public class AdminController {
     @Response - List of Objects with Customer id, Full name and activation status of Customer.
    */
   @GetMapping(path = "/customers")
-  public List<Object> getAllCustomers() {
+  public ResponseEntity<MessageResponseEntity> getAllCustomers() {
     return adminService.getAllCustomers();
   }
 
@@ -50,7 +50,7 @@ public class AdminController {
     @missing - Still not returns Address
    */
   @GetMapping(path = "/sellers")
-  public List<Object> getAllSellers() {
+  public ResponseEntity<MessageResponseEntity> getAllSellers() {
     return adminService.getAllSellers();
   }
 
@@ -59,7 +59,7 @@ public class AdminController {
     @Response - User is Activated message if user exists in the system else User is not present message
    */
   @PatchMapping(path = "/activate/{id}")
-  public ResponseEntity<Object> activateUser(@PathVariable Long id) {
+  public ResponseEntity<MessageResponseEntity> activateUser(@PathVariable Long id) {
     return adminService.activateUser(id);
   }
 
@@ -68,7 +68,7 @@ public class AdminController {
    @Response - User is DeActivated message if user exists in the system else User is not present message
   */
   @PatchMapping(path = "/deactivate/{id}")
-  public ResponseEntity<Object> deactivateUser(@PathVariable Long id) {
+  public ResponseEntity<MessageResponseEntity> deactivateUser(@PathVariable Long id) {
     return adminService.deactivateUser(id);
   }
 }
