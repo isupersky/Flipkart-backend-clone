@@ -69,7 +69,7 @@ public class UserController {
     URI for forget password
     @response - email with a token
    */
-  @PostMapping(path = "/forgotpassword")
+  @PostMapping(path = "/forgot-password")
   public ResponseEntity<MessageResponseEntity> forgotPassword(@Valid @RequestBody EmailCO emailCO) {
     return userService.forgotPassword(emailCO.getEmail());
   }
@@ -78,7 +78,7 @@ public class UserController {
   /*
     URI to reset password
    */
-  @PatchMapping(path = "/resetpassword/{token}")
+  @PatchMapping(path = "/reset-password/{token}")
   public ResponseEntity<MessageResponseEntity> resetPassword(
       @Valid @RequestBody PasswordCO passwordCO,
       @PathVariable String token) {

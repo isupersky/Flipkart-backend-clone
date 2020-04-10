@@ -5,7 +5,7 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Pattern;
 import org.hibernate.validator.constraints.Length;
 
-public class UserCO {
+public abstract class UserCO {
 
   @Email(message = "This is not a valid Email")
   @NotEmpty(message = "Email field can not be Empty")

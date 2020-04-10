@@ -2,6 +2,7 @@ package com.tothenew.bluebox.bluebox.service;
 
 import com.tothenew.bluebox.bluebox.co.SellerCO;
 import com.tothenew.bluebox.bluebox.configuration.MessageResponseEntity;
+import com.tothenew.bluebox.bluebox.dto.SellerDTO;
 import com.tothenew.bluebox.bluebox.enitity.user.Address;
 import com.tothenew.bluebox.bluebox.enitity.user.Role;
 import com.tothenew.bluebox.bluebox.enitity.user.Seller;
@@ -14,6 +15,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -37,6 +39,7 @@ public class SellerService {
   PasswordEncoder passwordEncoder;
 
 
+  //---------------------------------------------------CREATE------------------------------------------------------------
   /*
     Method for seller's registration
    */
@@ -73,5 +76,19 @@ public class SellerService {
           , HttpStatus.CREATED);
     }
   }
+
+//---------------------------------------------------READ------------------------------------------------------------
+
+  public ResponseEntity<MessageResponseEntity> showProfile(String email) {
+    Seller seller = sellerRepository.findByEmailIgnoreCase(email);
+    SellerDTO sellerDTO = new SellerDTO();
+    ModelMapper modelMapper = new ModelMapper();
+    modelMapper.map(seller, sellerDTO);
+
+    return new ResponseEntity<>(
+        new MessageResponseEntity<>(sellerDTO, HttpStatus.OK)
+        , HttpStatus.OK);
+  }
+
 
 }

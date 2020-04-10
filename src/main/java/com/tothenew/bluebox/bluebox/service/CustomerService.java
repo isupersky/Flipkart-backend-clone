@@ -1,7 +1,11 @@
 package com.tothenew.bluebox.bluebox.service;
 
+import com.tothenew.bluebox.bluebox.co.AddressCO;
 import com.tothenew.bluebox.bluebox.co.CustomerCO;
 import com.tothenew.bluebox.bluebox.configuration.MessageResponseEntity;
+import com.tothenew.bluebox.bluebox.dto.AddressDTO;
+import com.tothenew.bluebox.bluebox.dto.CustomerDTO;
+import com.tothenew.bluebox.bluebox.enitity.user.Address;
 import com.tothenew.bluebox.bluebox.enitity.user.ConfirmationToken;
 import com.tothenew.bluebox.bluebox.enitity.user.Customer;
 import com.tothenew.bluebox.bluebox.enitity.user.Role;
@@ -15,6 +19,7 @@ import com.tothenew.bluebox.bluebox.repository.UserRepository;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.task.TaskExecutor;
 import org.springframework.http.HttpStatus;
@@ -204,9 +209,59 @@ public class CustomerService {
 
   }
 
+  /*
+    Method to add Address
+   */
+  public ResponseEntity<MessageResponseEntity> addAddress(String email, AddressCO addressCO) {
+
+    ModelMapper modelMapper = new ModelMapper();
+    Address address = new Address();
+
+    Customer customer = customerRepository.findByEmailIgnoreCase(email);
+    address.setUser(customer);
+    modelMapper.map(addressCO, address);
+    customer.getAddress().add(address);
+    customerRepository.save(customer);
+
+    return new ResponseEntity<>(
+        new MessageResponseEntity(addressCO, HttpStatus.OK)
+        , HttpStatus.OK);
+  }
+
 //---------------------------------------------------READ------------------------------------------------------------
 
-//  public CustomerCO showProfile(String email){
-//    Customer customer =    customerRepository.findByEmailIgnoreCase(email);
-//  }
+  /*
+    Fetches customer details and sends back.
+   */
+  public ResponseEntity<MessageResponseEntity> showProfile(String email) {
+    Customer customer = customerRepository.findByEmailIgnoreCase(email);
+    CustomerDTO customerDTO = new CustomerDTO();
+    ModelMapper modelMapper = new ModelMapper();
+    modelMapper.map(customer, customerDTO);
+
+    return new ResponseEntity<>(
+        new MessageResponseEntity<>(customerDTO, HttpStatus.OK)
+        , HttpStatus.OK);
+  }
+
+  /*
+    Fetches List of Addresses of the customer
+   */
+  public ResponseEntity<MessageResponseEntity> showAddresses(String email) {
+    ModelMapper modelMapper = new ModelMapper();
+    List<AddressDTO> addressDTOList = new ArrayList<>();
+    Customer customer = customerRepository.findByEmailIgnoreCase(email);
+
+    customer.getAddress().forEach(
+        address -> {
+          AddressDTO addressDTO = new AddressDTO();
+          modelMapper.map(address, addressDTO);
+          addressDTOList.add(addressDTO);
+        }
+    );
+
+    return new ResponseEntity<>(
+        new MessageResponseEntity(addressDTOList, HttpStatus.OK)
+        , HttpStatus.OK);
+  }
 }

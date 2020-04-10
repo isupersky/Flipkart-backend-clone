@@ -1,23 +1,22 @@
-package com.tothenew.bluebox.bluebox.co;
+package com.tothenew.bluebox.bluebox.dto;
 
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
+public class AddressDTO {
 
-public class AddressCO {
 
-  @NotEmpty(message = "city field is missing")
   private String city;
-  @NotEmpty(message = "state field is missing")
+
   private String state;
-  @NotEmpty(message = "country field is missing")
+
   private String country;
-  @NotEmpty(message = "address Line field is missing")
+
   private String addressLine;
-  @NotNull(message = "Zip Code field is missing")
+
   private Integer zipCode;
 
-  private String label = "";
+  private String label;
 
+  public AddressDTO() {
+  }
 
   public String getCity() {
     return city;
@@ -69,7 +68,7 @@ public class AddressCO {
 
   @Override
   public String toString() {
-    return "AddressCO{" +
+    return "AddressDTO{" +
         "city='" + city + '\'' +
         ", state='" + state + '\'' +
         ", country='" + country + '\'' +

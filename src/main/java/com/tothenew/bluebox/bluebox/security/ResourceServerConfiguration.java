@@ -57,10 +57,10 @@ public class ResourceServerConfiguration extends ResourceServerConfigurerAdapter
         .antMatchers("/customer/register",
             "/customer/confirm-account",
             "/seller/register",
-            "/forgotpassword",
-            "/resetpassword",
+            "/forgot-password",
+            "/reset-password",
             "/username",        // for future use
-            "/customer/resendactivation/").permitAll()
+            "/customer/resend-activation/").permitAll()
 
         .antMatchers("/logout").hasAnyRole("ADMIN", "SELLER", "CUSTOMER")
 
