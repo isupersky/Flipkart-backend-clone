@@ -2,9 +2,11 @@ package com.tothenew.bluebox.bluebox.bootloader;
 
 import com.tothenew.bluebox.bluebox.enitity.product.Category;
 import com.tothenew.bluebox.bluebox.enitity.user.Address;
+import com.tothenew.bluebox.bluebox.enitity.user.Customer;
 import com.tothenew.bluebox.bluebox.enitity.user.Role;
 import com.tothenew.bluebox.bluebox.enitity.user.User;
 import com.tothenew.bluebox.bluebox.repository.CategoryRepository;
+import com.tothenew.bluebox.bluebox.repository.CustomerRepository;
 import com.tothenew.bluebox.bluebox.repository.RoleRepository;
 import com.tothenew.bluebox.bluebox.repository.UserRepository;
 import java.util.ArrayList;
@@ -29,6 +31,9 @@ public class BootstrapAddOn {
 
   @Autowired
   UserRepository userRepository;
+
+  @Autowired
+  CustomerRepository customerRepository;
 
 
   public void createRoles() {
@@ -219,7 +224,7 @@ public class BootstrapAddOn {
     address.setCountry("India");
     address.setAddressLine("A3/45- Rohini");
     address.setZipCode(110089);
-    address.setLabel("Home");
+    address.setLabel("office");
     list.add(address);
     user.setAddress(list);
 
@@ -233,5 +238,39 @@ public class BootstrapAddOn {
 
     userRepository.save(user);
 
+  }
+
+  public void createTestCustomer() {
+    Customer customer = new Customer();
+    customer.setEmail("aakash9868sinha@gmail.com");
+    customer.setFirstName("Aakash");
+    customer.setLastName("Sinha");
+    String pass = passwordEncoder.encode("Aakash12@");
+    customer.setPassword(pass);
+    customer.setActive(true);
+    customer.setDeleted(false);
+    customer.setCreatedDate(new Date());
+    customer.setUpdatedDate(new Date());
+
+    Set<Address> list = new HashSet<>();
+    Address address = new Address();
+    address.setCity("Delhi");
+    address.setState("Delhi");
+    address.setCountry("India");
+    address.setAddressLine("A3/45- Rohini");
+    address.setZipCode(110089);
+    address.setLabel("Home");
+    list.add(address);
+    customer.setAddress(list);
+
+    ArrayList<Role> tempRole = new ArrayList<>();
+    Role role1;
+    if (roleRepository.findById(1).isPresent()) {
+      role1 = roleRepository.findById(2).get();
+      tempRole.add(role1);
+    }
+    customer.setRoles(tempRole);
+
+    customerRepository.save(customer);
   }
 }

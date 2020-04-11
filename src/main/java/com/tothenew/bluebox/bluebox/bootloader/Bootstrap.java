@@ -16,6 +16,7 @@ public class Bootstrap implements ApplicationRunner {
     bootstrapAddOn.createRoles();
     bootstrapAddOn.createCategory();
     bootstrapAddOn.createAdmin();
+    bootstrapAddOn.createTestCustomer();
 
   }
 

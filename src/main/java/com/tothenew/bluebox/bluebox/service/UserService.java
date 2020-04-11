@@ -21,6 +21,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.common.OAuth2AccessToken;
+import org.springframework.security.oauth2.provider.token.TokenStore;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -44,6 +46,9 @@ public class UserService {
   @Autowired
   PasswordEncoder passwordEncoder;
 
+  @Autowired
+  private TokenStore tokenStore;
+
 
   /*
     Returns a List of all Product sorted by Id
@@ -55,7 +60,7 @@ public class UserService {
 
 
   /*
-    generates a random token for a valid activated user and mail it to the user
+    Generates a random token for a valid activated user and mail it to the user
    */
   public ResponseEntity<MessageResponseEntity> forgotPassword(String email) {
 
@@ -109,7 +114,7 @@ public class UserService {
 
 
   /*
-    updates User's password
+    Updates User's password
    */
   public ResponseEntity<MessageResponseEntity> resetPassword(PasswordCO passwordCO, String token) {
     ConfirmationToken confirmationToken = confirmationTokenRepository
@@ -129,5 +134,18 @@ public class UserService {
     }
     return new ResponseEntity<>(new MessageResponseEntity(HttpStatus.BAD_REQUEST),
         HttpStatus.BAD_REQUEST);
+  }
+
+  /*
+    Logged in user is logged out
+   */
+  public ResponseEntity<MessageResponseEntity> doLogout(String authHeader) {
+    if (authHeader != null) {
+      String tokenValue = authHeader.replace("bearer", "").trim();
+      OAuth2AccessToken accessToken = tokenStore.readAccessToken(tokenValue);
+      tokenStore.removeAccessToken(accessToken);
+    }
+    return new ResponseEntity<>(
+        new MessageResponseEntity<>(HttpStatus.OK, "Logged out successfully"), HttpStatus.OK);
   }
 }

@@ -2,6 +2,7 @@ package com.tothenew.bluebox.bluebox.dto;
 
 public class AddressDTO {
 
+  private Long id;
 
   private String city;
 
@@ -16,6 +17,14 @@ public class AddressDTO {
   private String label;
 
   public AddressDTO() {
+  }
+
+  public Long getId() {
+    return id;
+  }
+
+  public void setId(Long id) {
+    this.id = id;
   }
 
   public String getCity() {
@@ -69,7 +78,8 @@ public class AddressDTO {
   @Override
   public String toString() {
     return "AddressDTO{" +
-        "city='" + city + '\'' +
+        "id=" + id +
+        ", city='" + city + '\'' +
         ", state='" + state + '\'' +
         ", country='" + country + '\'' +
         ", addressLine='" + addressLine + '\'' +
