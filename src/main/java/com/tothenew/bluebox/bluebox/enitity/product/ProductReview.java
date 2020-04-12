@@ -2,22 +2,23 @@ package com.tothenew.bluebox.bluebox.enitity.product;
 
 import com.tothenew.bluebox.bluebox.enitity.user.Customer;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.IdClass;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 
 @Entity
+@IdClass(ProductReviewId.class)
 public class ProductReview {
 
   @Id
-  @GeneratedValue
-  private Long id;
   @ManyToOne
   @JoinColumn(name = "customerUserId")
   private Customer customerUserId;
+
+  @Id
   @ManyToOne
   @JoinColumn(name = "productId")
   private Product productId;
@@ -30,13 +31,6 @@ public class ProductReview {
   public ProductReview() {
   }
 
-  public Long getId() {
-    return id;
-  }
-
-  public void setId(Long id) {
-    this.id = id;
-  }
 
   public Customer getCustomerUserId() {
     return customerUserId;
@@ -73,8 +67,7 @@ public class ProductReview {
   @Override
   public String toString() {
     return "ProductReview{" +
-        "id=" + id +
-        ", customerUserId=" + customerUserId +
+        "customerUserId=" + customerUserId +
         ", productId=" + productId +
         ", review='" + review + '\'' +
         ", rating=" + rating +

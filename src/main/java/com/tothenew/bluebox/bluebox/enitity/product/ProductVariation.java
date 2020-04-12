@@ -30,6 +30,7 @@ public class ProductVariation {
 
   private String primaryImageName;
 
+  private boolean isActive;
 
   public ProductVariation() {
   }
@@ -74,6 +75,14 @@ public class ProductVariation {
     this.primaryImageName = primaryImageName;
   }
 
+  public boolean isActive() {
+    return isActive;
+  }
+
+  public void setActive(boolean active) {
+    isActive = active;
+  }
+
   public String getMetadata() {
     return metadata;
   }
@@ -110,6 +119,7 @@ public class ProductVariation {
         ", metadata='" + metadata + '\'' +
         ", metadataHashmap=" + metadataHashmap +
         ", primaryImageName='" + primaryImageName + '\'' +
+        ", isActive=" + isActive +
         '}';
   }
 

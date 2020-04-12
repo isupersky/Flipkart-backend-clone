@@ -23,7 +23,8 @@ public class OrderProduct {
   @OneToOne
   @JoinColumn(name = "productVariationId")
   private ProductVariation productVariationId;
-//  private Metadata producVariationMetadata;
+
+  private String producVariationMetadata;
 
   public OrderProduct() {
   }
@@ -61,6 +62,14 @@ public class OrderProduct {
     this.productVariationId = productVariationId;
   }
 
+  public String getProducVariationMetadata() {
+    return producVariationMetadata;
+  }
+
+  public void setProducVariationMetadata(String producVariationMetadata) {
+    this.producVariationMetadata = producVariationMetadata;
+  }
+
   @Override
   public String toString() {
     return "OrderProduct{" +
@@ -68,6 +77,7 @@ public class OrderProduct {
         ", orderid=" + orderid +
         ", quantity=" + quantity +
         ", productVariationId=" + productVariationId +
+        ", producVariationMetadata='" + producVariationMetadata + '\'' +
         '}';
   }
 }

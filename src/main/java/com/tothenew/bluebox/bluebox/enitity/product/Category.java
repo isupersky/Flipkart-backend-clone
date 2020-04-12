@@ -16,6 +16,14 @@ public class Category {
   private Category parentId;
   private boolean leafNode = false;
 
+  public Category(Long id, String name,
+      Category parentId, boolean leafNode) {
+    this.id = id;
+    this.name = name;
+    this.parentId = parentId;
+    this.leafNode = leafNode;
+  }
+
   public Category() {
   }
 

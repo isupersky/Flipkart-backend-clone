@@ -3,36 +3,30 @@ package com.tothenew.bluebox.bluebox.enitity.order;
 import com.tothenew.bluebox.bluebox.enitity.product.ProductVariation;
 import com.tothenew.bluebox.bluebox.enitity.user.Customer;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.IdClass;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 
 //----------------------------------------COMPLETE-------------------------------------
 @Entity
+@IdClass(CartId.class)
 public class Cart {
 
   @Id
-  @GeneratedValue
-  private Long id;
   @OneToOne
   @JoinColumn(name = "customerUserId")
   private Customer customerUserId;
   private Integer quantity;
   private boolean isWishListItem;
-  @OneToOne
+
+  @Id
+  @ManyToOne
   @JoinColumn(name = "productVariationid")
   private ProductVariation productVariationid;
 
   public Cart() {
-  }
-
-  public Long getId() {
-    return id;
-  }
-
-  public void setId(Long id) {
-    this.id = id;
   }
 
   public Customer getCustomerUserId() {
@@ -71,8 +65,7 @@ public class Cart {
   @Override
   public String toString() {
     return "Cart{" +
-        "id=" + id +
-        ", customerUserId=" + customerUserId +
+        "customerUserId=" + customerUserId +
         ", quantity=" + quantity +
         ", isWishListItem=" + isWishListItem +
         ", productVariationid=" + productVariationid +
