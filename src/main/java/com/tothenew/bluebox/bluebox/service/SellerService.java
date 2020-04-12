@@ -1,6 +1,7 @@
 package com.tothenew.bluebox.bluebox.service;
 
 import com.tothenew.bluebox.bluebox.co.SellerCO;
+import com.tothenew.bluebox.bluebox.co.SellerProfileUpdate;
 import com.tothenew.bluebox.bluebox.configuration.MessageResponseEntity;
 import com.tothenew.bluebox.bluebox.dto.SellerDTO;
 import com.tothenew.bluebox.bluebox.enitity.user.Address;
@@ -8,6 +9,7 @@ import com.tothenew.bluebox.bluebox.enitity.user.Role;
 import com.tothenew.bluebox.bluebox.enitity.user.Seller;
 import com.tothenew.bluebox.bluebox.enitity.user.User;
 import com.tothenew.bluebox.bluebox.exception.UserAlreadyExistsException;
+import com.tothenew.bluebox.bluebox.repository.AddressRepository;
 import com.tothenew.bluebox.bluebox.repository.RoleRepository;
 import com.tothenew.bluebox.bluebox.repository.SellerRepository;
 import com.tothenew.bluebox.bluebox.repository.UserRepository;
@@ -38,6 +40,8 @@ public class SellerService {
   @Autowired
   PasswordEncoder passwordEncoder;
 
+  @Autowired
+  AddressRepository addressRepository;
 
   //---------------------------------------------------CREATE------------------------------------------------------------
   /*
@@ -79,6 +83,9 @@ public class SellerService {
 
 //---------------------------------------------------READ------------------------------------------------------------
 
+  /*
+    Fetches Seller details and sends back.
+   */
   public ResponseEntity<MessageResponseEntity> showProfile(String email) {
     Seller seller = sellerRepository.findByEmailIgnoreCase(email);
     SellerDTO sellerDTO = new SellerDTO();
@@ -88,6 +95,24 @@ public class SellerService {
     return new ResponseEntity<>(
         new MessageResponseEntity<>(sellerDTO, HttpStatus.OK)
         , HttpStatus.OK);
+  }
+
+//---------------------------------------------------UPDATE------------------------------------------------------------
+
+  /*
+    Update Seller profile
+   */
+  public ResponseEntity<MessageResponseEntity> updateProfile(String email,
+      SellerProfileUpdate sellerProfileUpdate) {
+    Seller seller = sellerRepository.findByEmailIgnoreCase(email);
+    ModelMapper modelMapper = new ModelMapper();
+    modelMapper.map(sellerProfileUpdate, seller);
+    sellerRepository.save(seller);
+
+    return new ResponseEntity<>(
+        new MessageResponseEntity(sellerProfileUpdate, HttpStatus.OK)
+        , HttpStatus.OK
+    );
   }
 
 

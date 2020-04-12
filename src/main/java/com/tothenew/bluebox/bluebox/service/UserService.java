@@ -1,17 +1,22 @@
 package com.tothenew.bluebox.bluebox.service;
 
+import com.tothenew.bluebox.bluebox.co.AddressCO;
 import com.tothenew.bluebox.bluebox.co.PasswordCO;
 import com.tothenew.bluebox.bluebox.configuration.MessageResponseEntity;
 import com.tothenew.bluebox.bluebox.enitity.product.Product;
+import com.tothenew.bluebox.bluebox.enitity.user.Address;
 import com.tothenew.bluebox.bluebox.enitity.user.ConfirmationToken;
 import com.tothenew.bluebox.bluebox.enitity.user.User;
+import com.tothenew.bluebox.bluebox.exception.AccessNotAllowedExeption;
 import com.tothenew.bluebox.bluebox.exception.UserNotFoundException;
+import com.tothenew.bluebox.bluebox.repository.AddressRepository;
 import com.tothenew.bluebox.bluebox.repository.ConfirmationTokenRepository;
 import com.tothenew.bluebox.bluebox.repository.ProductRepository;
 import com.tothenew.bluebox.bluebox.repository.UserRepository;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.task.TaskExecutor;
 import org.springframework.data.domain.PageRequest;
@@ -48,6 +53,9 @@ public class UserService {
 
   @Autowired
   private TokenStore tokenStore;
+
+  @Autowired
+  AddressRepository addressRepository;
 
 
   /*
@@ -148,4 +156,91 @@ public class UserService {
     return new ResponseEntity<>(
         new MessageResponseEntity<>(HttpStatus.OK, "Logged out successfully"), HttpStatus.OK);
   }
+
+
+  /*
+    Updates already saved address
+   */
+  public ResponseEntity<MessageResponseEntity> updateAddress(String email, Long addressId,
+      AddressCO addressCO) {
+    Optional<Address> optionalAddress = addressRepository.findById(addressId);
+    User user = userRepository.findByEmailIgnoreCase(email);
+
+    if (optionalAddress.isPresent()) {
+      Address address = optionalAddress.get();
+      if (address.getUser().getId() == user.getId()) {
+        ModelMapper modelMapper = new ModelMapper();
+        modelMapper.map(addressCO, address);
+        addressRepository.save(address);
+
+        return new ResponseEntity<>(
+            new MessageResponseEntity(addressCO, HttpStatus.OK)
+            , HttpStatus.OK
+        );
+      } else if (address.getUser().getId() != user.getId()) {
+        throw new AccessNotAllowedExeption("Invalid Request");
+      }
+
+
+    } else {
+      return new ResponseEntity<>(
+          new MessageResponseEntity(HttpStatus.NOT_FOUND, "invalid address id".toUpperCase())
+          , HttpStatus.NOT_FOUND
+      );
+    }
+
+    return new ResponseEntity<>(
+        new MessageResponseEntity(HttpStatus.OK)
+        , HttpStatus.OK
+    );
+  }
+
+  /*
+   Updates User password and log them out.
+  */
+  public ResponseEntity<MessageResponseEntity> updatePassword(String authHeader,
+      PasswordCO passwordCO, String email) {
+
+    User user = userRepository.findByEmailIgnoreCase(email);
+    if (passwordEncoder.matches(passwordCO.getOldPassword(), user.getPassword())) {
+
+      if (passwordCO.getPassword().equals(passwordCO.getRePassword())) {
+        user.setPassword(passwordEncoder.encode(passwordCO.getPassword()));
+        user.setUpdatedDate(new Date());
+        userRepository.save(user);
+        doLogout(authHeader);
+
+        taskExecutor.execute(() -> {
+          try {
+            SimpleMailMessage mailMessage = new SimpleMailMessage();
+            mailMessage.setTo(email);
+            mailMessage.setSubject("Password Updated");
+            mailMessage.setFrom("ecommerce476@gmail.com ");
+            mailMessage.setText("Your Account Password has been updated.\n ");
+
+            emailSenderService.sendEmail(mailMessage);
+          } catch (Exception e) {
+            e.printStackTrace();
+            System.err.println(
+                "Failed to send email to: " + email + " reason: " + e.getMessage());
+          }
+        });
+
+        return new ResponseEntity<>(
+            new MessageResponseEntity(HttpStatus.OK,
+                "Password Changed Successfully. Please reLogin".toUpperCase())
+            , HttpStatus.OK);
+
+      }
+      return new ResponseEntity<>(
+          new MessageResponseEntity(HttpStatus.BAD_REQUEST,
+              "password and confirm password should be same".toUpperCase()),
+          HttpStatus.BAD_REQUEST);
+    }
+    return new ResponseEntity<>(
+        new MessageResponseEntity(HttpStatus.BAD_REQUEST,
+            "Old password Incorrect".toUpperCase()),
+        HttpStatus.BAD_REQUEST);
+  }
+
 }

@@ -7,6 +7,7 @@ import com.tothenew.bluebox.bluebox.co.EmailCO;
 import com.tothenew.bluebox.bluebox.co.PasswordCO;
 import com.tothenew.bluebox.bluebox.configuration.MessageResponseEntity;
 import com.tothenew.bluebox.bluebox.service.CustomerService;
+import com.tothenew.bluebox.bluebox.service.UserService;
 import java.security.Principal;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
@@ -29,6 +30,9 @@ public class CustomerController {
 
   @Autowired
   CustomerService customerService;
+
+  @Autowired
+  UserService userService;
 
 //---------------------------------------------------CREATE------------------------------------------------------------
 
@@ -100,7 +104,7 @@ public class CustomerController {
 
     String authHeader = request.getHeader("Authorization");
     String email = request.getRemoteUser();
-    return customerService.updatePassword(authHeader, passwordCO, email);
+    return userService.updatePassword(authHeader, passwordCO, email);
 
   }
 
@@ -119,11 +123,11 @@ public class CustomerController {
     URI to Update address by id
    */
   @PatchMapping(path = "/update-address/{id}")
-  public ResponseEntity<MessageResponseEntity> updateAddress(
+  public ResponseEntity<MessageResponseEntity> updateAddress(Principal principal,
       @PathVariable(value = "id") Long addressId, @Valid @RequestBody AddressCO addressCO) {
 
-    System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>.>>>>>>>>>>>>>>>>1");
-    return customerService.updateAddress(addressId, addressCO);
+    String email = principal.getName();
+    return userService.updateAddress(email, addressId, addressCO);
   }
 
 //---------------------------------------------------DELETE------------------------------------------------------------

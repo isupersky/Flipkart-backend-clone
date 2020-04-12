@@ -3,7 +3,6 @@ package com.tothenew.bluebox.bluebox.service;
 import com.tothenew.bluebox.bluebox.co.AddressCO;
 import com.tothenew.bluebox.bluebox.co.CustomerCO;
 import com.tothenew.bluebox.bluebox.co.CustomerProfileUpdateCO;
-import com.tothenew.bluebox.bluebox.co.PasswordCO;
 import com.tothenew.bluebox.bluebox.configuration.MessageResponseEntity;
 import com.tothenew.bluebox.bluebox.dto.AddressDTO;
 import com.tothenew.bluebox.bluebox.dto.CustomerDTO;
@@ -279,46 +278,6 @@ public class CustomerService {
 
 //---------------------------------------------------UPDATE------------------------------------------------------------
 
-  /*
-    Updates customer password and log them out.
-   */
-  public ResponseEntity<MessageResponseEntity> updatePassword(String authHeader,
-      PasswordCO passwordCO, String email) {
-
-    if (passwordCO.getPassword().equals(passwordCO.getRePassword())) {
-      Customer customer = customerRepository.findByEmailIgnoreCase(email);
-      customer.setPassword(passwordEncoder.encode(passwordCO.getPassword()));
-      customer.setUpdatedDate(new Date());
-      userRepository.save(customer);
-      userService.doLogout(authHeader);
-
-      taskExecutor.execute(() -> {
-        try {
-          SimpleMailMessage mailMessage = new SimpleMailMessage();
-          mailMessage.setTo(email);
-          mailMessage.setSubject("Password Updated");
-          mailMessage.setFrom("ecommerce476@gmail.com ");
-          mailMessage.setText("Your Account Password has been updated.\n ");
-
-          emailSenderService.sendEmail(mailMessage);
-        } catch (Exception e) {
-          e.printStackTrace();
-          System.err.println(
-              "Failed to send email to: " + email + " reason: " + e.getMessage());
-        }
-      });
-
-      return new ResponseEntity<>(
-          new MessageResponseEntity(HttpStatus.OK,
-              "Password Changed Successfully. Please reLogin".toUpperCase())
-          , HttpStatus.OK);
-
-    }
-    return new ResponseEntity<>(
-        new MessageResponseEntity(HttpStatus.BAD_REQUEST,
-            "password and confirm password should be same".toUpperCase()),
-        HttpStatus.BAD_REQUEST);
-  }
 
   /*
     Update Customer profile
@@ -336,36 +295,6 @@ public class CustomerService {
     );
   }
 
-  /*
-    Updates already saved address
-   */
-  public ResponseEntity<MessageResponseEntity> updateAddress(Long addressId, AddressCO addressCO) {
-    System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>.....2");
-    Optional<Address> optionalAddress = addressRepository.findById(addressId);
-
-    if (!optionalAddress.isPresent()) {
-      return new ResponseEntity<>(
-          new MessageResponseEntity(HttpStatus.BAD_REQUEST),
-          HttpStatus.BAD_REQUEST
-      );
-    }
-
-    System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>3 " + optionalAddress.get());
-
-    Address address = optionalAddress.get();
-    System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>4 " + address);
-    ModelMapper modelMapper = new ModelMapper();
-    modelMapper.map(addressCO, address);
-
-    System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>5 ");
-    addressRepository.save(address);
-
-    System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>6");
-    return new ResponseEntity<>(
-        new MessageResponseEntity(addressCO, HttpStatus.OK)
-        , HttpStatus.OK
-    );
-  }
 //---------------------------------------------------DELETE------------------------------------------------------------
 
   /*

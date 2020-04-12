@@ -10,6 +10,12 @@ public class PasswordCO {
   @Length(min = 8, max = 15, message = "The Length of the password should be between 8 to 15 characters.")
   @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d.*)(?=.*\\W.*)[a-zA-Z0-9\\S]{8,15}$",
       message = "The Password should be 8-15 Characters with atleast 1 Lower case, 1 Upper case, 1 Special Character, 1 Number")
+  private String oldPassword;
+
+  @NotEmpty(message = "Password is a mandatory field")
+  @Length(min = 8, max = 15, message = "The Length of the password should be between 8 to 15 characters.")
+  @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d.*)(?=.*\\W.*)[a-zA-Z0-9\\S]{8,15}$",
+      message = "The Password should be 8-15 Characters with atleast 1 Lower case, 1 Upper case, 1 Special Character, 1 Number")
   private String password;
 
   @NotEmpty(message = "Password is a mandatory field")
@@ -19,6 +25,14 @@ public class PasswordCO {
   private String rePassword;
 
   public PasswordCO() {
+  }
+
+  public String getOldPassword() {
+    return oldPassword;
+  }
+
+  public void setOldPassword(String oldPassword) {
+    this.oldPassword = oldPassword;
   }
 
   public String getPassword() {
@@ -40,7 +54,8 @@ public class PasswordCO {
   @Override
   public String toString() {
     return "PasswordCO{" +
-        "password='" + password + '\'' +
+        "oldPassword='" + oldPassword + '\'' +
+        ", password='" + password + '\'' +
         ", rePassword='" + rePassword + '\'' +
         '}';
   }
