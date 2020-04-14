@@ -1,5 +1,6 @@
 package com.tothenew.bluebox.bluebox.enitity.user;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.PrimaryKeyJoinColumn;
 
@@ -7,8 +8,10 @@ import javax.persistence.PrimaryKeyJoinColumn;
 @PrimaryKeyJoinColumn(name = "userId", referencedColumnName = "id")
 public class Seller extends User {
 
+  @Column(unique = true)
   private String gst;
 
+  @Column(unique = true)
   private String companyName;
 
   private Long companyContact;

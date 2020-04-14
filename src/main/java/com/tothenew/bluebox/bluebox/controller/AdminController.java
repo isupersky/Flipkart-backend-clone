@@ -2,7 +2,6 @@ package com.tothenew.bluebox.bluebox.controller;
 
 import com.tothenew.bluebox.bluebox.configuration.MessageResponseEntity;
 import com.tothenew.bluebox.bluebox.service.AdminService;
-import com.tothenew.bluebox.bluebox.service.CustomerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,9 +13,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/admin")
 public class AdminController {
-
-  @Autowired
-  CustomerService customerService;
 
   @Autowired
   AdminService adminService;

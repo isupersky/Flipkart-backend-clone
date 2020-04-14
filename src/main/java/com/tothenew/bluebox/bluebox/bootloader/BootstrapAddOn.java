@@ -172,9 +172,9 @@ public class BootstrapAddOn {
     categoryRepository.save(mobile);
 
     Category mobileAccessory = new Category();
-    mobile.setName("MOBILE ACCESSORY");
-    mobile.setParentId(mobileAndAccessory);
-    mobile.setLeafNode(true);
+    mobileAccessory.setName("MOBILE ACCESSORY");
+    mobileAccessory.setParentId(mobileAndAccessory);
+    mobileAccessory.setLeafNode(true);
     categoryRepository.save(mobileAccessory);
 
 //-------------SUBCATEGORY:CAMERA AND ACCESSORY------------------
@@ -185,9 +185,9 @@ public class BootstrapAddOn {
     categoryRepository.save(camera);
 
     Category cameraAccessory = new Category();
-    camera.setName("CAMERA ACCESSORY");
-    camera.setParentId(mobileAndAccessory);
-    camera.setLeafNode(true);
+    cameraAccessory.setName("CAMERA ACCESSORY");
+    cameraAccessory.setParentId(cameraAndAccessory);
+    cameraAccessory.setLeafNode(true);
     categoryRepository.save(cameraAccessory);
 
 //-------------SUBCATEGORY:ACTION AND ADVENTURE------------------

@@ -1,50 +1,22 @@
-package com.tothenew.bluebox.bluebox.enitity.product;
+package com.tothenew.bluebox.bluebox.co;
 
-import com.tothenew.bluebox.bluebox.enitity.user.Seller;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+import com.tothenew.bluebox.bluebox.enitity.product.Category;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 
-@Entity
-public class Product {
+public class ProductCO {
 
-  @Id
-  @GeneratedValue
-  private Long id;
-  @ManyToOne
-  @JoinColumn(name = "sellerUserId")
-  private Seller sellerUserId;
+  @NotEmpty
   private String name;
-  private String description;
-  @ManyToOne
-  @JoinColumn(name = "categoryId")
+  private String description = "No description".toUpperCase();
+  @NotBlank
+  @NotNull
   private Category categoryId;
   private boolean isCancellable = false;
   private boolean isReturnable = false;
+  @NotEmpty
   private String brand;
-  private boolean isActive = false;
-
-
-  public Product() {
-  }
-
-  public Long getId() {
-    return id;
-  }
-
-  public void setId(Long id) {
-    this.id = id;
-  }
-
-  public Seller getSellerUserId() {
-    return sellerUserId;
-  }
-
-  public void setSellerUserId(Seller sellerUserId) {
-    this.sellerUserId = sellerUserId;
-  }
 
   public String getName() {
     return name;
@@ -94,26 +66,15 @@ public class Product {
     this.brand = brand;
   }
 
-  public boolean isActive() {
-    return isActive;
-  }
-
-  public void setActive(boolean active) {
-    isActive = active;
-  }
-
   @Override
   public String toString() {
-    return "Product{" +
-        "id=" + id +
-        ", sellerUserId=" + sellerUserId +
-        ", name='" + name + '\'' +
+    return "ProductCO{" +
+        "name='" + name + '\'' +
         ", description='" + description + '\'' +
         ", categoryId=" + categoryId +
         ", isCancellable=" + isCancellable +
         ", isReturnable=" + isReturnable +
         ", brand='" + brand + '\'' +
-        ", isActive=" + isActive +
         '}';
   }
 }

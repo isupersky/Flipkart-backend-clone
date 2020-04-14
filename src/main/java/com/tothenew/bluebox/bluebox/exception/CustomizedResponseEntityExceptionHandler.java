@@ -67,6 +67,17 @@ public class CustomizedResponseEntityExceptionHandler
     return new ResponseEntity(exceptionResponse, HttpStatus.BAD_REQUEST);
   }
 
+  //HTTP STATUS 400 BAD REQUEST
+  @ExceptionHandler(CategoryDoesNotExistsException.class)
+  public final ResponseEntity<Object> handleCategoryDoesNotExistsException
+  (CategoryDoesNotExistsException ex, WebRequest request) {
+    ExceptionResponse exceptionResponse =
+        new ExceptionResponse(new Date(), "Enter a Valid Category Id",
+            request.getDescription(false));
+    return new ResponseEntity(exceptionResponse, HttpStatus.NOT_FOUND);
+  }
+
+
   //HTTP STATUS 405 METHOD_NOT_ALLOWED
   @Override
   protected ResponseEntity<Object> handleHttpRequestMethodNotSupported(
@@ -83,6 +94,26 @@ public class CustomizedResponseEntityExceptionHandler
   @ExceptionHandler(UserAlreadyExistsException.class)
   public final ResponseEntity<Object> handleUserAlreadyExistsExceptions
   (UserAlreadyExistsException ex, WebRequest request) {
+    ExceptionResponse exceptionResponse =
+        new ExceptionResponse(new Date(), ex.getMessage(),
+            request.getDescription(false));
+    return new ResponseEntity(exceptionResponse, HttpStatus.FOUND);
+  }
+
+  //HTTP STATUS 302 FOUND - When the user's emailID already Exists
+  @ExceptionHandler(CategoryExistsException.class)
+  public final ResponseEntity<Object> handleCategoryExistsException
+  (CategoryExistsException ex, WebRequest request) {
+    ExceptionResponse exceptionResponse =
+        new ExceptionResponse(new Date(), ex.getMessage(),
+            request.getDescription(false));
+    return new ResponseEntity(exceptionResponse, HttpStatus.FOUND);
+  }
+
+  //HTTP STATUS 302 FOUND - When the meta Data Field already Exists
+  @ExceptionHandler(MetadataFieldExistsException.class)
+  public final ResponseEntity<Object> handleMetadataFieldExistsException
+  (MetadataFieldExistsException ex, WebRequest request) {
     ExceptionResponse exceptionResponse =
         new ExceptionResponse(new Date(), ex.getMessage(),
             request.getDescription(false));

@@ -1,14 +1,28 @@
 package com.tothenew.bluebox.bluebox.service;
 
+import com.tothenew.bluebox.bluebox.co.CategoryCO;
+import com.tothenew.bluebox.bluebox.co.CategoryMetadataFieldCO;
+import com.tothenew.bluebox.bluebox.co.CategoryUpdateCO;
 import com.tothenew.bluebox.bluebox.configuration.MessageResponseEntity;
+import com.tothenew.bluebox.bluebox.enitity.product.Category;
+import com.tothenew.bluebox.bluebox.enitity.product.CategoryMetadataField;
 import com.tothenew.bluebox.bluebox.enitity.user.User;
+import com.tothenew.bluebox.bluebox.exception.CategoryDoesNotExistsException;
+import com.tothenew.bluebox.bluebox.exception.CategoryExistsException;
+import com.tothenew.bluebox.bluebox.exception.MetadataFieldExistsException;
+import com.tothenew.bluebox.bluebox.repository.CategoryMetadataFieldRepository;
+import com.tothenew.bluebox.bluebox.repository.CategoryRepository;
 import com.tothenew.bluebox.bluebox.repository.CustomerRepository;
 import com.tothenew.bluebox.bluebox.repository.SellerRepository;
 import com.tothenew.bluebox.bluebox.repository.UserRepository;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.task.TaskExecutor;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -35,7 +49,13 @@ public class AdminService {
   @Autowired
   EmailSenderService emailSenderService;
 
+  @Autowired
+  CategoryMetadataFieldRepository categoryMetadataFieldRepository;
 
+  @Autowired
+  CategoryRepository categoryRepository;
+
+  //-------------------------------------------GET LIST OF USER---------------------------------------
   /*
     Method to get the list of all Customers present in the system.
    */
@@ -61,6 +81,8 @@ public class AdminService {
         , HttpStatus.OK);
   }
 
+
+  //------------------------------------------ACTIVATE/DEACTIVATE-------------------------------------
   /*
     Method activates the user account for provide user id and triggers a mail to user about the activation.
    */
@@ -147,4 +169,162 @@ public class AdminService {
         new MessageResponseEntity<>(HttpStatus.NOT_FOUND, "User not present")
         , HttpStatus.NOT_FOUND);
   }
+
+
+  //---------------------------------------------CATEGORY API-----------------------------------------
+  /*
+    Method to Add Category Metadata Field
+   */
+  public ResponseEntity<MessageResponseEntity> addMetadataField(
+      CategoryMetadataFieldCO categoryMetadataFieldCO) {
+
+    ModelMapper modelMapper = new ModelMapper();
+    CategoryMetadataField categoryMetadataField = new CategoryMetadataField();
+
+    modelMapper.map(categoryMetadataFieldCO, categoryMetadataField);
+    String name = categoryMetadataField.getName();
+
+    CategoryMetadataField savedCategoryMetadataField = categoryMetadataFieldRepository
+        .findByNameIgnoreCase(name);
+    if (savedCategoryMetadataField == null) {
+      categoryMetadataFieldRepository.save(categoryMetadataField);
+
+      return new ResponseEntity<>(
+          new MessageResponseEntity<>(categoryMetadataFieldCO, HttpStatus.CREATED)
+          , HttpStatus.CREATED);
+    } else {
+      throw new MetadataFieldExistsException(
+          "The Metadata Field Already Exists: " + categoryMetadataField.getName());
+    }
+  }
+
+
+  /*
+    Method to List All Category Metadata Field
+   */
+  public ResponseEntity<MessageResponseEntity> listAllMetadata(Integer pageNo, Integer pageSize,
+      String sortBy) {
+
+    Pageable paging = PageRequest.of(pageNo, pageSize, Sort.by(sortBy).ascending());
+    Page<CategoryMetadataField> pagedResult = categoryMetadataFieldRepository.findAll(paging);
+
+    return new ResponseEntity<>(new MessageResponseEntity(pagedResult.getContent(), HttpStatus.OK),
+        HttpStatus.OK);
+  }
+
+  /*
+    Method to Add New Category
+   */
+  public ResponseEntity<Object> addCategory(CategoryCO categoryCO) {
+
+    Category oldCategory = categoryRepository
+        .findByNameAndParent(categoryCO.getName(), categoryCO.getParentId());
+    if (oldCategory != null) {
+
+      throw new CategoryExistsException("Category already exists ".toUpperCase());
+    }
+
+    if (categoryCO.getParentId() == null) {
+      Category category = new Category();
+      category.setLeafNode(false);
+      category.setName(categoryCO.getName());
+      categoryRepository.save(category);
+
+      return new ResponseEntity<>(
+          new MessageResponseEntity<>(categoryCO, HttpStatus.CREATED)
+          , HttpStatus.CREATED);
+    } else {
+      Optional<Category> optionalParentCategory = categoryRepository
+          .findById(categoryCO.getParentId());
+      if (optionalParentCategory.isPresent()) {
+        Category parentCategory = optionalParentCategory.get();
+        parentCategory.setLeafNode(false);
+        Category category = new Category();
+        category.setLeafNode(true);
+        category.setName(categoryCO.getName());
+        category.setParentId(parentCategory);
+
+        categoryRepository.save(parentCategory);
+        categoryRepository.save(category);
+
+        return new ResponseEntity<>(
+            new MessageResponseEntity<>(categoryCO, HttpStatus.CREATED)
+            , HttpStatus.CREATED);
+      } else {
+        return new ResponseEntity<>(
+            new MessageResponseEntity<>(HttpStatus.NOT_FOUND,
+                "Parent Category Not Found!".toUpperCase())
+            , HttpStatus.NOT_FOUND);
+      }
+    }
+  }
+
+  /*
+    Method to list All Category
+   */
+  public ResponseEntity<MessageResponseEntity> listAllCategory(Integer pageNo, Integer pageSize,
+      String sortBy) {
+    Pageable paging = PageRequest.of(pageNo, pageSize, Sort.by(sortBy).ascending());
+    List<Category> categoryList = categoryRepository.findAllCategory(paging);
+    return new ResponseEntity<>(
+        new MessageResponseEntity(categoryList, HttpStatus.OK)
+        , HttpStatus.OK);
+  }
+
+  /*
+    method to get details of a given category by Id
+   */
+  public ResponseEntity<MessageResponseEntity> getCategoryDetails(Long id) {
+
+    Map<String, Object> response = new HashMap<>();
+    Optional<Category> optionalCategory = categoryRepository.findById(id);
+
+    if (optionalCategory.isPresent()) {
+      Category category = optionalCategory.get();
+      List<Object> subCategory = categoryRepository.findAllChildren(id);
+
+      response.put("Sub-categories".toUpperCase(), subCategory);
+      response.put("Category Datail".toUpperCase(), category);
+
+      return new ResponseEntity<>(
+          new MessageResponseEntity(response, HttpStatus.OK)
+          , HttpStatus.OK);
+    }
+
+    throw new CategoryDoesNotExistsException("Invalid Category Id".toUpperCase());
+
+  }
+
+  /*
+    Method to update a Category
+   */
+  public ResponseEntity<MessageResponseEntity> updateCategory(CategoryUpdateCO categoryUpdateCO) {
+    Optional<Category> optionalCategory = categoryRepository.findById(categoryUpdateCO.getId());
+
+    if (!optionalCategory.isPresent()) {
+      throw new CategoryDoesNotExistsException("No Such Category Exists".toUpperCase());
+    } else {
+      Category savedCategory = optionalCategory.get();
+
+      Category oldCategory = categoryRepository
+          .findByNameAndParent(categoryUpdateCO.getName(),
+              savedCategory
+                  .getParentId()
+                  .getId());
+      if (oldCategory != null) {
+        throw new CategoryExistsException(
+            "Category with similar name already exists".toUpperCase());
+      }
+
+      ModelMapper mapper = new ModelMapper();
+      mapper.map(categoryUpdateCO, savedCategory);
+      categoryRepository.save(savedCategory);
+
+      return new ResponseEntity<>(
+          new MessageResponseEntity<>(categoryUpdateCO, HttpStatus.OK)
+          , HttpStatus.OK);
+    }
+
+  }
+
 }

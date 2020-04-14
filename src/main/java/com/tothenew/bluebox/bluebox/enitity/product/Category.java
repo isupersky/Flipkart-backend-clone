@@ -3,6 +3,7 @@ package com.tothenew.bluebox.bluebox.enitity.product;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
 @Entity
@@ -13,15 +14,16 @@ public class Category {
   private Long id;
   private String name;
   @ManyToOne
+  @JoinColumn(name = "parentId")
   private Category parentId;
-  private boolean leafNode = false;
+  private boolean isLeafNode = false;
 
   public Category(Long id, String name,
-      Category parentId, boolean leafNode) {
+      Category parentId, boolean isLeafNode) {
     this.id = id;
     this.name = name;
     this.parentId = parentId;
-    this.leafNode = leafNode;
+    this.isLeafNode = isLeafNode;
   }
 
   public Category() {
@@ -52,11 +54,11 @@ public class Category {
   }
 
   public boolean isLeafNode() {
-    return leafNode;
+    return isLeafNode;
   }
 
   public void setLeafNode(boolean leafNode) {
-    this.leafNode = leafNode;
+    this.isLeafNode = leafNode;
   }
 
   @Override
@@ -65,7 +67,7 @@ public class Category {
         "id=" + id +
         ", name='" + name + '\'' +
         ", parentId=" + parentId +
-        ", leafNode=" + leafNode +
+        ", leafNode=" + isLeafNode +
         '}';
   }
 }
