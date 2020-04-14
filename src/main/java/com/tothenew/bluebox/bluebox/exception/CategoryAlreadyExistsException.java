@@ -4,9 +4,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 @ResponseStatus(HttpStatus.FOUND)
-public class CategoryExistsException extends RuntimeException {
+public class CategoryAlreadyExistsException extends RuntimeException {
 
-    public CategoryExistsException(String message) {
-        super(message);
-    }
+  public CategoryAlreadyExistsException(String message) {
+    super(message);
+  }
 }

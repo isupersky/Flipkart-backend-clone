@@ -22,13 +22,6 @@ public class CategoryMetadataFieldValues {
 
   private String value;
 
-  public CategoryMetadataFieldValues(
-      CategoryMetadataField categoryMetadataField,
-      Category category, String value) {
-    this.categoryMetadataField = categoryMetadataField;
-    this.category = category;
-    this.value = value;
-  }
 
   public CategoryMetadataField getCategoryMetadataField() {
     return categoryMetadataField;

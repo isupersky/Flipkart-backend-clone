@@ -4,9 +4,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 @ResponseStatus(HttpStatus.BAD_REQUEST)
-public class CategoryDoesNotExistsException extends RuntimeException {
+public class MetadataFieldNotFoundException extends RuntimeException {
 
-  public CategoryDoesNotExistsException(String message) {
+  public MetadataFieldNotFoundException(String message) {
     super(message);
   }
 }

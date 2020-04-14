@@ -4,31 +4,33 @@ import java.io.Serializable;
 
 public class CategoryMetadataFieldValuesId implements Serializable {
 
-  private CategoryMetadataField categoryMetadataField;
+  private static final long serialVersionUID = 1l;
 
-  private Category category;
+  private Long categoryMetadataField;
 
-  public CategoryMetadataFieldValuesId(
-      CategoryMetadataField categoryMetadataField,
-      Category category) {
+  private Long category;
+
+  public CategoryMetadataFieldValuesId() {
+  }
+
+  public CategoryMetadataFieldValuesId(Long categoryMetadataField, Long category) {
     this.categoryMetadataField = categoryMetadataField;
     this.category = category;
   }
 
-  public CategoryMetadataField getCategoryMetadataField() {
+  public Long getCategoryMetadataField() {
     return categoryMetadataField;
   }
 
-  public void setCategoryMetadataField(
-      CategoryMetadataField categoryMetadataField) {
+  public void setCategoryMetadataField(Long categoryMetadataField) {
     this.categoryMetadataField = categoryMetadataField;
   }
 
-  public Category getCategory() {
+  public Long getCategory() {
     return category;
   }
 
-  public void setCategory(Category category) {
+  public void setCategory(Long category) {
     this.category = category;
   }
 

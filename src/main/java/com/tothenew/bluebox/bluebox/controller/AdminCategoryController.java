@@ -2,6 +2,7 @@ package com.tothenew.bluebox.bluebox.controller;
 
 import com.tothenew.bluebox.bluebox.co.CategoryCO;
 import com.tothenew.bluebox.bluebox.co.CategoryMetadataFieldCO;
+import com.tothenew.bluebox.bluebox.co.CategoryMetadataFieldValueCO;
 import com.tothenew.bluebox.bluebox.co.CategoryUpdateCO;
 import com.tothenew.bluebox.bluebox.configuration.MessageResponseEntity;
 import com.tothenew.bluebox.bluebox.service.AdminService;
@@ -27,14 +28,16 @@ public class AdminCategoryController {
   /*
     URI to Add Category Metadata Field
    */
-  @PostMapping("/admin/add-metadata-field")
+  @PostMapping("/add-metadata-field")
   public ResponseEntity<MessageResponseEntity> addMetadataField(
       @Valid @RequestBody CategoryMetadataFieldCO categoryMetadataFieldCO) {
     return adminService.addMetadataField(categoryMetadataFieldCO);
   }
 
-  //Admin Function to List All Category Metadata Field
-  @GetMapping("/admin/metadata")
+  /*
+    URI to List All Category Metadata Field
+   */
+  @GetMapping("/metadata")
   public ResponseEntity<MessageResponseEntity> listAllMetadata(
       @RequestParam(defaultValue = "0") Integer pageNo,
       @RequestParam(defaultValue = "10") Integer pageSize,
@@ -76,5 +79,14 @@ public class AdminCategoryController {
   public ResponseEntity<MessageResponseEntity> updateCategory(
       @Valid @RequestBody CategoryUpdateCO categoryUpdateCO) {
     return adminService.updateCategory(categoryUpdateCO);
+  }
+
+  /* @UNTESTED
+    URI to add new Category Metadata Field values
+   */
+  @PostMapping("/add-category-metadata-field-value")
+  public ResponseEntity<MessageResponseEntity> addCategoryMetadataFieldValues(@Valid @RequestBody
+      CategoryMetadataFieldValueCO categoryMetadataFieldValueCO) {
+    return adminService.addCategoryMetadataValues(categoryMetadataFieldValueCO);
   }
 }

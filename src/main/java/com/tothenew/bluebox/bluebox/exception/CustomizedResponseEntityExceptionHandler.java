@@ -68,11 +68,21 @@ public class CustomizedResponseEntityExceptionHandler
   }
 
   //HTTP STATUS 400 BAD REQUEST
-  @ExceptionHandler(CategoryDoesNotExistsException.class)
+  @ExceptionHandler(CategoryNotFoundException.class)
   public final ResponseEntity<Object> handleCategoryDoesNotExistsException
-  (CategoryDoesNotExistsException ex, WebRequest request) {
+  (CategoryNotFoundException ex, WebRequest request) {
     ExceptionResponse exceptionResponse =
         new ExceptionResponse(new Date(), "Enter a Valid Category Id",
+            request.getDescription(false));
+    return new ResponseEntity(exceptionResponse, HttpStatus.NOT_FOUND);
+  }
+
+  //HTTP STATUS 400 BAD REQUEST
+  @ExceptionHandler(MetadataFieldNotFoundException.class)
+  public final ResponseEntity<Object> handleCategoryDoesNotExistsException
+  (MetadataFieldNotFoundException ex, WebRequest request) {
+    ExceptionResponse exceptionResponse =
+        new ExceptionResponse(new Date(), "Enter a Valid Metadata Field Id",
             request.getDescription(false));
     return new ResponseEntity(exceptionResponse, HttpStatus.NOT_FOUND);
   }
@@ -101,9 +111,9 @@ public class CustomizedResponseEntityExceptionHandler
   }
 
   //HTTP STATUS 302 FOUND - When the user's emailID already Exists
-  @ExceptionHandler(CategoryExistsException.class)
+  @ExceptionHandler(CategoryAlreadyExistsException.class)
   public final ResponseEntity<Object> handleCategoryExistsException
-  (CategoryExistsException ex, WebRequest request) {
+  (CategoryAlreadyExistsException ex, WebRequest request) {
     ExceptionResponse exceptionResponse =
         new ExceptionResponse(new Date(), ex.getMessage(),
             request.getDescription(false));
