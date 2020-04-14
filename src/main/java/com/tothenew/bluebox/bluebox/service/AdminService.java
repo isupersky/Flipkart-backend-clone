@@ -11,6 +11,7 @@ import com.tothenew.bluebox.bluebox.enitity.product.CategoryMetadataFieldValues;
 import com.tothenew.bluebox.bluebox.enitity.product.CategoryMetadataFieldValuesId;
 import com.tothenew.bluebox.bluebox.enitity.user.User;
 import com.tothenew.bluebox.bluebox.exception.CategoryAlreadyExistsException;
+import com.tothenew.bluebox.bluebox.exception.CategoryMetadataFieldValueExistsException;
 import com.tothenew.bluebox.bluebox.exception.CategoryNotFoundException;
 import com.tothenew.bluebox.bluebox.exception.MetadataFieldExistsException;
 import com.tothenew.bluebox.bluebox.exception.MetadataFieldNotFoundException;
@@ -361,25 +362,8 @@ public class AdminService {
         categoryMetadataFieldValuesRespository.findById(categoryMetadataFieldValuesId);
 
     if (optionalCategoryMetadataFieldValues.isPresent()) {
-      CategoryMetadataFieldValues categoryMetadataFieldValues = optionalCategoryMetadataFieldValues
-          .get();
 
-      if (categoryMetadataFieldValues.getValue()
-          .contains(categoryMetadataFieldValueCO.getValue())) {
-        return new ResponseEntity<>(
-            new MessageResponseEntity(HttpStatus.OK, "Already in the System")
-            , HttpStatus.OK);
-      }
-
-      String newValue = categoryMetadataFieldValues.getValue()
-          .concat("," + categoryMetadataFieldValueCO.getValue());
-      categoryMetadataFieldValues.setValue(newValue);
-      categoryMetadataFieldValuesRespository.save(categoryMetadataFieldValues);
-
-      categoryMetadataFieldValueCO.setValue(newValue);
-      return new ResponseEntity<>(
-          new MessageResponseEntity(categoryMetadataFieldValueCO, HttpStatus.OK, "Added")
-          , HttpStatus.OK);
+      throw new CategoryMetadataFieldValueExistsException("Category meta data ");
     }
 
     if (!optionalCategoryMetadataFieldValues.isPresent()) {
@@ -399,5 +383,52 @@ public class AdminService {
         new MessageResponseEntity(HttpStatus.OK, "Something Went Wrong")
         , HttpStatus.OK);
   }
+
+  /*
+    Method to update c
+   */
+  public ResponseEntity<MessageResponseEntity> updateCategoryMetadatavalues(
+      CategoryMetadataFieldValueCO categoryMetadataFieldValueCO) {
+
+    Optional<Category> optionalCategory = categoryRepository
+        .findById(categoryMetadataFieldValueCO.getCategoryId());
+    if (!optionalCategory.isPresent()) {
+      throw new CategoryNotFoundException("Category does not exists");
+    }
+
+    Optional<CategoryMetadataField> optionalCategoryMetadataField = categoryMetadataFieldRepository
+        .findById(categoryMetadataFieldValueCO.getCategoryMetadataFieldId());
+    if (!optionalCategoryMetadataField.isPresent()) {
+      throw new MetadataFieldNotFoundException("Metadata field does not exists");
+    }
+
+    CategoryMetadataFieldValuesId categoryMetadataFieldValuesId =
+        new CategoryMetadataFieldValuesId(optionalCategoryMetadataField.get().getId(),
+            optionalCategory.get().getId());
+
+    Optional<CategoryMetadataFieldValues> optionalCategoryMetadataFieldValues =
+        categoryMetadataFieldValuesRespository.findById(categoryMetadataFieldValuesId);
+
+    CategoryMetadataFieldValues categoryMetadataFieldValues = optionalCategoryMetadataFieldValues
+        .get();
+
+    if (categoryMetadataFieldValues.getValue()
+        .contains(categoryMetadataFieldValueCO.getValue())) {
+      return new ResponseEntity<>(
+          new MessageResponseEntity(HttpStatus.OK, "Already in the System")
+          , HttpStatus.OK);
+    }
+
+    String newValue = categoryMetadataFieldValues.getValue()
+        .concat("," + categoryMetadataFieldValueCO.getValue());
+    categoryMetadataFieldValues.setValue(newValue);
+    categoryMetadataFieldValuesRespository.save(categoryMetadataFieldValues);
+
+    categoryMetadataFieldValueCO.setValue(newValue);
+    return new ResponseEntity<>(
+        new MessageResponseEntity(categoryMetadataFieldValueCO, HttpStatus.OK, "Updated")
+        , HttpStatus.OK);
+  }
+
 
 }

@@ -129,4 +129,14 @@ public class CustomizedResponseEntityExceptionHandler
             request.getDescription(false));
     return new ResponseEntity(exceptionResponse, HttpStatus.FOUND);
   }
+
+  //HTTP STATUS 302 FOUND - When the Category meta Data Field value already Exists
+  @ExceptionHandler(CategoryMetadataFieldValueExistsException.class)
+  public final ResponseEntity<Object> handleMetadataFieldExistsException
+  (CategoryMetadataFieldValueExistsException ex, WebRequest request) {
+    ExceptionResponse exceptionResponse =
+        new ExceptionResponse(new Date(), ex.getMessage(),
+            request.getDescription(false));
+    return new ResponseEntity(exceptionResponse, HttpStatus.FOUND);
+  }
 }
