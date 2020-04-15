@@ -4,22 +4,29 @@ import com.tothenew.bluebox.bluebox.co.SellerCO;
 import com.tothenew.bluebox.bluebox.co.SellerProfileUpdate;
 import com.tothenew.bluebox.bluebox.configuration.MessageResponseEntity;
 import com.tothenew.bluebox.bluebox.dto.SellerDTO;
+import com.tothenew.bluebox.bluebox.enitity.product.Category;
 import com.tothenew.bluebox.bluebox.enitity.user.Address;
 import com.tothenew.bluebox.bluebox.enitity.user.Role;
 import com.tothenew.bluebox.bluebox.enitity.user.Seller;
 import com.tothenew.bluebox.bluebox.enitity.user.User;
 import com.tothenew.bluebox.bluebox.exception.UserAlreadyExistsException;
-import com.tothenew.bluebox.bluebox.repository.AddressRepository;
+import com.tothenew.bluebox.bluebox.repository.CategoryMetadataFieldValuesRespository;
+import com.tothenew.bluebox.bluebox.repository.CategoryRepository;
 import com.tothenew.bluebox.bluebox.repository.RoleRepository;
 import com.tothenew.bluebox.bluebox.repository.SellerRepository;
 import com.tothenew.bluebox.bluebox.repository.UserRepository;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -41,7 +48,10 @@ public class SellerService {
   PasswordEncoder passwordEncoder;
 
   @Autowired
-  AddressRepository addressRepository;
+  CategoryRepository categoryRepository;
+
+  @Autowired
+  CategoryMetadataFieldValuesRespository categoryMetadataFieldValuesRespository;
 
   //---------------------------------------------------CREATE------------------------------------------------------------
   /*
@@ -117,5 +127,25 @@ public class SellerService {
 
 //---------------------------------------------------SELLER CATEGORY------------------------------------------------------------
 
+  /*
+   Method to list All Category
+  */
+  public ResponseEntity<MessageResponseEntity> listAllCategory(Integer pageNo, Integer pageSize,
+      String sortBy) {
+    Pageable paging = PageRequest.of(pageNo, pageSize, Sort.by(sortBy).ascending());
+
+    Map<Category, Object> response = new HashMap<>();
+
+    List<Category> categoryList = categoryRepository.findAllCategory(paging);
+    categoryList.forEach(category -> {
+      List<Map<Object, Object>> metadatavalueList = categoryMetadataFieldValuesRespository
+          .findByCategoryId(category.getId());
+      response.put(category, metadatavalueList);
+    });
+
+    return new ResponseEntity<>(
+        new MessageResponseEntity(response, HttpStatus.OK)
+        , HttpStatus.OK);
+  }
 
 }

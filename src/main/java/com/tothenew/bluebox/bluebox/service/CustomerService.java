@@ -12,16 +12,21 @@ import com.tothenew.bluebox.bluebox.enitity.user.Customer;
 import com.tothenew.bluebox.bluebox.enitity.user.Role;
 import com.tothenew.bluebox.bluebox.enitity.user.User;
 import com.tothenew.bluebox.bluebox.exception.AccessNotAllowedExeption;
+import com.tothenew.bluebox.bluebox.exception.CategoryNotFoundException;
 import com.tothenew.bluebox.bluebox.exception.UserAlreadyExistsException;
 import com.tothenew.bluebox.bluebox.exception.UserNotFoundException;
 import com.tothenew.bluebox.bluebox.repository.AddressRepository;
+import com.tothenew.bluebox.bluebox.repository.CategoryMetadataFieldValuesRespository;
+import com.tothenew.bluebox.bluebox.repository.CategoryRepository;
 import com.tothenew.bluebox.bluebox.repository.ConfirmationTokenRepository;
 import com.tothenew.bluebox.bluebox.repository.CustomerRepository;
+import com.tothenew.bluebox.bluebox.repository.ProductRepository;
 import com.tothenew.bluebox.bluebox.repository.RoleRepository;
 import com.tothenew.bluebox.bluebox.repository.UserRepository;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -61,6 +66,15 @@ public class CustomerService {
 
   @Autowired
   AddressRepository addressRepository;
+
+  @Autowired
+  CategoryRepository categoryRepository;
+
+  @Autowired
+  CategoryMetadataFieldValuesRespository categoryMetadataFieldValuesRespository;
+
+  @Autowired
+  ProductRepository productRepository;
 
 //---------------------------------------------------CREATE------------------------------------------------------------
 
@@ -331,4 +345,61 @@ public class CustomerService {
     );
   }
 
+//---------------------------------------------------CUSTOMER-CATEGORY------------------------------------------------------------
+
+  /*
+     Return List all root level categroies if no ID is passed,
+      else list of all immediate child nodes of passed category ID
+   */
+  public ResponseEntity<MessageResponseEntity> listAllCustomerCategories(Long id) {
+
+    boolean exists;
+
+    if (id != null) {
+      exists = categoryRepository.existsById(id);
+
+      if (exists) {
+        List<Map<Object, Object>> resposeList = categoryRepository.findByParentCategory(id);
+
+        return new ResponseEntity<>(
+            new MessageResponseEntity(resposeList, HttpStatus.OK)
+            , HttpStatus.OK);
+      } else {
+        throw new CategoryNotFoundException("Invalid category Id");
+      }
+    } else {
+      List<Map<Object, Object>> resposeList = categoryRepository.findByCategoryIsNull();
+
+      return new ResponseEntity<>(
+          new MessageResponseEntity(resposeList, HttpStatus.OK)
+          , HttpStatus.OK);
+    }
+  }
+
+  /*@UNTESTED
+  Returns-
+    1. All metadata field along with possible values for that category
+    2. Brands list compiled from associated products of that node
+    3. Minimum and Maximum price possible from lowest and highest valued product under that category"
+   */
+  public ResponseEntity<MessageResponseEntity> getFilterDetails(Long id) {
+
+    boolean exists = categoryRepository.existsById(id);
+
+    if (!exists) {
+      throw new CategoryNotFoundException("invalid Category Id");
+    }
+
+    List<Object> responseList = new ArrayList();
+//    All metadata field along with possible values for that category
+    responseList.add(categoryMetadataFieldValuesRespository.findByCategoryId(id));
+    responseList.add(productRepository.findAllBrandsByCategoryId(id));
+    responseList.add(productRepository.findMinimum(id));
+    responseList.add(productRepository.findMaximum(id));
+
+    return new ResponseEntity<>(
+        new MessageResponseEntity<>(responseList, HttpStatus.OK)
+        , HttpStatus.OK);
+
+  }
 }

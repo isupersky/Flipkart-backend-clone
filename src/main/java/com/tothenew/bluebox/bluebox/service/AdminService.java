@@ -339,7 +339,7 @@ public class AdminService {
   /*
     Method To add category-metadata-field-values
    */
-  public ResponseEntity<MessageResponseEntity> addCategoryMetadataValues(
+  public ResponseEntity<MessageResponseEntity> addCategoryMetadataFieldValues(
       CategoryMetadataFieldValueCO categoryMetadataFieldValueCO) {
 
     Optional<Category> optionalCategory = categoryRepository
@@ -363,7 +363,7 @@ public class AdminService {
 
     if (optionalCategoryMetadataFieldValues.isPresent()) {
 
-      throw new CategoryMetadataFieldValueExistsException("Category meta data ");
+      throw new CategoryMetadataFieldValueExistsException("Category meta data already exists ");
     }
 
     if (!optionalCategoryMetadataFieldValues.isPresent()) {
@@ -387,7 +387,7 @@ public class AdminService {
   /*
     Method to update c
    */
-  public ResponseEntity<MessageResponseEntity> updateCategoryMetadatavalues(
+  public ResponseEntity<MessageResponseEntity> updateCategoryMetadataFieldvalues(
       CategoryMetadataFieldValueCO categoryMetadataFieldValueCO) {
 
     Optional<Category> optionalCategory = categoryRepository

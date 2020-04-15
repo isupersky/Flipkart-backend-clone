@@ -18,6 +18,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+
+//---------------------------------------------COMPLETE---------------------------------------------
 @RestController
 @RequestMapping("/admin")
 public class AdminCategoryController {
@@ -55,7 +57,7 @@ public class AdminCategoryController {
     return adminService.addCategory(categoryCO);
   }
 
-  @GetMapping("/category")
+  @GetMapping("/categories")
   public ResponseEntity<MessageResponseEntity> listAllCategory(
       @RequestParam(defaultValue = "0") Integer pageNo,
       @RequestParam(defaultValue = "10") Integer pageSize,
@@ -67,7 +69,7 @@ public class AdminCategoryController {
   /*
     URI to List One Category details.
    */
-  @GetMapping("/category/{id}")
+  @GetMapping("/categories/{id}")
   public ResponseEntity<MessageResponseEntity> listOneCategory(@PathVariable Long id) {
     return adminService.getCategoryDetails(id);
   }
@@ -81,12 +83,21 @@ public class AdminCategoryController {
     return adminService.updateCategory(categoryUpdateCO);
   }
 
-  /* @UNTESTED
+  /*
     URI to add new Category Metadata Field values
    */
   @PostMapping("/add-category-metadata-field-value")
   public ResponseEntity<MessageResponseEntity> addCategoryMetadataFieldValues(@Valid @RequestBody
       CategoryMetadataFieldValueCO categoryMetadataFieldValueCO) {
-    return adminService.addCategoryMetadataValues(categoryMetadataFieldValueCO);
+    return adminService.addCategoryMetadataFieldValues(categoryMetadataFieldValueCO);
+  }
+
+  /*
+   URI to add new Category Metadata Field values
+  */
+  @PutMapping("/update-category-metadata-field-value")
+  public ResponseEntity<MessageResponseEntity> updateCategoryMetadataFieldValues(@Valid @RequestBody
+      CategoryMetadataFieldValueCO categoryMetadataFieldValueCO) {
+    return adminService.updateCategoryMetadataFieldvalues(categoryMetadataFieldValueCO);
   }
 }
