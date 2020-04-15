@@ -29,6 +29,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.common.OAuth2AccessToken;
 import org.springframework.security.oauth2.provider.token.TokenStore;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 @Service
 public class UserService {
@@ -56,6 +57,9 @@ public class UserService {
 
   @Autowired
   AddressRepository addressRepository;
+
+  @Autowired
+  private ImageUploaderService imageUploaderService;
 
 
   /*
@@ -243,4 +247,39 @@ public class UserService {
         HttpStatus.BAD_REQUEST);
   }
 
+  /*
+    Upload Profile image
+   */
+  public ResponseEntity<MessageResponseEntity> uploadProfileImage(MultipartFile multipartFile,
+      String email) {
+    User user = userRepository.findByEmailIgnoreCase(email);
+    try {
+      String imageUri = imageUploaderService.uploadUserImage(multipartFile, email);
+      user.setUserDp(imageUri);
+      userRepository.save(user);
+      return new ResponseEntity<>(
+          new MessageResponseEntity<>(imageUri, HttpStatus.OK)
+          , HttpStatus.OK);
+    } catch (Exception e) {
+      return new ResponseEntity<>(
+          new MessageResponseEntity<>(HttpStatus.BAD_REQUEST, "Try again")
+          , HttpStatus.BAD_REQUEST);
+    }
+  }
+
+  /*
+   Upload Profile image
+  */
+  public ResponseEntity<MessageResponseEntity> getProfileImage(String email) {
+    User user = userRepository.findByEmailIgnoreCase(email);
+    if (user.getUserDp() != null) {
+      return new ResponseEntity<>(
+          new MessageResponseEntity(user.getUserDp(), HttpStatus.OK)
+          , HttpStatus.OK);
+    }
+
+    return new ResponseEntity<>(
+        new MessageResponseEntity(HttpStatus.BAD_REQUEST)
+        , HttpStatus.BAD_REQUEST);
+  }
 }

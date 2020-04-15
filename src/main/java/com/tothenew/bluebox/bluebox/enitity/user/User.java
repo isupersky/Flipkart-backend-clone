@@ -40,6 +40,8 @@ public class User implements UserDetails {
 
   private String password;
 
+  private String userDp;
+
   @JsonIgnore
   @ManyToMany(fetch = FetchType.EAGER)
   @JoinTable(name = "user_role",
@@ -114,6 +116,14 @@ public class User implements UserDetails {
 
   public void setPassword(String password) {
     this.password = password;
+  }
+
+  public String getUserDp() {
+    return userDp;
+  }
+
+  public void setUserDp(String userDp) {
+    this.userDp = userDp;
   }
 
   public boolean isDeleted() {

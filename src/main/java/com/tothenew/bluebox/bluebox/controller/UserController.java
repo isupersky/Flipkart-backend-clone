@@ -16,14 +16,17 @@ import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 public class UserController {
 
   @Autowired
   private UserService userService;
+
 
   /*
     Returns the list of all product sorted by id for Home Page.
@@ -75,4 +78,25 @@ public class UserController {
 
   }
 
+  /*
+    URI to add profile Image
+   */
+  @PostMapping(value = "/upload")
+  public ResponseEntity<MessageResponseEntity> uploadProfileImage(
+      @RequestParam(value = "upload", required = true) MultipartFile multipartFile,
+      Principal principal) {
+
+    String email = principal.getName();
+    return userService.uploadProfileImage(multipartFile, email);
+  }
+
+  /*
+    URI to Get profile Image
+   */
+  @GetMapping(value = "/profile-image")
+  public ResponseEntity<MessageResponseEntity> getProfileImage(Principal principal) {
+
+    String email = principal.getName();
+    return userService.getProfileImage(email);
+  }
 }

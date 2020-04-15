@@ -14,6 +14,8 @@ public abstract class UserDTO {
 
   private boolean isActive;
 
+  private String userDp;
+
 
   public UserDTO() {
   }
@@ -64,6 +66,14 @@ public abstract class UserDTO {
 
   public void setActive(boolean active) {
     isActive = active;
+  }
+
+  public String getUserDp() {
+    return userDp;
+  }
+
+  public void setUserDp(String userDp) {
+    this.userDp = userDp;
   }
 
   @Override
