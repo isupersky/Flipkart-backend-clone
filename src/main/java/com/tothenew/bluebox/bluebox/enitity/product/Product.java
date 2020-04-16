@@ -25,6 +25,7 @@ public class Product {
   private boolean isReturnable = false;
   private String brand;
   private boolean isActive = false;
+  private boolean isDeleted = false;
 
 
   public Product() {
@@ -102,6 +103,14 @@ public class Product {
     isActive = active;
   }
 
+  public boolean isDeleted() {
+    return isDeleted;
+  }
+
+  public void setDeleted(boolean deleted) {
+    isDeleted = deleted;
+  }
+
   @Override
   public String toString() {
     return "Product{" +
@@ -114,6 +123,7 @@ public class Product {
         ", isReturnable=" + isReturnable +
         ", brand='" + brand + '\'' +
         ", isActive=" + isActive +
+        ", isDeleted=" + isDeleted +
         '}';
   }
 }

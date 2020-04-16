@@ -1,21 +1,18 @@
 package com.tothenew.bluebox.bluebox.co;
 
-import com.tothenew.bluebox.bluebox.enitity.product.Category;
-import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
 public class ProductCO {
 
-  @NotEmpty
+  @NotEmpty(message = "Please enter the name of the product")
   private String name;
   private String description = "No description".toUpperCase();
-  @NotBlank
-  @NotNull
-  private Category categoryId;
+  @NotNull(message = "category id not entered")
+  private Long categoryId;
   private boolean isCancellable = false;
   private boolean isReturnable = false;
-  @NotEmpty
+  @NotEmpty(message = "Brand name can not be empty")
   private String brand;
 
   public String getName() {
@@ -34,11 +31,11 @@ public class ProductCO {
     this.description = description;
   }
 
-  public Category getCategoryId() {
+  public Long getCategoryId() {
     return categoryId;
   }
 
-  public void setCategoryId(Category categoryId) {
+  public void setCategoryId(Long categoryId) {
     this.categoryId = categoryId;
   }
 

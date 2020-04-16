@@ -25,9 +25,19 @@ public class CustomizedResponseEntityExceptionHandler
   public final ResponseEntity handleAllExceptions
   (Exception ex, WebRequest request) {
     ExceptionResponse exceptionResponse =
-        new ExceptionResponse(new Date(), ex.getMessage(),
+        new ExceptionResponse(HttpStatus.INTERNAL_SERVER_ERROR, new Date(), ex.getMessage(),
             request.getDescription(false));
     return new ResponseEntity(exceptionResponse, HttpStatus.INTERNAL_SERVER_ERROR);
+  }
+
+  //HTTP STATUS 502 BAD_GATEWAY - Failed to send Mail
+  @ExceptionHandler(MailSendFailedException.class)
+  public final ResponseEntity<Object> handleMailSendFailedException
+  (MailSendFailedException ex, WebRequest request) {
+    ExceptionResponse exceptionResponse =
+        new ExceptionResponse(HttpStatus.BAD_GATEWAY, new Date(), ex.getMessage(),
+            request.getDescription(false));
+    return new ResponseEntity<>(exceptionResponse, HttpStatus.BAD_GATEWAY);
   }
 
   //HTTP STATUS 404 USER NOT FOUND
@@ -35,7 +45,7 @@ public class CustomizedResponseEntityExceptionHandler
   public final ResponseEntity<Object> handleUserNotFoundExceptions
   (UserNotFoundException ex, WebRequest request) {
     ExceptionResponse exceptionResponse =
-        new ExceptionResponse(new Date(), ex.getMessage(),
+        new ExceptionResponse(HttpStatus.NOT_FOUND, new Date(), ex.getMessage(),
             request.getDescription(false));
     return new ResponseEntity(exceptionResponse, HttpStatus.NOT_FOUND);
   }
@@ -45,7 +55,7 @@ public class CustomizedResponseEntityExceptionHandler
   public final ResponseEntity<Object> handleTokenNotFoundException
   (TokenNotFoundException ex, WebRequest request) {
     ExceptionResponse exceptionResponse =
-        new ExceptionResponse(new Date(), "Enter the Valid Token",
+        new ExceptionResponse(HttpStatus.NOT_FOUND, new Date(), "Enter the Valid Token",
             request.getDescription(false));
     return new ResponseEntity(exceptionResponse, HttpStatus.NOT_FOUND);
   }
@@ -62,7 +72,7 @@ public class CustomizedResponseEntityExceptionHandler
       String errorMessage = error.getDefaultMessage();
       errors.put(fieldName, errorMessage);
     });
-    ExceptionResponse exceptionResponse = new ExceptionResponse(new Date(),
+    ExceptionResponse exceptionResponse = new ExceptionResponse(HttpStatus.BAD_REQUEST, new Date(),
         "Validation Failed", errors.toString());
     return new ResponseEntity(exceptionResponse, HttpStatus.BAD_REQUEST);
   }
@@ -72,7 +82,7 @@ public class CustomizedResponseEntityExceptionHandler
   public final ResponseEntity<Object> handleCategoryDoesNotExistsException
   (CategoryNotFoundException ex, WebRequest request) {
     ExceptionResponse exceptionResponse =
-        new ExceptionResponse(new Date(), "Enter a Valid Category Id",
+        new ExceptionResponse(HttpStatus.NOT_FOUND, new Date(), ex.getMessage(),
             request.getDescription(false));
     return new ResponseEntity(exceptionResponse, HttpStatus.NOT_FOUND);
   }
@@ -82,7 +92,17 @@ public class CustomizedResponseEntityExceptionHandler
   public final ResponseEntity<Object> handleCategoryDoesNotExistsException
   (MetadataFieldNotFoundException ex, WebRequest request) {
     ExceptionResponse exceptionResponse =
-        new ExceptionResponse(new Date(), "Enter a Valid Metadata Field Id",
+        new ExceptionResponse(HttpStatus.NOT_FOUND, new Date(), ex.getMessage(),
+            request.getDescription(false));
+    return new ResponseEntity(exceptionResponse, HttpStatus.NOT_FOUND);
+  }
+
+  //HTTP STATUS 400 BAD REQUEST
+  @ExceptionHandler(ProductNotFoundException.class)
+  public final ResponseEntity<Object> handleCategoryDoesNotExistsException
+  (ProductNotFoundException ex, WebRequest request) {
+    ExceptionResponse exceptionResponse =
+        new ExceptionResponse(HttpStatus.NOT_FOUND, new Date(), ex.getMessage(),
             request.getDescription(false));
     return new ResponseEntity(exceptionResponse, HttpStatus.NOT_FOUND);
   }
@@ -95,7 +115,8 @@ public class CustomizedResponseEntityExceptionHandler
       WebRequest request) {
 
     ExceptionResponse exceptionResponse =
-        new ExceptionResponse(new Date(), "The request method does not support",
+        new ExceptionResponse(HttpStatus.METHOD_NOT_ALLOWED, new Date(),
+            "The request method does not support",
             request.getDescription(false));
     return new ResponseEntity(exceptionResponse, HttpStatus.METHOD_NOT_ALLOWED);
   }
@@ -105,7 +126,7 @@ public class CustomizedResponseEntityExceptionHandler
   public final ResponseEntity<Object> handleUserAlreadyExistsExceptions
   (UserAlreadyExistsException ex, WebRequest request) {
     ExceptionResponse exceptionResponse =
-        new ExceptionResponse(new Date(), ex.getMessage(),
+        new ExceptionResponse(HttpStatus.FOUND, new Date(), ex.getMessage(),
             request.getDescription(false));
     return new ResponseEntity(exceptionResponse, HttpStatus.FOUND);
   }
@@ -115,7 +136,7 @@ public class CustomizedResponseEntityExceptionHandler
   public final ResponseEntity<Object> handleCategoryExistsException
   (CategoryAlreadyExistsException ex, WebRequest request) {
     ExceptionResponse exceptionResponse =
-        new ExceptionResponse(new Date(), ex.getMessage(),
+        new ExceptionResponse(HttpStatus.FOUND, new Date(), ex.getMessage(),
             request.getDescription(false));
     return new ResponseEntity(exceptionResponse, HttpStatus.FOUND);
   }
@@ -125,7 +146,7 @@ public class CustomizedResponseEntityExceptionHandler
   public final ResponseEntity<Object> handleMetadataFieldExistsException
   (MetadataFieldExistsException ex, WebRequest request) {
     ExceptionResponse exceptionResponse =
-        new ExceptionResponse(new Date(), ex.getMessage(),
+        new ExceptionResponse(HttpStatus.FOUND, new Date(), ex.getMessage(),
             request.getDescription(false));
     return new ResponseEntity(exceptionResponse, HttpStatus.FOUND);
   }
@@ -135,7 +156,17 @@ public class CustomizedResponseEntityExceptionHandler
   public final ResponseEntity<Object> handleMetadataFieldExistsException
   (CategoryMetadataFieldValueExistsException ex, WebRequest request) {
     ExceptionResponse exceptionResponse =
-        new ExceptionResponse(new Date(), ex.getMessage(),
+        new ExceptionResponse(HttpStatus.FOUND, new Date(), ex.getMessage(),
+            request.getDescription(false));
+    return new ResponseEntity(exceptionResponse, HttpStatus.FOUND);
+  }
+
+  //HTTP STATUS 302 FOUND - When the Product already Exists
+  @ExceptionHandler(ProductAlreadyExistsException.class)
+  public final ResponseEntity<Object> handleMetadataFieldExistsException
+  (ProductAlreadyExistsException ex, WebRequest request) {
+    ExceptionResponse exceptionResponse =
+        new ExceptionResponse(HttpStatus.FOUND, new Date(), ex.getMessage(),
             request.getDescription(false));
     return new ResponseEntity(exceptionResponse, HttpStatus.FOUND);
   }

@@ -28,7 +28,7 @@ public class ProductVariation {
   @Transient
   private HashMap metadataHashmap;
 
-  private String primaryImageName;
+//  private List<String> primaryImageName;
 
   private boolean isActive;
 
@@ -67,13 +67,13 @@ public class ProductVariation {
     this.price = price;
   }
 
-  public String getPrimaryImageName() {
-    return primaryImageName;
-  }
-
-  public void setPrimaryImageName(String primaryImageName) {
-    this.primaryImageName = primaryImageName;
-  }
+//  public List<String> getPrimaryImageName() {
+//    return primaryImageName;
+//  }
+//
+//  public void setPrimaryImageName(List<String> primaryImageName) {
+//    this.primaryImageName = primaryImageName;
+//  }
 
   public boolean isActive() {
     return isActive;
@@ -118,7 +118,6 @@ public class ProductVariation {
         ", price=" + price +
         ", metadata='" + metadata + '\'' +
         ", metadataHashmap=" + metadataHashmap +
-        ", primaryImageName='" + primaryImageName + '\'' +
         ", isActive=" + isActive +
         '}';
   }
