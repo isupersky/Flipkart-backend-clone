@@ -6,6 +6,7 @@ import com.tothenew.bluebox.bluebox.co.ProductUpdateCO;
 import com.tothenew.bluebox.bluebox.co.ProductVariationCO;
 import com.tothenew.bluebox.bluebox.configuration.MessageResponseEntity;
 import com.tothenew.bluebox.bluebox.dto.ProductDTO;
+import com.tothenew.bluebox.bluebox.dto.ProductVariationDTO;
 import com.tothenew.bluebox.bluebox.enitity.product.Category;
 import com.tothenew.bluebox.bluebox.enitity.product.Product;
 import com.tothenew.bluebox.bluebox.enitity.product.ProductVariation;
@@ -14,12 +15,17 @@ import com.tothenew.bluebox.bluebox.exception.CategoryNotFoundException;
 import com.tothenew.bluebox.bluebox.exception.MailSendFailedException;
 import com.tothenew.bluebox.bluebox.exception.ProductAlreadyExistsException;
 import com.tothenew.bluebox.bluebox.exception.ProductNotFoundException;
+import com.tothenew.bluebox.bluebox.exception.ProductVariationNotFoundException;
 import com.tothenew.bluebox.bluebox.repository.CategoryRepository;
 import com.tothenew.bluebox.bluebox.repository.ProductRepository;
 import com.tothenew.bluebox.bluebox.repository.ProductVariationRepository;
 import com.tothenew.bluebox.bluebox.repository.SellerRepository;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +37,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 @Service
 public class ProductService {
@@ -52,6 +59,9 @@ public class ProductService {
 
   @Autowired
   EmailSenderService emailSenderService;
+
+  @Autowired
+  ImageUploaderService imageUploaderService;
 
 
   //-----------------------------------------SELLER API-----------------------------------------------
@@ -99,47 +109,14 @@ public class ProductService {
     productRepository.save(product);
 
     return new ResponseEntity<MessageResponseEntity>(
-        new MessageResponseEntity(productCO, HttpStatus.OK, "Product Added".toUpperCase()),
-        HttpStatus.OK);
+        new MessageResponseEntity(productCO, HttpStatus.CREATED, "Product Added".toUpperCase()),
+        HttpStatus.CREATED);
   }
-
-  /*
-  INCOMPLETE
-   */
-  public ResponseEntity<MessageResponseEntity> addProductvariation(
-      ProductVariationCO productVariationCO)
-      throws JsonProcessingException {
-
-    Long productId = productVariationCO.getProductId();
-    Optional<Product> optionalProduct = productRepository.findById(productId);
-
-    if (optionalProduct.isPresent()) {
-      Product product = optionalProduct.get();
-    } else {
-      throw new ProductNotFoundException("Enter a valid Product Id");
-    }
-
-    ProductVariation productVariation = new ProductVariation();
-    ModelMapper modelMapper = new ModelMapper();
-
-    modelMapper.map(productVariationCO, productVariation);
-
-    productVariation.jsonMetadataStringSerialize();
-    productVariation.setActive(false);
-
-    productVariationRepository.save(productVariation);
-
-    return new ResponseEntity<>(
-        new MessageResponseEntity(productVariationCO, HttpStatus.OK)
-        , HttpStatus.OK);
-
-  }
-
 
   /*
     Get Details Of One Product by Id
    */
-  public ResponseEntity<Object> listOneProduct(String email, Long productId) {
+  public ResponseEntity<Object> getProductByIdSeller(String email, Long productId) {
     Seller seller = sellerRepository.findByEmailIgnoreCase(email);
     Optional<Product> optionalProduct = productRepository.findById(productId);
 
@@ -250,12 +227,179 @@ public class ProductService {
         , HttpStatus.OK);
   }
 
-//-----------------------------------------ADMIN API-----------------------------------------------
+
+  /*
+    Adds new product Variation
+   */
+  public ResponseEntity<MessageResponseEntity> addProductVariation(
+      ProductVariationCO productVariationCO) throws JsonProcessingException {
+
+    Long productId = productVariationCO.getProductId();
+    Optional<Product> optionalProduct = productRepository.findById(productId);
+
+    if (optionalProduct.isPresent()) {
+      Product product = optionalProduct.get();
+    } else {
+      throw new ProductNotFoundException("Enter a valid Product Id");
+    }
+
+    ProductVariation productVariation = new ProductVariation();
+    ModelMapper modelMapper = new ModelMapper();
+
+    modelMapper.map(productVariationCO, productVariation);
+
+    productVariation.jsonMetadataStringSerialize();
+
+    productVariationRepository.save(productVariation);
+
+    return new ResponseEntity<>(
+        new MessageResponseEntity(productVariationCO, HttpStatus.CREATED,
+            "Product Variation Added Successfully".toUpperCase())
+        , HttpStatus.CREATED);
+  }
+
+  /* @UNtested
+    Method to Add images to product variation
+   */
+  public ResponseEntity<MessageResponseEntity> addProductVariationImages(Long id,
+      List<MultipartFile> imageFiles)
+      throws IOException {
+    Optional<ProductVariation> optionalProductVariation = productVariationRepository.findById(id);
+
+    if (!optionalProductVariation.isPresent()) {
+      return new ResponseEntity<>(
+          new MessageResponseEntity(HttpStatus.NOT_FOUND,
+              "Invalid Product Variation Id".toUpperCase())
+          , HttpStatus.NOT_FOUND);
+    }
+
+    ProductVariation productVariation = optionalProductVariation.get();
+
+    HashSet imageApis = imageUploaderService.uploadProductVariationImage(imageFiles);
+    productVariation.setPrimaryImageName(imageApis);
+    productVariationRepository.save(productVariation);
+
+    return new ResponseEntity<>(
+        new MessageResponseEntity(imageApis, HttpStatus.OK,
+            "Image uploaded Successfully".toUpperCase())
+        , HttpStatus.OK);
+
+  }
+
+  /*
+    Method to get details of one product variation by id
+   */
+  public ResponseEntity<MessageResponseEntity> getProductVariationById(String email,
+      Long productVationId)
+      throws IOException {
+
+    Long sellerId = sellerRepository.findByEmailIgnoreCase(email).getId();
+    Optional<ProductVariation> optionalProductVariation = productVariationRepository
+        .findById(productVationId);
+    ModelMapper modelMapper = new ModelMapper();
+
+    if (!optionalProductVariation.isPresent()) {
+      throw new ProductVariationNotFoundException("Invalid Product Variation Id");
+    }
+    ProductVariation productVariation = optionalProductVariation.get();
+
+    if (!productVariation.getProductId().getSellerUserId().getId().equals(sellerId)) {
+      throw new ProductVariationNotFoundException("Invalid Product Variation Id");
+    }
+
+    ProductVariationDTO productVariationDTO = new ProductVariationDTO();
+    ProductDTO productDTO = new ProductDTO();
+
+    productVariation.jsonMetadataStringDeserialize();
+    modelMapper.map(productVariation, productVariationDTO);
+    productVariationDTO.setPrimaryImageName(productVariation.getPrimaryImageName());
+    modelMapper.map(productVariation.getProductId(), productDTO);
+    productVariationDTO.setProductId(productDTO);
+
+    return new ResponseEntity<>(
+        new MessageResponseEntity(productVariationDTO, HttpStatus.OK)
+        , HttpStatus.OK);
+  }
+
+  /* @Untested
+   view all product Variations
+  */
+  public ResponseEntity<MessageResponseEntity> listAllProductVariation(String email, Long productId,
+      Integer pageNo, Integer pageSize,
+      String sortBy) {
+    Pageable paging = PageRequest.of(pageNo, pageSize, Sort.by(sortBy).ascending());
+    Long sellerId = sellerRepository.findByEmailIgnoreCase(email).getId();
+
+    Optional<Product> optionalProduct = productRepository.findById(productId);
+    if (!optionalProduct.isPresent()) {
+      throw new ProductNotFoundException("enter a valid product id");
+    }
+
+    Long productsellerId = optionalProduct.get().getSellerUserId().getId();
+    if (sellerId != productsellerId) {
+      throw new ProductNotFoundException("No suc product exists");
+    }
+
+    List responseList = productVariationRepository.findByProductId(paging, productId);
+
+    return new ResponseEntity<>(
+        new MessageResponseEntity(responseList, HttpStatus.OK)
+        , HttpStatus.OK);
+  }
+
+//  /*
+//    Updates product Variation given its id
+//   */
+//  public ResponseEntity<MessageResponseEntity> updateProductVariation(String email, Long productId, ProductVariationUpdateCo productVariationUpdateCo){
+//
+//  }
+
+//-----------------------------------------CUSTOMER API---------------------------------------------
+
+
+  public ResponseEntity<MessageResponseEntity> getProductDetailsById(Long productId) {
+
+    boolean exists = productRepository.existsById(productId);
+    if (!exists) {
+      throw new ProductNotFoundException("Invalid product Id");
+    }
+
+    Product product = productRepository.findById(productId).get();
+    if (product.isDeleted() || !product.isActive()) {
+      throw new ProductNotFoundException("product Not available ");
+    }
+
+    List productVariationList = productVariationRepository.findByProductId(productId);
+    if (productVariationList == null) {
+      throw new ProductNotFoundException("No product Variation available ");
+    }
+
+    ModelMapper modelMapper = new ModelMapper();
+    ProductDTO productDTO = new ProductDTO();
+    modelMapper.map(product, productDTO);
+
+    List<ProductVariationDTO> productVariationDTOList = new ArrayList<>();
+    productVariationList.forEach(variation -> {
+      ProductVariationDTO productVariationDTO = new ProductVariationDTO();
+      modelMapper.map(variation, productVariationDTO);
+      productVariationDTOList.add(productVariationDTO);
+    });
+
+    Map<String, Object> responseSet = new HashMap<>();
+    responseSet.put("Product details :", productDTO);
+    responseSet.put("Variations available", productVariationDTOList);
+
+    return new ResponseEntity<>(
+        new MessageResponseEntity(responseSet, HttpStatus.OK)
+        , HttpStatus.OK);
+  }
+
+//-----------------------------------------ADMIN API------------------------------------------------
 
   /*
     Method to Activate A Product
    */
-  public ResponseEntity<Object> activateProduct(Long id) {
+  public ResponseEntity<MessageResponseEntity> activateProduct(Long id) {
     Optional<Product> optionalProduct = productRepository.findById(id);
     if (!optionalProduct.isPresent()) {
       throw new ProductNotFoundException("Product Id Not Found!");

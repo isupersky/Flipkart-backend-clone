@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.HashSet;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -28,7 +29,7 @@ public class ProductVariation {
   @Transient
   private HashMap metadataHashmap;
 
-//  private List<String> primaryImageName;
+  private HashSet<String> primaryImageName;
 
   private boolean isActive;
 
@@ -67,13 +68,13 @@ public class ProductVariation {
     this.price = price;
   }
 
-//  public List<String> getPrimaryImageName() {
-//    return primaryImageName;
-//  }
-//
-//  public void setPrimaryImageName(List<String> primaryImageName) {
-//    this.primaryImageName = primaryImageName;
-//  }
+  public HashSet<String> getPrimaryImageName() {
+    return primaryImageName;
+  }
+
+  public void setPrimaryImageName(HashSet<String> primaryImageName) {
+    this.primaryImageName = primaryImageName;
+  }
 
   public boolean isActive() {
     return isActive;

@@ -106,6 +106,7 @@ public class CustomerService {
       customerRepository.save(customer);
 
       generateToken(customerRepository.findByEmailIgnoreCase(customerCO.getEmail()));
+
       return new ResponseEntity<>(
           new MessageResponseEntity<>(customerCO, HttpStatus.CREATED,
               "successful Registration".toUpperCase())

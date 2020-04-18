@@ -1,27 +1,23 @@
-package com.tothenew.bluebox.bluebox.co;
+package com.tothenew.bluebox.bluebox.dto;
 
 
 import java.util.HashMap;
-import javax.validation.constraints.NotNull;
+import java.util.HashSet;
 
-public class ProductVariationCO {
+public class ProductVariationDTO {
 
-  @NotNull(message = "Product Id is must")
-  private Long productId;
-  @NotNull(message = "quantity is must")
+  private ProductDTO productId;
   private Integer quantityAvailable;
-  @NotNull(message = "price is must")
   private Float price;
-  @NotNull
   private HashMap metadataHashmap;
-
   private boolean isActive;
+  private HashSet<String> primaryImageName;
 
-  public Long getProductId() {
+  public ProductDTO getProductId() {
     return productId;
   }
 
-  public void setProductId(Long productId) {
+  public void setProductId(ProductDTO productId) {
     this.productId = productId;
   }
 
@@ -55,5 +51,13 @@ public class ProductVariationCO {
 
   public void setActive(boolean active) {
     isActive = active;
+  }
+
+  public HashSet<String> getPrimaryImageName() {
+    return primaryImageName;
+  }
+
+  public void setPrimaryImageName(HashSet<String> primaryImageName) {
+    this.primaryImageName = primaryImageName;
   }
 }

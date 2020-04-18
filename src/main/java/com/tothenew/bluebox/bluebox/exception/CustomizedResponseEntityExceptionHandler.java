@@ -107,6 +107,15 @@ public class CustomizedResponseEntityExceptionHandler
     return new ResponseEntity(exceptionResponse, HttpStatus.NOT_FOUND);
   }
 
+  //HTTP STATUS 400 BAD REQUEST
+  @ExceptionHandler(ProductVariationNotFoundException.class)
+  public final ResponseEntity<Object> handleCategoryDoesNotExistsException
+  (ProductVariationNotFoundException ex, WebRequest request) {
+    ExceptionResponse exceptionResponse =
+        new ExceptionResponse(HttpStatus.NOT_FOUND, new Date(), ex.getMessage(),
+            request.getDescription(false));
+    return new ResponseEntity(exceptionResponse, HttpStatus.NOT_FOUND);
+  }
 
   //HTTP STATUS 405 METHOD_NOT_ALLOWED
   @Override
