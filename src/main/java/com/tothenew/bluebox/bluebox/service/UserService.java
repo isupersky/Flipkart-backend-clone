@@ -18,6 +18,8 @@ import java.util.List;
 import java.util.Optional;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.core.task.TaskExecutor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -61,6 +63,9 @@ public class UserService {
   @Autowired
   private ImageUploaderService imageUploaderService;
 
+  @Autowired
+  private MessageSource messageSource;
+
 
   /*
     Returns a List of all Product sorted by Id
@@ -97,14 +102,22 @@ public class UserService {
 
       confirmationTokenRepository.save(confirmationToken);
 
+      String messageSubject = messageSource.getMessage("password.reset.subject",
+          null,
+          LocaleContextHolder
+              .getLocale());
+      String messageText = messageSource.getMessage("password.reset.message",
+          null,
+          LocaleContextHolder
+              .getLocale());
 //      Mail sender Service Thread
       taskExecutor.execute(() -> {
         try {
           SimpleMailMessage mailMessage = new SimpleMailMessage();
           mailMessage.setTo(email);
-          mailMessage.setSubject("Reset Password ");
+          mailMessage.setSubject(messageSubject);
           mailMessage.setFrom("ecommerce476@gmail.com ");
-          mailMessage.setText("Use this link to reset your password :" +
+          mailMessage.setText(messageText +
               "http://localhost:8080/resetpassword/" + confirmationToken
               .getConfirmationToken());
 
@@ -214,13 +227,21 @@ public class UserService {
         userRepository.save(user);
         doLogout(authHeader);
 
+        String messageSubject = messageSource.getMessage("successful.password.reset.subject",
+            null,
+            LocaleContextHolder
+                .getLocale());
+        String messageText = messageSource.getMessage("successful.password.reset.message",
+            null,
+            LocaleContextHolder
+                .getLocale());
         taskExecutor.execute(() -> {
           try {
             SimpleMailMessage mailMessage = new SimpleMailMessage();
             mailMessage.setTo(email);
-            mailMessage.setSubject("Password Updated");
+            mailMessage.setSubject(messageSubject);
             mailMessage.setFrom("ecommerce476@gmail.com ");
-            mailMessage.setText("Your Account Password has been updated.\n ");
+            mailMessage.setText(messageText);
 
             emailSenderService.sendEmail(mailMessage);
           } catch (Exception e) {

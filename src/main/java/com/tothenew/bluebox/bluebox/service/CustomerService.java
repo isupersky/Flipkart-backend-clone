@@ -30,6 +30,8 @@ import java.util.Map;
 import java.util.Optional;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.core.task.TaskExecutor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -75,6 +77,9 @@ public class CustomerService {
 
   @Autowired
   ProductRepository productRepository;
+
+  @Autowired
+  private MessageSource messageSource;
 
 //---------------------------------------------------CREATE------------------------------------------------------------
 
@@ -122,14 +127,23 @@ public class CustomerService {
 
     confirmationTokenRepository.save(confirmationToken);
 
+    String messageSubject = messageSource.getMessage("complete.registration",
+        null,
+        LocaleContextHolder
+            .getLocale());
+    String messageText = messageSource.getMessage("registration.message",
+        null,
+        LocaleContextHolder
+            .getLocale());
     taskExecutor.execute(() -> {
       try {
+
         SimpleMailMessage mailMessage = new SimpleMailMessage();
         mailMessage.setTo(customer.getEmail());
-        mailMessage.setSubject("Complete Registration!");
+        mailMessage.setSubject(messageSubject);
         mailMessage.setFrom("ecommerce476@gmail.com ");
-        mailMessage.setText("To confirm your account, please click here : "
-            + "http://localhost:8080/customer/confirm-account?token=" + confirmationToken
+        mailMessage.setText(messageText
+            + " http://localhost:8080/customer/confirm-account?token=" + confirmationToken
             .getConfirmationToken());
 
         emailSenderService.sendEmail(mailMessage);
@@ -165,13 +179,22 @@ public class CustomerService {
       customerRepository.save(customer);
       confirmationTokenRepository.delete(token);
 
+      String messageSubject = messageSource.getMessage("account.activated.subject",
+          null,
+          LocaleContextHolder
+              .getLocale());
+      String messageText = messageSource.getMessage("account.activated.message",
+          null,
+          LocaleContextHolder
+              .getLocale());
+
       taskExecutor.execute(() -> {
         try {
           SimpleMailMessage mailMessage = new SimpleMailMessage();
           mailMessage.setTo(customer.getEmail());
-          mailMessage.setSubject("Account activated");
+          mailMessage.setSubject(messageSubject);
           mailMessage.setFrom("ecommerce476@gmail.com ");
-          mailMessage.setText("Congratulations!!! Your account has been activated");
+          mailMessage.setText(messageText);
 
           emailSenderService.sendEmail(mailMessage);
         } catch (Exception e) {
