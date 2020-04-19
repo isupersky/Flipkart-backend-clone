@@ -13,10 +13,10 @@ public class Bootstrap implements ApplicationRunner {
 
   @Override
   public void run(ApplicationArguments args) throws Exception {
-//    bootstrapAddOn.createRoles();
-//    bootstrapAddOn.createCategory();
-//    bootstrapAddOn.createAdmin();
-//    bootstrapAddOn.createTestCustomer();
+    bootstrapAddOn.createRoles();
+    bootstrapAddOn.createCategory();
+    bootstrapAddOn.createAdmin();
+    bootstrapAddOn.createTestCustomer();
 
   }
 

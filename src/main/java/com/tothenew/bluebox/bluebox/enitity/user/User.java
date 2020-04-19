@@ -64,6 +64,8 @@ public class User implements UserDetails {
   @Temporal(TemporalType.TIMESTAMP)
   private Date updatedDate;
 
+  private Integer falseAttemptCount = 0;
+
   //	Default Constructor
   public User() {
   }
@@ -181,6 +183,14 @@ public class User implements UserDetails {
 
   public void setUpdatedDate(Date updatedDate) {
     this.updatedDate = updatedDate;
+  }
+
+  public Integer getFalseAttemptCount() {
+    return falseAttemptCount;
+  }
+
+  public void setFalseAttemptCount(Integer falseAttemptCount) {
+    this.falseAttemptCount = falseAttemptCount;
   }
 
   @Override
