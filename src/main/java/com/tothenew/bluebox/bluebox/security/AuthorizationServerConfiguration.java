@@ -1,6 +1,7 @@
 package com.tothenew.bluebox.bluebox.security;
 
 
+import javax.sql.DataSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -14,8 +15,7 @@ import org.springframework.security.oauth2.config.annotation.web.configuration.E
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerEndpointsConfigurer;
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerSecurityConfigurer;
 import org.springframework.security.oauth2.provider.token.DefaultTokenServices;
-import org.springframework.security.oauth2.provider.token.TokenStore;
-import org.springframework.security.oauth2.provider.token.store.InMemoryTokenStore;
+import org.springframework.security.oauth2.provider.token.store.JdbcTokenStore;
 
 @Configuration
 @EnableAuthorizationServer
@@ -30,38 +30,12 @@ public class AuthorizationServerConfiguration extends AuthorizationServerConfigu
   @Autowired
   UserDetailsService userDetailsService;
 
-//  @Autowired
-//  DataSource dataSource;
+  @Autowired
+  DataSource dataSource;
 
   public AuthorizationServerConfiguration() {
     super();
   }
-
-//    @Bean
-//    @Primary
-//    DefaultTokenServices tokenServices(){
-//        DefaultTokenServices defaultTokenServices = new DefaultTokenServices();
-//        defaultTokenServices.setTokenStore(tokenStore());
-//        defaultTokenServices.setSupportRefreshToken(true);
-//        return defaultTokenServices;
-//    }
-//
-//    @Override
-//    public void configure(final AuthorizationServerEndpointsConfigurer endpoints) {
-//        endpoints.tokenStore(tokenStore()).userDetailsService(userDetailsService)
-//                .authenticationManager(authenticationManager);
-//
-//    }
-//
-//
-//    @Bean
-//    public JdbcTokenStore tokenStore()
-//    {
-//       JdbcTokenStore store = new JdbcTokenStore(dataSource);
-//
-//       return store;
-//
-//    }
 
   @Bean
   @Primary
@@ -76,15 +50,40 @@ public class AuthorizationServerConfiguration extends AuthorizationServerConfigu
   public void configure(final AuthorizationServerEndpointsConfigurer endpoints) {
     endpoints.tokenStore(tokenStore()).userDetailsService(userDetailsService)
         .authenticationManager(authenticationManager);
-//        .accessTokenConverter(accessTokenConverter());
 
   }
+
 
   @Bean
-  public TokenStore tokenStore() {
-    return new InMemoryTokenStore();
-//    return new JwtTokenStore(accessTokenConverter());
+  public JdbcTokenStore tokenStore() {
+    JdbcTokenStore store = new JdbcTokenStore(dataSource);
+
+    return store;
+
   }
+
+//  @Bean
+//  @Primary
+//  DefaultTokenServices tokenServices() {
+//    DefaultTokenServices defaultTokenServices = new DefaultTokenServices();
+//    defaultTokenServices.setTokenStore(tokenStore());
+//    defaultTokenServices.setSupportRefreshToken(true);
+//    return defaultTokenServices;
+//  }
+//
+//  @Override
+//  public void configure(final AuthorizationServerEndpointsConfigurer endpoints) {
+//    endpoints.tokenStore(tokenStore()).userDetailsService(userDetailsService)
+//        .authenticationManager(authenticationManager);
+////        .accessTokenConverter(accessTokenConverter());
+//
+//  }
+//
+//  @Bean
+//  public TokenStore tokenStore() {
+//    return new InMemoryTokenStore();
+////    return new JwtTokenStore(accessTokenConverter());
+//  }
 
   @Override
   public void configure(final ClientDetailsServiceConfigurer clients) throws Exception {

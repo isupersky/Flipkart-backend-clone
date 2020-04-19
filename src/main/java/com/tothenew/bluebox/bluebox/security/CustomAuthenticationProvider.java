@@ -17,9 +17,13 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.provider.token.TokenStore;
 
 
 public class CustomAuthenticationProvider extends DaoAuthenticationProvider {
+
+  @Autowired
+  private TokenStore tokenStore;
 
   @Autowired
   UserDetailsService userDetailsService;
@@ -63,6 +67,8 @@ public class CustomAuthenticationProvider extends DaoAuthenticationProvider {
       if (temp == 2) {
 
         user.setLocked(true);
+//        cli tokenStore.findTokensByClientId(user.getId().toString());
+//        tokenStore.removeAccessToken();
 
         taskExecutor.execute(() -> {
           try {
