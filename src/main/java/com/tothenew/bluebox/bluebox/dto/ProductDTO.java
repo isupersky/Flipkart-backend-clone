@@ -4,6 +4,7 @@ import com.tothenew.bluebox.bluebox.enitity.product.Category;
 
 public class ProductDTO {
 
+  private Long id;
   private String name;
   private String description;
   private Category categoryDetail;
@@ -11,6 +12,14 @@ public class ProductDTO {
   private boolean isReturnable = false;
   private String brand;
   private boolean isActive;
+
+  public Long getId() {
+    return id;
+  }
+
+  public void setId(Long id) {
+    this.id = id;
+  }
 
   public String getName() {
     return name;

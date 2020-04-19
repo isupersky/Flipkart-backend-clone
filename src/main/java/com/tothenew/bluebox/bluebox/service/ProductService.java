@@ -277,6 +277,7 @@ public class ProductService {
 
     HashSet imageApis = imageUploaderService.uploadProductVariationImage(imageFiles);
     productVariation.setPrimaryImageName(imageApis);
+    productVariation.imageStringSerialize();
     productVariationRepository.save(productVariation);
 
     return new ResponseEntity<>(
@@ -311,7 +312,9 @@ public class ProductService {
     ProductDTO productDTO = new ProductDTO();
 
     productVariation.jsonMetadataStringDeserialize();
+    productVariation.imageStringDeserialize();
     modelMapper.map(productVariation, productVariationDTO);
+
     productVariationDTO.setPrimaryImageName(productVariation.getPrimaryImageName());
     modelMapper.map(productVariation.getProductId(), productDTO);
     productVariationDTO.setProductId(productDTO);
@@ -337,7 +340,7 @@ public class ProductService {
 
     Long productsellerId = optionalProduct.get().getSellerUserId().getId();
     if (sellerId != productsellerId) {
-      throw new ProductNotFoundException("No suc product exists");
+      throw new ProductNotFoundException("No such product exists");
     }
 
     List responseList = productVariationRepository.findByProductId(paging, productId);

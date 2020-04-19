@@ -26,10 +26,12 @@ public class ProductVariation {
   private Integer quantityAvailable;
   private Float price;
   private String metadata;
+  private String images;
   @Transient
   private HashMap metadataHashmap;
 
-  private HashSet<String> primaryImageName;
+  @Transient
+  private HashSet primaryImageName;
 
   private boolean isActive;
 
@@ -68,12 +70,20 @@ public class ProductVariation {
     this.price = price;
   }
 
-  public HashSet<String> getPrimaryImageName() {
+  public HashSet getPrimaryImageName() {
     return primaryImageName;
   }
 
-  public void setPrimaryImageName(HashSet<String> primaryImageName) {
+  public void setPrimaryImageName(HashSet primaryImageName) {
     this.primaryImageName = primaryImageName;
+  }
+
+  public String getImages() {
+    return images;
+  }
+
+  public void setImages(String images) {
+    this.images = images;
   }
 
   public boolean isActive() {
@@ -108,6 +118,16 @@ public class ProductVariation {
   public void jsonMetadataStringDeserialize() throws IOException {
     ObjectMapper objectMapper = new ObjectMapper();
     metadataHashmap = objectMapper.readValue(this.metadata, HashMap.class);
+  }
+
+  public void imageStringSerialize() throws JsonProcessingException {
+    ObjectMapper objectMapper = new ObjectMapper();
+    this.images = objectMapper.writeValueAsString(primaryImageName);
+  }
+
+  public void imageStringDeserialize() throws IOException {
+    ObjectMapper objectMapper = new ObjectMapper();
+    primaryImageName = objectMapper.readValue(this.images, HashSet.class);
   }
 
   @Override

@@ -6,12 +6,21 @@ import java.util.HashSet;
 
 public class ProductVariationDTO {
 
+  private Long id;
   private ProductDTO productId;
   private Integer quantityAvailable;
   private Float price;
   private HashMap metadataHashmap;
   private boolean isActive;
-  private HashSet<String> primaryImageName;
+  private HashSet primaryImageName;
+
+  public Long getId() {
+    return id;
+  }
+
+  public void setId(Long id) {
+    this.id = id;
+  }
 
   public ProductDTO getProductId() {
     return productId;
@@ -53,11 +62,11 @@ public class ProductVariationDTO {
     isActive = active;
   }
 
-  public HashSet<String> getPrimaryImageName() {
+  public HashSet getPrimaryImageName() {
     return primaryImageName;
   }
 
-  public void setPrimaryImageName(HashSet<String> primaryImageName) {
+  public void setPrimaryImageName(HashSet primaryImageName) {
     this.primaryImageName = primaryImageName;
   }
 }
