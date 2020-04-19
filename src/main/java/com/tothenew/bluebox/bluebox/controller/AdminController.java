@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class AdminController {
 
   @Autowired
-  AdminService adminService;
+  private AdminService adminService;
 
 
   @GetMapping(path = "/")

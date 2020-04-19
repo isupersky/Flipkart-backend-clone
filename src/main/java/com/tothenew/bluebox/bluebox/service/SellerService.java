@@ -36,22 +36,22 @@ import org.springframework.stereotype.Service;
 public class SellerService {
 
   @Autowired
-  SellerRepository sellerRepository;
+  private SellerRepository sellerRepository;
 
   @Autowired
-  UserRepository userRepository;
+  private UserRepository userRepository;
 
   @Autowired
-  RoleRepository roleRepository;
+  private RoleRepository roleRepository;
 
   @Autowired
-  PasswordEncoder passwordEncoder;
+  private PasswordEncoder passwordEncoder;
 
   @Autowired
-  CategoryRepository categoryRepository;
+  private CategoryRepository categoryRepository;
 
   @Autowired
-  CategoryMetadataFieldValuesRespository categoryMetadataFieldValuesRespository;
+  private CategoryMetadataFieldValuesRespository categoryMetadataFieldValuesRespository;
 
   //---------------------------------------------------CREATE------------------------------------------------------------
   /*

@@ -30,7 +30,7 @@ import org.springframework.web.multipart.MultipartFile;
 public class SellerProductController {
 
   @Autowired
-  ProductService productService;
+  private ProductService productService;
 
   /*
     URI to add new Product.

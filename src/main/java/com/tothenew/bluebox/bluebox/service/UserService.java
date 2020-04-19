@@ -37,28 +37,28 @@ import org.springframework.web.multipart.MultipartFile;
 public class UserService {
 
   @Autowired
-  ProductRepository productRepository;
+  private ProductRepository productRepository;
 
   @Autowired
-  UserRepository userRepository;
+  private UserRepository userRepository;
 
   @Autowired
-  TaskExecutor taskExecutor;
+  private TaskExecutor taskExecutor;
 
   @Autowired
-  ConfirmationTokenRepository confirmationTokenRepository;
+  private ConfirmationTokenRepository confirmationTokenRepository;
 
   @Autowired
-  EmailSenderService emailSenderService;
+  private EmailSenderService emailSenderService;
 
   @Autowired
-  PasswordEncoder passwordEncoder;
+  private PasswordEncoder passwordEncoder;
 
   @Autowired
   private TokenStore tokenStore;
 
   @Autowired
-  AddressRepository addressRepository;
+  private AddressRepository addressRepository;
 
   @Autowired
   private ImageUploaderService imageUploaderService;

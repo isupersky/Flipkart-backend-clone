@@ -25,10 +25,10 @@ import org.springframework.web.bind.annotation.RestController;
 public class SellerController {
 
   @Autowired
-  SellerService sellerService;
+  private SellerService sellerService;
 
   @Autowired
-  UserService userService;
+  private UserService userService;
 
 //---------------------------------------------------CREATE------------------------------------------------------------
 

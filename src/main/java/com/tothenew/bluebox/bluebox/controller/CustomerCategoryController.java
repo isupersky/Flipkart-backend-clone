@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class CustomerCategoryController {
 
   @Autowired
-  CustomerService customerService;
+  private CustomerService customerService;
 
   /*
      Return List all root level categories if no ID is passed,

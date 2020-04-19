@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 public class Bootstrap implements ApplicationRunner {
 
   @Autowired
-  BootstrapAddOn bootstrapAddOn;
+  private BootstrapAddOn bootstrapAddOn;
 
   @Override
   public void run(ApplicationArguments args) throws Exception {

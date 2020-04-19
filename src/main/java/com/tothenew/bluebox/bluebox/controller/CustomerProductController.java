@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class CustomerProductController {
 
   @Autowired
-  ProductService productService;
+  private ProductService productService;
 
   /*
     URI to fetch Details Of a Product given its id

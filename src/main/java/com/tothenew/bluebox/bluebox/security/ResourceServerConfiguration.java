@@ -24,7 +24,7 @@ public class ResourceServerConfiguration extends ResourceServerConfigurerAdapter
 
 
   @Autowired
-  UserDetailsServiceImpl userDetailsService;
+  private UserDetailsServiceImpl userDetailsService;
 
   public ResourceServerConfiguration() {
     super();

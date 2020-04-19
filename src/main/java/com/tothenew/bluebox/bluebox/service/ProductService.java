@@ -43,25 +43,25 @@ import org.springframework.web.multipart.MultipartFile;
 public class ProductService {
 
   @Autowired
-  ProductRepository productRepository;
+  private ProductRepository productRepository;
 
   @Autowired
-  SellerRepository sellerRepository;
+  private SellerRepository sellerRepository;
 
   @Autowired
-  CategoryRepository categoryRepository;
+  private CategoryRepository categoryRepository;
 
   @Autowired
-  ProductVariationRepository productVariationRepository;
+  private ProductVariationRepository productVariationRepository;
 
   @Autowired
-  TaskExecutor taskExecutor;
+  private TaskExecutor taskExecutor;
 
   @Autowired
-  EmailSenderService emailSenderService;
+  private EmailSenderService emailSenderService;
 
   @Autowired
-  ImageUploaderService imageUploaderService;
+  private ImageUploaderService imageUploaderService;
 
 
   //-----------------------------------------SELLER API-----------------------------------------------

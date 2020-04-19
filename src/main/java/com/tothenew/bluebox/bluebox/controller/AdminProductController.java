@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class AdminProductController {
 
   @Autowired
-  ProductService productService;
+  private ProductService productService;
 
 
   /*

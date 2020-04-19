@@ -41,28 +41,28 @@ import org.springframework.stereotype.Service;
 public class AdminService {
 
   @Autowired
-  CustomerRepository customerRepository;
+  private CustomerRepository customerRepository;
 
   @Autowired
-  SellerRepository sellerRepository;
+  private SellerRepository sellerRepository;
 
   @Autowired
-  UserRepository userRepository;
+  private UserRepository userRepository;
 
   @Autowired
   private TaskExecutor taskExecutor;
 
   @Autowired
-  EmailSenderService emailSenderService;
+  private EmailSenderService emailSenderService;
 
   @Autowired
-  CategoryMetadataFieldRepository categoryMetadataFieldRepository;
+  private CategoryMetadataFieldRepository categoryMetadataFieldRepository;
 
   @Autowired
-  CategoryRepository categoryRepository;
+  private CategoryRepository categoryRepository;
 
   @Autowired
-  CategoryMetadataFieldValuesRespository categoryMetadataFieldValuesRespository;
+  private CategoryMetadataFieldValuesRespository categoryMetadataFieldValuesRespository;
 
   //-------------------------------------------GET LIST OF USER---------------------------------------
   /*

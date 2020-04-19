@@ -22,16 +22,16 @@ import org.springframework.security.oauth2.provider.token.store.JdbcTokenStore;
 public class AuthorizationServerConfiguration extends AuthorizationServerConfigurerAdapter {
 
   @Autowired
-  PasswordEncoder passwordEncoder;
+  private PasswordEncoder passwordEncoder;
 
   @Autowired
-  AuthenticationManager authenticationManager;
+  private AuthenticationManager authenticationManager;
 
   @Autowired
-  UserDetailsService userDetailsService;
+  private UserDetailsService userDetailsService;
 
   @Autowired
-  DataSource dataSource;
+  private DataSource dataSource;
 
   public AuthorizationServerConfiguration() {
     super();

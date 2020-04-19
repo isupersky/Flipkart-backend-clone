@@ -43,40 +43,40 @@ import org.springframework.stereotype.Service;
 public class CustomerService {
 
   @Autowired
-  UserRepository userRepository;
+  private UserRepository userRepository;
 
   @Autowired
-  RoleRepository roleRepository;
+  private RoleRepository roleRepository;
 
   @Autowired
-  CustomerRepository customerRepository;
+  private CustomerRepository customerRepository;
 
   @Autowired
-  ConfirmationTokenRepository confirmationTokenRepository;
+  private ConfirmationTokenRepository confirmationTokenRepository;
 
   @Autowired
-  EmailSenderService emailSenderService;
+  private EmailSenderService emailSenderService;
 
   @Autowired
   private TaskExecutor taskExecutor;
 
   @Autowired
-  PasswordEncoder passwordEncoder;
+  private PasswordEncoder passwordEncoder;
 
   @Autowired
-  UserService userService;
+  private UserService userService;
 
   @Autowired
-  AddressRepository addressRepository;
+  private AddressRepository addressRepository;
 
   @Autowired
-  CategoryRepository categoryRepository;
+  private CategoryRepository categoryRepository;
 
   @Autowired
-  CategoryMetadataFieldValuesRespository categoryMetadataFieldValuesRespository;
+  private CategoryMetadataFieldValuesRespository categoryMetadataFieldValuesRespository;
 
   @Autowired
-  ProductRepository productRepository;
+  private ProductRepository productRepository;
 
   @Autowired
   private MessageSource messageSource;

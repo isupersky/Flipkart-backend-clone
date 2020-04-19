@@ -25,7 +25,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class AdminCategoryController {
 
   @Autowired
-  AdminService adminService;
+  private AdminService adminService;
 
   /*
     URI to Add Category Metadata Field

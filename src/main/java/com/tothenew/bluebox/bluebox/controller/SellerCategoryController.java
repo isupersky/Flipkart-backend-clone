@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class SellerCategoryController {
 
   @Autowired
-  SellerService sellerService;
+  private SellerService sellerService;
 
   /*
     URI to list all category and related metadata fields
