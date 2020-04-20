@@ -367,7 +367,10 @@ public class ProductService {
       throw new ProductNotFoundException("No such product exists");
     }
 
-    List responseList = productVariationRepository.findByProductId(optionalProduct.get());
+//    List<ProductVariationDTO> response = new ArrayList<>();
+    List responseList = productVariationRepository
+        .findVariationsByProductId(optionalProduct.get().getId(), paging);
+//    responseList.forEach();
 
     return new ResponseEntity<>(
         new MessageResponseEntity(responseList, HttpStatus.OK)
