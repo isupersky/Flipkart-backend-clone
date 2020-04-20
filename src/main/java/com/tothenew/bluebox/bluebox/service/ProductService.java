@@ -23,7 +23,6 @@ import com.tothenew.bluebox.bluebox.repository.SellerRepository;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -258,11 +257,11 @@ public class ProductService {
         , HttpStatus.CREATED);
   }
 
-  /* @UNtested
-    Method to Add images to product variation
+  /*
+    Method to Add primary images to product variation
    */
-  public ResponseEntity<MessageResponseEntity> addProductVariationImages(Long id,
-      List<MultipartFile> imageFiles)
+  public ResponseEntity<MessageResponseEntity> addProductVariationPrimaryImages(Long id,
+      MultipartFile imageFiles)
       throws IOException {
     Optional<ProductVariation> optionalProductVariation = productVariationRepository.findById(id);
 
@@ -275,13 +274,40 @@ public class ProductService {
 
     ProductVariation productVariation = optionalProductVariation.get();
 
-    HashSet imageApis = imageUploaderService.uploadProductVariationImage(imageFiles);
-    productVariation.setPrimaryImageName(imageApis);
-    productVariation.imageStringSerialize();
+    String imageApi = imageUploaderService.uploadProductVariationImage(imageFiles);
+    productVariation.setPrimaryImageName(imageApi);
     productVariationRepository.save(productVariation);
 
     return new ResponseEntity<>(
-        new MessageResponseEntity(imageApis, HttpStatus.OK,
+        new MessageResponseEntity(imageApi, HttpStatus.OK,
+            "Image uploaded Successfully".toUpperCase())
+        , HttpStatus.OK);
+
+  }
+
+  /*
+    Method to Add secondary images to product variation
+   */
+  public ResponseEntity<MessageResponseEntity> addProductVariationSecondaryImages(Long id,
+      MultipartFile imageFiles)
+      throws IOException {
+    Optional<ProductVariation> optionalProductVariation = productVariationRepository.findById(id);
+
+    if (!optionalProductVariation.isPresent()) {
+      return new ResponseEntity<>(
+          new MessageResponseEntity(HttpStatus.NOT_FOUND,
+              "Invalid Product Variation Id".toUpperCase())
+          , HttpStatus.NOT_FOUND);
+    }
+
+    ProductVariation productVariation = optionalProductVariation.get();
+
+    String imageApi = imageUploaderService.uploadProductVariationImage(imageFiles);
+    productVariation.setSecondaryImageName(imageApi);
+    productVariationRepository.save(productVariation);
+
+    return new ResponseEntity<>(
+        new MessageResponseEntity(imageApi, HttpStatus.OK,
             "Image uploaded Successfully".toUpperCase())
         , HttpStatus.OK);
 
@@ -312,10 +338,7 @@ public class ProductService {
     ProductDTO productDTO = new ProductDTO();
 
     productVariation.jsonMetadataStringDeserialize();
-    productVariation.imageStringDeserialize();
     modelMapper.map(productVariation, productVariationDTO);
-
-    productVariationDTO.setPrimaryImageName(productVariation.getPrimaryImageName());
     modelMapper.map(productVariation.getProductId(), productDTO);
     productVariationDTO.setProductId(productDTO);
 
@@ -330,6 +353,7 @@ public class ProductService {
   public ResponseEntity<MessageResponseEntity> listAllProductVariation(String email, Long productId,
       Integer pageNo, Integer pageSize,
       String sortBy) {
+
     Pageable paging = PageRequest.of(pageNo, pageSize, Sort.by(sortBy).ascending());
     Long sellerId = sellerRepository.findByEmailIgnoreCase(email).getId();
 
@@ -343,7 +367,7 @@ public class ProductService {
       throw new ProductNotFoundException("No such product exists");
     }
 
-    List responseList = productVariationRepository.findByProductId(paging, productId);
+    List responseList = productVariationRepository.findByProductId(optionalProduct.get());
 
     return new ResponseEntity<>(
         new MessageResponseEntity(responseList, HttpStatus.OK)
@@ -372,7 +396,8 @@ public class ProductService {
       throw new ProductNotFoundException("product Not available ");
     }
 
-    List productVariationList = productVariationRepository.findByProductId(productId);
+    List productVariationList = productVariationRepository.findByProductId(product);
+    System.out.println(productVariationList);
     if (productVariationList == null) {
       throw new ProductNotFoundException("No product Variation available ");
     }
@@ -418,9 +443,10 @@ public class ProductService {
         try {
           SimpleMailMessage mailMessage = new SimpleMailMessage();
           mailMessage.setTo(seller.getEmail());
-          mailMessage.setSubject("Password Updated");
+          mailMessage.setSubject("Product Activated");
           mailMessage.setFrom("ecommerce476@gmail.com ");
-          mailMessage.setText("Your Account Password has been updated.\n ");
+          mailMessage
+              .setText("Your product " + product.getId() + " has been activated by the Admin");
 
           emailSenderService.sendEmail(mailMessage);
         } catch (Exception ex) {
@@ -442,7 +468,7 @@ public class ProductService {
   /*
     Method to Activate A Product
    */
-  public ResponseEntity<Object> deActivateProduct(Long id) {
+  public ResponseEntity<MessageResponseEntity> deActivateProduct(Long id) {
     Optional<Product> optionalProduct = productRepository.findById(id);
     if (!optionalProduct.isPresent()) {
       throw new ProductNotFoundException("Product Id Not Found!");
@@ -458,9 +484,10 @@ public class ProductService {
         try {
           SimpleMailMessage mailMessage = new SimpleMailMessage();
           mailMessage.setTo(seller.getEmail());
-          mailMessage.setSubject("Password Updated");
+          mailMessage.setSubject("Product Deactivated");
           mailMessage.setFrom("ecommerce476@gmail.com ");
-          mailMessage.setText("Your Account Password has been updated.\n ");
+          mailMessage
+              .setText("Your product " + product.getId() + " has been deactivated by the Admin");
 
           emailSenderService.sendEmail(mailMessage);
         } catch (Exception ex) {

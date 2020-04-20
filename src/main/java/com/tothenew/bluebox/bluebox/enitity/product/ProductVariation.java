@@ -4,7 +4,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.HashSet;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -26,12 +25,11 @@ public class ProductVariation {
   private Integer quantityAvailable;
   private Float price;
   private String metadata;
-  private String images;
   @Transient
   private HashMap metadataHashmap;
 
-  @Transient
-  private HashSet primaryImageName;
+  private String primaryImageName;
+  private String secondaryImageName;
 
   private boolean isActive;
 
@@ -70,21 +68,14 @@ public class ProductVariation {
     this.price = price;
   }
 
-  public HashSet getPrimaryImageName() {
+  public String getPrimaryImageName() {
     return primaryImageName;
   }
 
-  public void setPrimaryImageName(HashSet primaryImageName) {
+  public void setPrimaryImageName(String primaryImageName) {
     this.primaryImageName = primaryImageName;
   }
 
-  public String getImages() {
-    return images;
-  }
-
-  public void setImages(String images) {
-    this.images = images;
-  }
 
   public boolean isActive() {
     return isActive;
@@ -106,6 +97,14 @@ public class ProductVariation {
     return metadataHashmap;
   }
 
+  public String getSecondaryImageName() {
+    return secondaryImageName;
+  }
+
+  public void setSecondaryImageName(String secondaryImageName) {
+    this.secondaryImageName = secondaryImageName;
+  }
+
   public void setMetadataHashmap(HashMap<String, String> metadataHashmap) {
     this.metadataHashmap = metadataHashmap;
   }
@@ -120,15 +119,6 @@ public class ProductVariation {
     metadataHashmap = objectMapper.readValue(this.metadata, HashMap.class);
   }
 
-  public void imageStringSerialize() throws JsonProcessingException {
-    ObjectMapper objectMapper = new ObjectMapper();
-    this.images = objectMapper.writeValueAsString(primaryImageName);
-  }
-
-  public void imageStringDeserialize() throws IOException {
-    ObjectMapper objectMapper = new ObjectMapper();
-    primaryImageName = objectMapper.readValue(this.images, HashSet.class);
-  }
 
   @Override
   public String toString() {

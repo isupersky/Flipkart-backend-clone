@@ -5,9 +5,6 @@ import com.cloudinary.utils.ObjectUtils;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -59,7 +56,7 @@ public class ImageUploaderService {
   /*
    Method to upload productVariation
    */
-  public HashSet<String> uploadProductVariationImage(List<MultipartFile> multipartFileList)
+  public String uploadProductVariationImage(MultipartFile multipartFile)
       throws IOException {
 
     Cloudinary cloudinary = new Cloudinary(ObjectUtils.asMap(
@@ -67,34 +64,21 @@ public class ImageUploaderService {
         "api_key", mApiKey,
         "api_secret", mApiSecret));
 
-    List<Map> responseList = new ArrayList<>();
+    File file = Files.createTempFile("temp", multipartFile.getOriginalFilename()).toFile();
+    multipartFile.transferTo(file);
 
-    multipartFileList.forEach(multipartFile -> {
+    try {
+      Map response = cloudinary.uploader().upload(file, ObjectUtils.asMap(
+          "public_id", multipartFile.getOriginalFilename(),
+          "folder", "/bluebox/userdp"));
 
-      File file;
-      try {
-        file = Files.createTempFile("temp", multipartFile.getOriginalFilename()).toFile();
-        multipartFile.transferTo(file);
-        Map response = cloudinary.uploader().upload(file, ObjectUtils.asMap(
-            "public_id", multipartFile.getOriginalFilename(),
-            "folder", "/bluebox/productdp"));
-
-        responseList.add(response);
-
-      } catch (IOException e) {
-        e.printStackTrace();
-      }
-
-    });
-
-    HashSet<String> imageApis = new HashSet<>();
-
-    responseList.forEach(response -> {
       String imageApi = (String) response.get("url");
-      imageApis.add(imageApi);
-    });
+      return imageApi;
 
-    return imageApis;
+    } catch (Exception e) {
+      throw new IOException("Please try again Later");
+    }
+
 
   }
 

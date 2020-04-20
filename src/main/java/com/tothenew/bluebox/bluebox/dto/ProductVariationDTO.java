@@ -2,7 +2,6 @@ package com.tothenew.bluebox.bluebox.dto;
 
 
 import java.util.HashMap;
-import java.util.HashSet;
 
 public class ProductVariationDTO {
 
@@ -12,7 +11,8 @@ public class ProductVariationDTO {
   private Float price;
   private HashMap metadataHashmap;
   private boolean isActive;
-  private HashSet primaryImageName;
+  private String primaryImageName;
+  private String secondaryImageName;
 
   public Long getId() {
     return id;
@@ -62,11 +62,19 @@ public class ProductVariationDTO {
     isActive = active;
   }
 
-  public HashSet getPrimaryImageName() {
+  public String getPrimaryImageName() {
     return primaryImageName;
   }
 
-  public void setPrimaryImageName(HashSet primaryImageName) {
+  public void setPrimaryImageName(String primaryImageName) {
     this.primaryImageName = primaryImageName;
+  }
+
+  public String getSecondaryImageName() {
+    return secondaryImageName;
+  }
+
+  public void setSecondaryImageName(String secondaryImageName) {
+    this.secondaryImageName = secondaryImageName;
   }
 }

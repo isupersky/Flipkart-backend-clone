@@ -31,7 +31,7 @@ public class AdminProductController {
    */
   @PutMapping("/product/deactivate/{id}")
   public ResponseEntity<MessageResponseEntity> deActivateProduct(@PathVariable Long id) {
-    return productService.activateProduct(id);
+    return productService.deActivateProduct(id);
   }
 
   /* throwing error

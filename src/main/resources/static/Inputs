@@ -1,0 +1,133 @@
+
+sellerCO
+
+{
+   "email": "mailtomeaakash@gmail.com",
+   "firstName": "Aakash",
+   "middleName": "Kumar",
+   "lastName": "Sinha",
+   "password": "Aakash12@",
+   "contact": "+919958146938",
+   "companyName":"Bluebox",
+   "gst":"1234",
+   "companyContact":"123456",
+   "companyAddress":
+       {
+           "city": "Delhi",
+           "state": "Delhi",
+           "country": "India",
+           "addressLine": "B7- Pitmapura",
+           "zipCode": 110085,
+           "label": "Home"
+       }
+
+}
+
+addressCO
+
+       {
+           "city": "Delhi",
+           "state": "Delhi",
+           "country": "India",
+           "addressLine": "B7- Pitmapura",
+           "zipCode": 110085,
+           "label": "Home"
+       }
+
+customeCO
+
+{
+   "email": "aakash9868sinha@gmail.com",
+   "firstName": "Aakash",
+   "middleName": "Kumar",
+   "lastName": "Sinha",
+   "password": "Aakash12@",
+   "contact": "+919958146938"
+
+}
+
+productCO
+
+{
+	"name":"test product 1",
+	"brand":"test Brand 1",
+	"description":"This is a Test Description,
+	"categoryId":23
+
+}
+
+categoryCO
+{
+	"name":"test",
+	"parentId":4
+}
+
+categoryMetadataCO
+{
+	"name":"length"
+}
+
+categoryMetadataValueCO
+{
+	" categoryId":4,
+	"categoryMetadataFieldId":33,
+	"value":"Size"
+}
+
+categoryUpdateCO
+{
+	"id":35,
+	"name":"test Update"
+}
+
+customerProfileUpdateCO
+{
+   "firstName": "Aakash",
+   "middleName": "Kumar",
+   "lastName": "",
+   "contact": "8860404771"
+
+}
+SellerProfileUpdateCO
+{
+   "email": "mailtomeaakash@gmail.com",
+   "firstName": "Aakash",
+   "middleName": "",
+   "lastName": "Sinha",
+   "password": "Aakash12@",
+   "contact": "+918130170780",
+   "companyName":"Bluebox",
+   "gst":"1234",
+   "companyContact":"123456",
+   "companyAddress":
+       {
+           "city": "Delhi",
+           "state": "Delhi",
+           "country": "India",
+           "addressLine": "B7- Pitmapura",
+           "zipCode": 110085,
+           "label": "Home"
+       }
+
+}
+
+emailCO
+{"email":"aakash9868sinha@gmail.com"}
+
+passwordCO
+{
+	"oldPassword":"Aakash12@",
+	"password":"Aakash12#",
+	"rePassword":"Aakash12#"
+}
+
+productVarientCO
+{
+	"productId":35,
+	"quantityAvailable":2,
+	"price":100,
+	"metadataHashmap":{
+		"name":"Aakash"
+	},
+	"isActive":true
+}

@@ -9,7 +9,6 @@ import com.tothenew.bluebox.bluebox.exception.ProductNotFoundException;
 import com.tothenew.bluebox.bluebox.service.ProductService;
 import java.io.IOException;
 import java.security.Principal;
-import java.util.List;
 import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -104,14 +103,37 @@ public class SellerProductController {
   }
 
   /*
-    URI to add variation of a product
+    URI to add image for variation of a product
    */
-  @PostMapping(path = "/add-product-variation-images/{id}")
-  public ResponseEntity<MessageResponseEntity> addProductVariationImages(
-      @PathVariable(value = "id") Long id, List<MultipartFile> imageFiles) {
+  @PostMapping(path = "/add-product-variation-primary-image/{id}")
+  public ResponseEntity<MessageResponseEntity> addProductVariationPrimaryImages(
+      @PathVariable(value = "id") Long id,
+      @RequestParam(value = "upload", required = true)
+          MultipartFile imageFiles) {
 
     try {
-      return productService.addProductVariationImages(id, imageFiles);
+      return productService.addProductVariationPrimaryImages(id, imageFiles);
+    } catch (ProductNotFoundException pe) {
+      throw pe;
+    } catch (IOException ioe) {
+      return new ResponseEntity<>(
+          new MessageResponseEntity(HttpStatus.BAD_REQUEST, "Something went wrong".toUpperCase())
+          , HttpStatus.BAD_REQUEST);
+    }
+
+  }
+
+  /*
+   URI to add image for variation of a product
+  */
+  @PostMapping(path = "/add-product-variation-secondary-image/{id}")
+  public ResponseEntity<MessageResponseEntity> addProductVariationSecondaryImages(
+      @PathVariable(value = "id") Long id,
+      @RequestParam(value = "upload", required = true)
+          MultipartFile imageFiles) {
+
+    try {
+      return productService.addProductVariationSecondaryImages(id, imageFiles);
     } catch (ProductNotFoundException pe) {
       throw pe;
     } catch (IOException ioe) {
@@ -128,7 +150,7 @@ public class SellerProductController {
    */
   @GetMapping("/product-variation/{id}")
   public ResponseEntity<MessageResponseEntity> getProductVariationById(Principal principal,
-      @PathVariable Long id)
+      @PathVariable(value = "id") Long id)
       throws IOException {
     String email = principal.getName();
     return productService.getProductVariationById(email, id);
@@ -138,14 +160,15 @@ public class SellerProductController {
   /*throws error 500
     URI to Fetch Details all Products variation
    */
-  @GetMapping("/product-variations")
+  @GetMapping("/product-variations/{prodId}")
   public ResponseEntity<MessageResponseEntity> listAllProductVariation(Principal principal,
-      @PathVariable(value = "id") Long id,
+      @PathVariable(value = "prodId") Long prodId,
       @RequestParam(defaultValue = "0") Integer pageNo,
       @RequestParam(defaultValue = "10") Integer pageSize,
       @RequestParam(defaultValue = "id") String sortBy) {
     String email = principal.getName();
-    return productService.listAllProductVariation(email, id, pageNo, pageSize, sortBy);
+    System.out.println(email);
+    return productService.listAllProductVariation(email, prodId, pageNo, pageSize, sortBy);
   }
 
   /*
