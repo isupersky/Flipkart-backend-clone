@@ -14,6 +14,12 @@ public interface ProductVariationRepository extends CrudRepository<ProductVariat
 
   List<Object> findByProductId(Product id);
 
-  @Query(value = "select * from product_variation where product_id=:productId", nativeQuery = true)
-  List<ProductVariation> findVariationsByProductId(Long productId, Pageable pageable);
+  @Query(value = "select pv.id, "
+      + "pv.is_active,pv.metadata,pv.price,pv.primary_image_name,pv.quantity_available,pv.secondary_image_name "
+      + " from product_variation pv"
+      + " Join"
+      + " product p"
+      + " on p.id = pv.product_id "
+      + "where p.id=:productId", nativeQuery = true)
+  List<Object> findVariationsByProductId(Long productId, Pageable pageable);
 }

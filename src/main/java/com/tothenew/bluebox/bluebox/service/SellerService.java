@@ -101,6 +101,7 @@ public class SellerService {
     SellerDTO sellerDTO = new SellerDTO();
     ModelMapper modelMapper = new ModelMapper();
     modelMapper.map(seller, sellerDTO);
+    sellerDTO.setAddress(seller.getAddress());
 
     return new ResponseEntity<>(
         new MessageResponseEntity<>(sellerDTO, HttpStatus.OK)

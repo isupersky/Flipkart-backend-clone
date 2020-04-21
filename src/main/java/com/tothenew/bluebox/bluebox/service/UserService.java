@@ -2,6 +2,7 @@ package com.tothenew.bluebox.bluebox.service;
 
 import com.tothenew.bluebox.bluebox.co.AddressCO;
 import com.tothenew.bluebox.bluebox.co.PasswordCO;
+import com.tothenew.bluebox.bluebox.co.PasswordResetCO;
 import com.tothenew.bluebox.bluebox.configuration.MessageResponseEntity;
 import com.tothenew.bluebox.bluebox.enitity.product.Product;
 import com.tothenew.bluebox.bluebox.enitity.user.Address;
@@ -118,7 +119,7 @@ public class UserService {
           mailMessage.setSubject(messageSubject);
           mailMessage.setFrom("ecommerce476@gmail.com ");
           mailMessage.setText(messageText +
-              "http://localhost:8080/resetpassword/" + confirmationToken
+              "http://localhost:8080/user/reset-password/" + confirmationToken
               .getConfirmationToken());
 
           emailSenderService.sendEmail(mailMessage);
@@ -141,7 +142,8 @@ public class UserService {
   /*
     Updates User's password
    */
-  public ResponseEntity<MessageResponseEntity> resetPassword(PasswordCO passwordCO, String token) {
+  public ResponseEntity<MessageResponseEntity> resetPassword(PasswordResetCO passwordCO,
+      String token) {
     ConfirmationToken confirmationToken = confirmationTokenRepository
         .findByConfirmationToken(token);
 

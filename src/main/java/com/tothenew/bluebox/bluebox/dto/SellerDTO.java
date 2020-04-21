@@ -1,5 +1,8 @@
 package com.tothenew.bluebox.bluebox.dto;
 
+import com.tothenew.bluebox.bluebox.enitity.user.Address;
+import java.util.Set;
+
 public class SellerDTO extends UserDTO {
 
   private String gst;
@@ -8,7 +11,7 @@ public class SellerDTO extends UserDTO {
 
   private Long companyContact;
 
-  private AddressDTO address;
+  private Set<Address> address;
 
   public SellerDTO() {
   }
@@ -37,11 +40,11 @@ public class SellerDTO extends UserDTO {
     this.companyContact = companyContact;
   }
 
-  public AddressDTO getAddress() {
+  public Set<Address> getAddress() {
     return address;
   }
 
-  public void setAddress(AddressDTO address) {
+  public void setAddress(Set<Address> address) {
     this.address = address;
   }
 

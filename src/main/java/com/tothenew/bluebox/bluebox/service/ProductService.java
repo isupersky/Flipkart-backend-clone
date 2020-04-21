@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.tothenew.bluebox.bluebox.co.ProductCO;
 import com.tothenew.bluebox.bluebox.co.ProductUpdateCO;
 import com.tothenew.bluebox.bluebox.co.ProductVariationCO;
+import com.tothenew.bluebox.bluebox.co.ProductVariationUpdateCO;
 import com.tothenew.bluebox.bluebox.configuration.MessageResponseEntity;
 import com.tothenew.bluebox.bluebox.dto.ProductDTO;
 import com.tothenew.bluebox.bluebox.dto.ProductVariationDTO;
@@ -153,7 +154,7 @@ public class ProductService {
     Seller seller = sellerRepository.findByEmailIgnoreCase(email);
     Pageable paging = PageRequest.of(pageNo, pageSize, Sort.by(sortBy).ascending());
     List<Product> productList = productRepository.listAllProduct(paging, seller.getId());
-    if (!productList.isEmpty()) {
+    if (productList.isEmpty()) {
       return new ResponseEntity<>("The Product Does Not Exist!", HttpStatus.BAD_REQUEST);
     }
 
@@ -377,12 +378,42 @@ public class ProductService {
         , HttpStatus.OK);
   }
 
-//  /*
+  //  /*
 //    Updates product Variation given its id
 //   */
-//  public ResponseEntity<MessageResponseEntity> updateProductVariation(String email, Long productId, ProductVariationUpdateCo productVariationUpdateCo){
-//
-//  }
+  public ResponseEntity<MessageResponseEntity> updateProductVariation(String email,
+      Long productVariationId, ProductVariationUpdateCO productVariationUpdateCo)
+      throws JsonProcessingException {
+
+    Optional<ProductVariation> optionalProductVariation = productVariationRepository
+        .findById(productVariationId);
+    if (!optionalProductVariation.isPresent()) {
+      throw new ProductVariationNotFoundException("Invalid product Variation Id");
+    }
+    ProductVariation productVariation = optionalProductVariation.get();
+    Product product = productVariation.getProductId();
+    Long producSellerId = product.getSellerUserId().getId();
+
+    Seller seller = sellerRepository.findByEmailIgnoreCase(email);
+    Long sellerId = seller.getId();
+    if (!producSellerId.equals(sellerId)) {
+      throw new ProductVariationNotFoundException("No such Product Variation");
+    }
+
+    ModelMapper modelMapper = new ModelMapper();
+    modelMapper.map(productVariationUpdateCo, productVariation);
+    productVariation.jsonMetadataStringSerialize();
+    productVariationRepository.save(productVariation);
+
+//    productVariation.setQuantityAvailable(productVariationUpdateCo.getQuantityAvailable());
+//    productVariation.setPrice(productVariationUpdateCo.getPrice());
+//    productVariation.
+
+    return new ResponseEntity<>(
+        new MessageResponseEntity(productVariationUpdateCo, HttpStatus.OK,
+            "product variation Updated successfully".toUpperCase())
+        , HttpStatus.OK);
+  }
 
 //-----------------------------------------CUSTOMER API---------------------------------------------
 
@@ -422,6 +453,64 @@ public class ProductService {
 
     return new ResponseEntity<>(
         new MessageResponseEntity(responseSet, HttpStatus.OK)
+        , HttpStatus.OK);
+  }
+
+  /*
+    API to view all products
+   */
+  public ResponseEntity<MessageResponseEntity> getAllProductByCategoryId(Integer pageNo,
+      Integer pageSize, String sortBy, Long categoryId) {
+
+    Optional<Category> optionalCategory = categoryRepository.findById(categoryId);
+    if (!optionalCategory.isPresent()) {
+      throw new CategoryNotFoundException("Invalid Category Id");
+    }
+    Category category = optionalCategory.get();
+    if (!category.isLeafNode()) {
+      return new ResponseEntity<>(
+          new MessageResponseEntity(HttpStatus.BAD_REQUEST,
+              "Please enter a leaf category Id".toUpperCase())
+          , HttpStatus.BAD_REQUEST);
+    }
+
+    Pageable paging = PageRequest.of(pageNo, pageSize, Sort.by(sortBy).ascending());
+    List<Map<Object, Object>> pagedResult = productRepository
+        .listAllProductCustomer(paging, categoryId);
+
+    return new ResponseEntity<>(
+        new MessageResponseEntity<>(pagedResult, HttpStatus.OK)
+        , HttpStatus.OK);
+
+  }
+
+  public ResponseEntity<MessageResponseEntity> viewSimiliarProductsCustomer(Long productId,
+      Integer pageoffset, Integer pagesize, String sortBy, String order) {
+    Pageable pageable;
+    List<Map<Object, Object>> responseList;
+
+    Optional<Long> optional = productRepository.findCategoryidIsActive(productId);
+    if (!optional.isPresent()) {
+      throw new ProductNotFoundException("Invalid Product Id..");
+    }
+
+    if (order.equals("DESC")) {
+      pageable = PageRequest
+          .of(pageoffset, pagesize, Sort.by(new Sort.Order(Sort.Direction.DESC, sortBy)));
+    } else {
+      pageable = PageRequest
+          .of(pageoffset, pagesize, Sort.by(new Sort.Order(Sort.Direction.ASC, sortBy)));
+    }
+
+    Long categoryId = productRepository.findById(productId).get().getCategoryId().getId();
+
+//    if(query.equals("*"))
+    responseList = productRepository.findAllProductsForCustomer(categoryId, pageable);
+//    else
+//      responseList =productRepository.findAllProductsForCustomer(categoryId,pageable,query);
+
+    return new ResponseEntity<>(
+        new MessageResponseEntity(responseList, HttpStatus.OK)
         , HttpStatus.OK);
   }
 

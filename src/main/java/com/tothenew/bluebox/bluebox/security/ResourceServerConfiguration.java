@@ -60,7 +60,8 @@ public class ResourceServerConfiguration extends ResourceServerConfigurerAdapter
             "/forgot-password",
             "/reset-password",
             "/username",        // for future use
-            "/customer/resend-activation/").permitAll()
+            "/customer/resend-activation/",
+            "/user/*").permitAll()
 
         .antMatchers("/logout").hasAnyRole("ADMIN", "SELLER", "CUSTOMER")
 

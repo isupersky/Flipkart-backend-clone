@@ -1,9 +1,10 @@
 package com.tothenew.bluebox.bluebox.controller;
 
 import com.tothenew.bluebox.bluebox.co.EmailCO;
-import com.tothenew.bluebox.bluebox.co.PasswordCO;
+import com.tothenew.bluebox.bluebox.co.PasswordResetCO;
 import com.tothenew.bluebox.bluebox.configuration.MessageResponseEntity;
 import com.tothenew.bluebox.bluebox.enitity.product.Product;
+import com.tothenew.bluebox.bluebox.service.CustomerService;
 import com.tothenew.bluebox.bluebox.service.UserService;
 import java.security.Principal;
 import java.util.List;
@@ -26,6 +27,9 @@ public class UserController {
 
   @Autowired
   private UserService userService;
+
+  @Autowired
+  CustomerService customerService;
 
 
   /*
@@ -72,10 +76,19 @@ public class UserController {
    */
   @PatchMapping(path = "/reset-password/{token}")
   public ResponseEntity<MessageResponseEntity> resetPassword(
-      @Valid @RequestBody PasswordCO passwordCO,
+      @Valid @RequestBody PasswordResetCO passwordCO,
       @PathVariable String token) {
     return userService.resetPassword(passwordCO, token);
 
+  }
+
+  /* authorization error
+    URI to resend Activation Token
+   */
+  @PostMapping(path = "/resend-activation")
+  public ResponseEntity<MessageResponseEntity> resendActivationToken(
+      @Valid @RequestBody EmailCO emailCO) {
+    return customerService.resendActivationToken(emailCO.getEmail());
   }
 
   /*

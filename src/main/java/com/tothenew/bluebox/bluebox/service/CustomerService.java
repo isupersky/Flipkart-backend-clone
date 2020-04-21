@@ -6,6 +6,7 @@ import com.tothenew.bluebox.bluebox.co.CustomerProfileUpdateCO;
 import com.tothenew.bluebox.bluebox.configuration.MessageResponseEntity;
 import com.tothenew.bluebox.bluebox.dto.AddressDTO;
 import com.tothenew.bluebox.bluebox.dto.CustomerDTO;
+import com.tothenew.bluebox.bluebox.enitity.product.Category;
 import com.tothenew.bluebox.bluebox.enitity.user.Address;
 import com.tothenew.bluebox.bluebox.enitity.user.ConfirmationToken;
 import com.tothenew.bluebox.bluebox.enitity.user.Customer;
@@ -414,6 +415,14 @@ public class CustomerService {
       throw new CategoryNotFoundException("invalid Category Id");
     }
 
+    Category category = categoryRepository.findById(id).get();
+    if (!category.isLeafNode()) {
+      return new ResponseEntity<>(
+          new MessageResponseEntity(HttpStatus.BAD_REQUEST,
+              "please enter a leaf category Id".toUpperCase())
+          , HttpStatus.BAD_REQUEST);
+    }
+
     List<Object> responseList = new ArrayList();
 //    All metadata field along with possible values for that category
     responseList.add(categoryMetadataFieldValuesRespository.findByCategoryId(id));
@@ -426,4 +435,6 @@ public class CustomerService {
         , HttpStatus.OK);
 
   }
+
+
 }

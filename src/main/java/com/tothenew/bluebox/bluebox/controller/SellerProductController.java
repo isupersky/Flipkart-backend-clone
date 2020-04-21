@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.tothenew.bluebox.bluebox.co.ProductCO;
 import com.tothenew.bluebox.bluebox.co.ProductUpdateCO;
 import com.tothenew.bluebox.bluebox.co.ProductVariationCO;
+import com.tothenew.bluebox.bluebox.co.ProductVariationUpdateCO;
 import com.tothenew.bluebox.bluebox.configuration.MessageResponseEntity;
 import com.tothenew.bluebox.bluebox.exception.ProductNotFoundException;
 import com.tothenew.bluebox.bluebox.service.ProductService;
@@ -174,11 +175,13 @@ public class SellerProductController {
   /*
    Update One Product Variation
   */
-//  @PutMapping("/product/update/{id}")
-//  public ResponseEntity<Object> updateOneProductvariation(Principal principal,@PathVariable(value = "id")Long productId ,@Valid @RequestBody
-//      ProductUpdateCO productUpdateCO) {
-//    String email = principal.getName();
-//    return productService.updateOneProduct(email,productId, productUpdateCO);
-//  }
+  @PutMapping("/product-variation/update/{id}")
+  public ResponseEntity<MessageResponseEntity> updateOneProductvariation(Principal principal,
+      @PathVariable(value = "id") Long productVariationId, @Valid @RequestBody
+      ProductVariationUpdateCO productVariationUpdateCO) throws JsonProcessingException {
+    String email = principal.getName();
+    return productService
+        .updateProductVariation(email, productVariationId, productVariationUpdateCO);
+  }
 
 }

@@ -57,7 +57,7 @@ public class CustomerController {
   /*
     URI to resend Activation Token
    */
-  @PostMapping(path = "/resend-activation")
+  @PostMapping(path = "/resend-activation-token")
   public ResponseEntity<MessageResponseEntity> resendActivationToken(
       @Valid @RequestBody EmailCO emailCO) {
     return customerService.resendActivationToken(emailCO.getEmail());

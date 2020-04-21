@@ -25,4 +25,10 @@ public class CustomerCategoryController {
       @PathVariable(name = "id", required = false) Long id) {
     return customerService.listAllCustomerCategories(id);
   }
+
+  @GetMapping("/categories/filtering/{id}")
+  public ResponseEntity<MessageResponseEntity> getFilterDetails(
+      @PathVariable(name = "id", required = false) Long id) {
+    return customerService.getFilterDetails(id);
+  }
 }
